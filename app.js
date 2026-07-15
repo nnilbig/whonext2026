@@ -57,6 +57,7 @@ function updateUI(team) {
     document.getElementById(`remCount${team}`).textContent = gameState[team].deck.length;
 }
 
+// 1. 全部重置
 function resetAll() {
     gameState.A.score = 0;
     gameState.B.score = 0;
@@ -64,6 +65,42 @@ function resetAll() {
     document.getElementById('scoreB').textContent = "00";
     initDeck('A');
     initDeck('B');
+    
+    // 重置順序類別為初始狀態（A在左，B在右）
+    const teamA = document.querySelector('.team-blue');
+    const teamB = document.querySelector('.team-red');
+    if(teamA && teamB) {
+        teamA.classList.remove('position-right');
+        teamA.classList.add('position-left');
+        teamB.classList.remove('position-left');
+        teamB.classList.add('position-right');
+    }
+}
+
+// 2. 核心修正：整個區塊左右互換 (利用 CSS order 對調)
+function switchSides() {
+    // 抓取兩個隊伍的 HTML 容器區塊 (這裡假设你的 HTML 左邊是 .team-blue, 右邊是 .team-red)
+    const teamA = document.querySelector('.team-blue');
+    const teamB = document.querySelector('.team-red');
+
+    if (teamA && teamB) {
+        // 檢查目前是否已經換過位置
+        const isAMovedRight = teamA.classList.contains('position-right');
+
+        if (!isAMovedRight) {
+            // 如果原本 A 在左邊，點擊後把 A 移到右邊，B 移到左邊
+            teamA.classList.remove('position-left');
+            teamA.classList.add('position-right');
+            teamB.classList.remove('position-right');
+            teamB.classList.add('position-left');
+        } else {
+            // 如果已經換過了，再點一次就復原（A 回左邊，B 回右邊）
+            teamA.classList.remove('position-right');
+            teamA.classList.add('position-left');
+            teamB.classList.remove('position-left');
+            teamB.classList.add('position-right');
+        }
+    }
 }
 
 function setupSwipeEntry(team) {
@@ -142,6 +179,13 @@ function setupSwipeEntry(team) {
             }, 200);
         } else {
             swipeCard.style.transform = 'translateY(0) scale(1)';
+            if (container.classList.contains('has-result-blue')) {
+                tag.textContent = '藍隊技能';
+            } else if (container.classList.contains('has-result-red')) {
+                tag.textContent = '紅隊技能';
+            } else {
+                tag.textContent = "等待抽卡";
+            }
         }
     }
 
@@ -154,7 +198,10 @@ function setupSwipeEntry(team) {
     window.addEventListener('mouseup', onEnd);
 }
 
+// 監聽與初始化
 document.getElementById('resetAllBtn').addEventListener('click', resetAll);
+document.getElementById('switchSidesBtn').addEventListener('click', switchSides);
+
 setupSwipeEntry('A');
 setupSwipeEntry('B');
 resetAll();
