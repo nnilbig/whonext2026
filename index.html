@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
+    <title>WHONEXT 2026</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>WHONEXT 2026 X 卡牌對決</h1>
+            <p class="subtitle">將下方卡牌向上滑動進行抽取</p>
+        </header>
+
+        <!-- 上方：翻開後的結果展示區 -->
+        <div class="result-zone">
+            <div class="flip-card-container" id="flipContainer">
+                <div class="flip-card-inner">
+                    <!-- 正面：顯示卡牌功能 -->
+                    <div class="card-front">
+                        <div class="card-tag">WHONEXT 2026</div>
+                        <h2 id="cardTitle">等待抽卡</h2>
+                        <p id="cardDesc">請由下方拔起一張卡牌向上滑動...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 下方：卡牌堆疊區 -->
+        <div class="interactive-zone">
+            <div class="card-deck" id="cardDeck">
+                <div class="swipe-card" id="swipeCard">
+                    <!-- 卡片背面改為置中放入一張圖片 -->
+                    <img src="image/logo.png" alt="Card Cover" class="card-back-image" />
+                </div>
+                <!-- 疊牌陰影（也改為黑框白底樣式） -->
+                <div class="deck-shadow shadow-1"></div>
+                <div class="deck-shadow shadow-2"></div>
+            </div>
+        </div>
+
+        <!-- 控制區 -->
+        <div class="control-zone">
+            <button id="shuffleBtn">🔄 重新洗牌 (<span id="remCount">11</span>/11)</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
