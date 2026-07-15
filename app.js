@@ -1,4 +1,3 @@
-// 1. 定義 11 張不同的卡牌池
 const cardPool = [
     { name: "免死金牌", desc: "比賽結束前可觸發一次，我方主動失誤(出界、掛網)該球不算分，並由我方重新發球。" },
     { name: "消失邊界", desc: "共有3分的額度，對手回球落於限制區外的話我方得分。" },
@@ -13,140 +12,149 @@ const cardPool = [
     { name: "劫富濟貧", desc: "比賽結束前可觸發一次，一旦對手領先，我方分數加2分，且對手扣2分" }
 ];
 
-let currentDeck = [];
+let gameState = {
+    A: { score: 0, deck: [] },
+    B: { score: 0, deck: [] }
+};
 
-// DOM 元素獲取
-const swipeCard = document.getElementById('swipeCard');
-const flipContainer = document.getElementById('flipContainer');
-const cardTitle = document.getElementById('cardTitle');
-const cardDesc = document.getElementById('cardDesc');
-const shuffleBtn = document.getElementById('shuffleBtn');
-const remCount = document.getElementById('remCount');
-const cardDeck = document.getElementById('cardDeck');
+function changeScore(team, val) {
+    gameState[team].score += val;
+    if (gameState[team].score < 0) gameState[team].score = 0;
+    if (gameState[team].score > 99) gameState[team].score = 99;
+    
+    const formatted = String(gameState[team].score).padStart(2, '0');
+    document.getElementById(`score${team}`).textContent = formatted;
+}
 
-// 滑動手勢變數
-let startY = 0;
-let currentY = 0;
-let isDragging = false;
-const swipeThreshold = -80; // 向上滑動超過 80px 觸發
-
-// --- 洗牌功能 ---
-function shuffle() {
-    currentDeck = [...cardPool];
-    for (let i = currentDeck.length - 1; i > 0; i--) {
+function initDeck(team) {
+    gameState[team].deck = [...cardPool, ...cardPool];
+    for (let i = gameState[team].deck.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [currentDeck[i], currentDeck[j]] = [currentDeck[j], currentDeck[i]];
+        [gameState[team].deck[i], gameState[team].deck[j]] = [gameState[team].deck[j], gameState[team].deck[i]];
     }
     
-    // 恢復下方的滑動卡牌
+    const swipeCard = document.getElementById(`swipeCard${team}`);
+    const cardDeck = document.getElementById(`cardDeck${team}`);
     swipeCard.style.display = 'flex';
     swipeCard.style.transform = 'translateY(0) scale(1)';
     swipeCard.style.opacity = '1';
     cardDeck.style.opacity = '1';
     
-    // 恢復結果區為「未抽卡」的預設邊框與樣式
-    flipContainer.classList.remove('has-result');
-    cardTitle.textContent = "等待抽卡";
-    cardDesc.textContent = "請由下方拔起一張卡牌向上滑動...";
-
-    updateUI();
-}
-
-function updateUI() {
-    remCount.textContent = currentDeck.length;
-    shuffleBtn.disabled = currentDeck.length === cardPool.length && !flipContainer.classList.contains('has-result');
-}
-
-// --- 手勢事件監聽 (向上滑動) ---
-function signStart(y) {
-    if (currentDeck.length === 0) return;
-    startY = y;
-    currentY = y;
-    isDragging = true;
+    const container = document.getElementById(`flipContainer${team}`);
+    const title = document.getElementById(`cardTitle${team}`);
+    const desc = document.getElementById(`cardDesc${team}`);
+    const tag = container.querySelector('.card-tag');
     
-    // 壓住卡片準備往上滑時，先清除發光邊框與上一次的文字
-    flipContainer.classList.remove('has-result');
-    cardTitle.textContent = "等待抽卡";
-    cardDesc.textContent = "請由下方拔起一張卡牌向上滑動...";
+    container.classList.remove('has-result-blue', 'has-result-red');
+    tag.textContent = "等待抽卡";
+    title.textContent = "請抽卡";
+    desc.textContent = "向上撥動下方卡牌...";
+    
+    updateUI(team);
 }
 
-function signMove(y) {
-    if (!isDragging) return;
-    currentY = y;
-    let moveY = currentY - startY;
-    
-    // 限制只能往上滑
-    if (moveY > 0) moveY = 0;
-    
-    const scale = 1 + (moveY * 0.001); 
-    swipeCard.style.transform = `translateY(${moveY}px) scale(${Math.max(scale, 0.85)})`;
+function updateUI(team) {
+    document.getElementById(`remCount${team}`).textContent = gameState[team].deck.length;
 }
 
-function signEnd() {
-    if (!isDragging) return;
-    isDragging = false;
-    const moveY = currentY - startY;
+function resetAll() {
+    gameState.A.score = 0;
+    gameState.B.score = 0;
+    document.getElementById('scoreA').textContent = "00";
+    document.getElementById('scoreB').textContent = "00";
+    initDeck('A');
+    initDeck('B');
+}
 
-    // 判斷向上滑動距離是否達標
-    if (moveY < swipeThreshold) {
+function setupSwipeEntry(team) {
+    const swipeCard = document.getElementById(`swipeCard${team}`);
+    const cardDeck = document.getElementById(`cardDeck${team}`);
+    const container = document.getElementById(`flipContainer${team}`);
+    const title = document.getElementById(`cardTitle${team}`);
+    const desc = document.getElementById(`cardDesc${team}`);
+    const tag = container.querySelector('.card-tag');
+    
+    let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+    const swipeThreshold = -50; 
+
+    function onStart(y) {
+        if (gameState[team].deck.length === 0) return;
+        startY = y;
+        currentY = y;
+        isDragging = true;
         
-        // 1. 播放「卡片往上飛走並消失」的順暢動畫
-        swipeCard.style.transition = 'transform 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.18s';
-        swipeCard.style.transform = 'translateY(-600px) scale(0.5)';
-        swipeCard.style.opacity = '0';
+        container.classList.remove('has-result-blue', 'has-result-red');
+        tag.textContent = "等待抽卡";
+    }
+
+    function onMove(y) {
+        if (!isDragging) return;
+        currentY = y;
+        let moveY = currentY - startY;
+        if (moveY > 0) moveY = 0; 
         
-        // 2. 當下方卡片飛走動畫結束的瞬間 (220ms)，直接把結果顯露出來（零翻轉延遲）
-        setTimeout(() => {
-            
-            if (currentDeck.length > 0) {
-                const drawnCard = currentDeck.pop();
-                
-                // 【核心修改】不需翻轉動畫，文字直接替換，容器加上發光樣式類別
-                cardTitle.textContent = drawnCard.name;
-                cardDesc.textContent = drawnCard.desc;
-                flipContainer.classList.add('has-result');
-            }
-            
-            // 3. 重置下方滑動卡牌，準備下一次抽卡
-            swipeCard.style.transition = 'none'; // 瞬間重置
-            
-            if (currentDeck.length > 0) {
-                swipeCard.style.transform = 'translateY(0) scale(1)';
-                swipeCard.style.opacity = '1';
-            } else {
-                swipeCard.style.display = 'none'; // 抽完隱藏
-                cardDeck.style.opacity = '0.2';
-            }
+        const scale = 1 + (moveY * 0.001);
+        swipeCard.style.transform = `translateY(${moveY}px) scale(${Math.max(scale, 0.85)})`;
+    }
+
+    function onEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        const moveY = currentY - startY;
+
+        if (moveY < swipeThreshold) {
+            swipeCard.style.transition = 'transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.15s';
+            swipeCard.style.transform = 'translateY(-250px) scale(0.6)';
+            swipeCard.style.opacity = '0';
             
             setTimeout(() => {
-                swipeCard.style.transition = 'transform 0.1s ease, opacity 0.2s ease';
-            }, 50);
-            
-            updateUI();
-        }, 220); // 這裏對應飛出動畫的時間
-        
-    } else {
-        // 沒滑夠高，彈回原位
-        swipeCard.style.transform = 'translateY(0) scale(1)';
+                if (gameState[team].deck.length > 0) {
+                    const drawnCard = gameState[team].deck.pop();
+                    title.textContent = drawnCard.name;
+                    desc.textContent = drawnCard.desc;
+                    
+                    if (team === 'A') {
+                        tag.textContent = '藍隊技能';
+                        container.classList.add('has-result-blue');
+                    } else {
+                        tag.textContent = '紅隊技能';
+                        container.classList.add('has-result-red');
+                    }
+                }
+                
+                swipeCard.style.transition = 'none';
+                
+                if (gameState[team].deck.length > 0) {
+                    swipeCard.style.transform = 'translateY(0) scale(1)';
+                    swipeCard.style.opacity = '1';
+                } else {
+                    swipeCard.style.display = 'none';
+                    cardDeck.style.opacity = '0.2';
+                }
+                
+                setTimeout(() => {
+                    swipeCard.style.transition = 'transform 0.1s ease, opacity 0.2s ease';
+                }, 50);
+                
+                updateUI(team);
+            }, 200);
+        } else {
+            swipeCard.style.transform = 'translateY(0) scale(1)';
+        }
     }
+
+    swipeCard.addEventListener('touchstart', (e) => onStart(e.touches[0].clientY));
+    swipeCard.addEventListener('touchmove', (e) => onMove(e.touches[0].clientY), {passive: false});
+    swipeCard.addEventListener('touchend', onEnd);
+
+    swipeCard.addEventListener('mousedown', (e) => onStart(e.clientY));
+    window.addEventListener('mousemove', (e) => { if (isDragging) onMove(e.clientY); });
+    window.addEventListener('mouseup', onEnd);
 }
 
-// 觸控事件 (手機端)
-swipeCard.addEventListener('touchstart', (e) => signStart(e.touches[0].clientY));
-window.addEventListener('touchmove', (e) => {
-    signMove(e.touches[0].clientY);
-}, { passive: false });
-window.addEventListener('touchend', signEnd);
-
-// 滑鼠事件 (電腦端測試用)
-swipeCard.addEventListener('mousedown', (e) => signStart(e.clientY));
-window.addEventListener('mousemove', (e) => {
-    if (isDragging) signMove(e.clientY);
-});
-window.addEventListener('mouseup', signEnd);
-
-// 洗牌按鈕
-shuffleBtn.addEventListener('click', shuffle);
-
-// 初始化遊戲
-shuffle();
+document.getElementById('resetAllBtn').addEventListener('click', resetAll);
+setupSwipeEntry('A');
+setupSwipeEntry('B');
+resetAll();

@@ -2,49 +2,83 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
-    <title>WHONEXT 2026 X 卡牌對決</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>羽球戰術卡牌計分系統</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="app-container">
-        <header>
-            <h1>WHONEXT 2026 X 卡牌對決</h1>
-            <p class="subtitle">將下方卡牌向上滑動進行抽取</p>
-        </header>
+    <!-- 全域控制列（改為絕對定位，不佔用垂直空間） -->
+    <button id="resetAllBtn" class="btn-reset">全部重置</button>
 
-        <!-- 上方：翻開後的結果展示區 -->
-        <div class="result-zone">
-            <div class="flip-card-container" id="flipContainer">
-                <div class="flip-card-inner">
-                    <!-- 正面：顯示卡牌功能 -->
-                    <div class="card-front">
-                        <div class="card-tag">WHONEXT 2026</div>
-                        <h2 id="cardTitle">等待抽卡</h2>
-                        <p id="cardDesc">請由下方拔起一張卡牌向上滑動...</p>
+    <div class="app-landscape-container">
+        
+        <!-- ================= 左側：藍隊 A ================= -->
+        <div class="team-side team-blue">
+            <div class="score-box">
+                <div class="team-name">TEAM BLUE</div>
+                <div class="score-display" id="scoreA">00</div>
+                <div class="score-controls">
+                    <button class="btn-score minus" onclick="changeScore('A', -1)">-</button>
+                    <button class="btn-score plus" onclick="changeScore('A', 1)">+</button>
+                </div>
+            </div>
+
+            <!-- 藍隊結果區（尺寸與卡池一致） -->
+            <div class="flip-card-container" id="flipContainerA">
+                <div class="card-front">
+                    <div class="card-tag">等待抽卡</div>
+                    <h2 id="cardTitleA">請抽卡</h2>
+                    <p id="cardDescA">向上撥動下方卡牌...</p>
+                </div>
+            </div>
+            
+            <!-- 藍隊抽卡區（尺寸與結果一致） -->
+            <div class="interactive-zone">
+                <div class="card-deck" id="cardDeckA">
+                    <div class="swipe-card" id="swipeCardA">
+                        <img src="image/logo.png" alt="Card Cover" class="card-back-image" />
                     </div>
+                    <div class="deck-shadow shadow-1"></div>
+                    <div class="deck-shadow shadow-2"></div>
                 </div>
+                <div class="deck-label">藍隊卡池 (<span id="remCountA">22</span>)</div>
             </div>
         </div>
 
-        <!-- 下方：卡牌堆疊區 -->
-        <div class="interactive-zone">
-            <div class="card-deck" id="cardDeck">
-                <div class="swipe-card" id="swipeCard">
-                    <!-- 卡片背面改為置中放入一張圖片 -->
-                    <img src="image/logo.png" alt="Card Cover" class="card-back-image" />
+        <!-- ================= 右側：紅隊 B ================= -->
+        <div class="team-side team-red">
+            <div class="score-box">
+                <div class="team-name">TEAM RED</div>
+                <div class="score-display" id="scoreB">00</div>
+                <div class="score-controls">
+                    <button class="btn-score minus" onclick="changeScore('B', -1)">-</button>
+                    <button class="btn-score plus" onclick="changeScore('B', 1)">+</button>
                 </div>
-                <!-- 疊牌陰影（也改為黑框白底樣式） -->
-                <div class="deck-shadow shadow-1"></div>
-                <div class="deck-shadow shadow-2"></div>
+            </div>
+
+            <!-- 紅隊結果區（尺寸與卡池一致） -->
+            <div class="flip-card-container" id="flipContainerB">
+                <div class="card-front">
+                    <div class="card-tag">等待抽卡</div>
+                    <h2 id="cardTitleB">請抽卡</h2>
+                    <p id="cardDescB">向上撥動下方卡牌...</p>
+                </div>
+            </div>
+            
+            <!-- 紅隊抽卡區（尺寸與結果一致） -->
+            <div class="interactive-zone">
+                <div class="card-deck" id="cardDeckB">
+                    <div class="swipe-card" id="swipeCardB">
+                        <img src="image/logo.png" alt="Card Cover" class="card-back-image" />
+                    </div>
+                    <div class="deck-shadow shadow-1"></div>
+                    <div class="deck-shadow shadow-2"></div>
+                </div>
+                <div class="deck-label">紅隊卡池 (<span id="remCountB">22</span>)</div>
             </div>
         </div>
 
-        <!-- 控制區 -->
-        <div class="control-zone">
-            <button id="shuffleBtn">🔄 重新洗牌 (<span id="remCount">11</span>/11)</button>
-        </div>
     </div>
 
     <script src="app.js"></script>
