@@ -31,7 +31,7 @@ body {
 /* ================= 頂部控制按鈕區（全部重置 & 交換場地） ================= */
 .top-controls {
     position: absolute;
-    top: 6px;                 /* 緊貼頂部 */
+    top: 4px;                 /* 再往上貼近邊緣 */
     left: 50%;
     transform: translateX(-50%);
     z-index: 100;
@@ -64,16 +64,6 @@ body {
     transform: scale(0.95);    /* 輕微按壓回饋感 */
 }
 
-/* 可以為重置按鈕加上一點點微弱的警示色調（自由選用） */
-.btn-top-action.btn-reset {
-    /* 保持原樣或加入微調 */
-}
-
-/* 可以為換場按鈕加上一點點科技藍色調（自由選用） */
-.btn-top-action.btn-swap {
-    /* 保持原樣或加入微調 */
-}
-
 /* 控制隊伍區塊的左右排列順序 */
 .app-landscape-container .team-side.position-left {
     order: 1;
@@ -89,19 +79,20 @@ body {
     height: 100vh; 
     display: grid;
     grid-template-columns: 1fr 1fr; 
-    padding: 16px 6px 6px 6px; /* 頂部留空間給控制按鈕 */
-    gap: 8px;
+    padding: 24px 4px 4px 4px; /* 頂部預留給控制按鈕，其餘邊距緊縮 */
+    gap: 6px;
 }
 
-/* 隊伍側邊欄 */
+/* 隊伍側邊欄：核心修改 - 改為靠上緊湊對齊，利用小 gap 壓低間距 */
 .team-side {
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* 均勻分配上中下，自動適應高度 */
+    justify-content: flex-start; /* 由 space-between 改為靠上緊湊排版 */
     align-items: center;
     border-radius: 12px;
-    padding: 6px 4px;
+    padding: 4px;
     height: 100%; /* 撐滿容器 */
+    gap: 4px;     /* 卡池、卡片、分數之間的全局超微小間距 */
 }
 .team-blue { background-color: var(--color-blue-bg); border: 1px solid rgba(0, 122, 255, 0.12); }
 .team-red { background-color: var(--color-red-bg); border: 1px solid rgba(255, 59, 48, 0.12); }
@@ -112,16 +103,17 @@ body {
     width: 100%;
 }
 .team-name {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 1px;
+    line-height: 1;
 }
 .score-display {
-    font-size: 16vh; /* 稍微縮小，釋放更多空間給下方的卡片文字 */
+    font-size: 15vh; /* 微微調小，釋放更多空間 */
     font-weight: 900;
     font-family: monospace, sans-serif;
-    line-height: 0.85;
-    margin: 2px 0;
+    line-height: 0.8; /* 緊縮文字上下空白 */
+    margin: 0;        /* 移除預設的 margin 擠壓 */
 }
 .team-blue .score-display { color: var(--color-blue); }
 .team-red .score-display { color: var(--color-red); }
@@ -130,13 +122,14 @@ body {
     display: flex;
     gap: 12px;
     justify-content: center;
+    margin-top: 2px;  /* 微調與分數的間距 */
 }
 .btn-score {
     width: 20vw;      
     max-width: 90px;  
-    height: 6vh;      /* 降低按鈕高度，挪出空間給文字 */
-    min-height: 28px;
-    font-size: 1.1rem;
+    height: 5.5vh;    /* 降低按鈕高度 */
+    min-height: 26px;
+    font-size: 1.05rem;
     font-weight: 700;
     border: none;
     border-radius: 6px;
@@ -145,14 +138,14 @@ body {
     touch-action: manipulation;
 }
 
-/* ================= 2. 卡片與卡池響應式（文字全顯示核心優化） ================= */
-/* 將原本鎖死的 22vh 改為彈性高度，由內容與剩餘空間決定 */
+/* ================= 2. 卡片與卡池響應式 ================= */
+/* 移除不必要的 margin，讓外層 team-side 的 gap 統一精準控制間距 */
 .flip-card-container, .card-deck {
     width: 85%;         
     max-width: 260px;    
-    height: 26vh;        /* 提高基準比例，擴大文字容納區 */
+    height: 27vh;        /* 稍微優化卡片高度佔比 */
     min-height: 90px;
-    margin: 0;
+    margin: 0;           /* 清除所有可能干擾的 margin */
 }
 
 /* 卡片內容響應式縮放 */
@@ -162,10 +155,10 @@ body {
     background-color: var(--card-front-bg);
     border: 2px solid #222;
     border-radius: 8px; 
-    padding: 6px clamp(6px, 2vw, 12px);       
+    padding: 5px clamp(6px, 2vw, 12px); /* 壓縮上下邊距 */      
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* 改為靠上對齊，緊湊排版 */
+    justify-content: flex-start; /* 靠上對齊，緊湊排版 */
     align-items: center;
     color: #121212; 
     text-align: center;
@@ -174,41 +167,33 @@ body {
 .has-result-red .card-front { border-color: var(--color-red); box-shadow: 0 0 12px rgba(255, 59, 48, 0.3); }
 
 .card-tag {
-    font-size: clamp(0.5rem, 1.2vh, 0.6rem); /* 隨高度縮放 */
+    font-size: clamp(0.5rem, 1.2vh, 0.6rem);
     color: #ffffff;
     padding: 1px 6px;
     border-radius: 4px;
     font-weight: 600;
     margin-bottom: 2px;
-    flex-shrink: 0; /* 禁止標籤被擠壓 */
+    flex-shrink: 0;
 }
 .has-result-blue .card-tag { background-color: var(--color-blue); }
 .has-result-red .card-tag { background-color: var(--color-red); }
 
 .card-front h2 {
-    font-size: clamp(0.75rem, 1.8vh, 0.95rem); /* 隨高度彈性縮放 */
+    font-size: clamp(0.75rem, 1.8vh, 0.95rem);
     margin: 0 0 2px 0;
     font-weight: 700;
     white-space: nowrap;
-    flex-shrink: 0; /* 禁止標題被擠壓 */
+    flex-shrink: 0;
 }
 
-/* 核心優化：移除 -webkit-line-clamp 與 overflow: hidden，確保字體動態縮小且全部顯示 */
 .card-front p {
-    font-size: clamp(0.58rem, 1.45vh, 0.72rem); /* 當螢幕變矮時，字體會自動縮小防爆 */
+    font-size: clamp(0.58rem, 1.45vh, 0.72rem);
     color: #333;
     margin: 0;
-    line-height: 1.2;
+    line-height: 1.15;
     text-align: justify;
     width: 100%;
-    
-    /* 允許彈性長大並垂直置中填滿 */
     flex-grow: 1;
-    display: flex;
-    align-items: center; 
-    justify-content: center;
-    
-    /* 關閉截斷，解除行數限制 */
     display: block; 
     overflow: visible; 
 }
@@ -219,6 +204,7 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
+    margin: 0; /* 清空外距 */
 }
 .card-deck {
     position: relative;
@@ -261,14 +247,15 @@ body {
 .deck-label {
     font-size: clamp(0.55rem, 1.2vh, 0.65rem);
     color: var(--text-light);
-    margin-top: 2px;
+    margin-top: 1px; /* 緊縮標籤與卡池的間距 */
+    line-height: 1;
 }
 
 /* ================= 4. 特殊極端螢幕優化（斷點 Media Query） ================= */
-/* 當手機橫屏高度真的很矮時，壓縮上方計分板，釋放極大空間給卡片 */
 @media (max-height: 380px) {
-    .score-display { font-size: 14vh; } 
-    .btn-score { height: 5.5vh; }
-    .flip-card-container, .card-deck { height: 28vh; }
-    .card-front p { font-size: 0.6rem; line-height: 1.15; }
+    .team-side { gap: 2px; } /* 超矮螢幕時再次極致壓縮間距 */
+    .score-display { font-size: 13vh; } 
+    .btn-score { height: 5vh; }
+    .flip-card-container, .card-deck { height: 29vh; }
+    .card-front p { font-size: 0.6rem; line-height: 1.1; }
 }
