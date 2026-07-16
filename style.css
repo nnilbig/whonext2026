@@ -250,11 +250,118 @@ body {
     line-height: 1.1;
 }
 
-/* ================= 4. 特殊極端螢幕優化（斷點 Media Query） ================= */
+/* ================= 4. 霓虹外框提示與逆境反擊按鈕 ================= */
+
+/* 藍隊螢光提示 */
+.team-blue.glow-active {
+    box-shadow: 0 0 20px 5px rgba(0, 123, 255, 0.8);
+    border: 2px solid rgba(0, 123, 255, 1);
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* 紅隊螢光提示 */
+.team-red.glow-active {
+    box-shadow: 0 0 20px 5px rgba(220, 53, 69, 0.8);
+    border: 2px solid rgba(220, 53, 69, 1);
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* 預留高度容器：防止按鈕彈出時排版震動 */
+.comeback-container {
+    height: 42px;
+    margin-top: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* 反擊按鈕基礎設定 */
+.comeback-btn {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.9);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    
+    width: 85%;
+    max-width: 260px;
+    height: 100%;
+    padding: 0 15px;
+    font-size: clamp(0.65rem, 1.5vh, 0.8rem);
+    font-weight: 700;
+    color: #ffffff;
+    border-radius: 20px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    border: 1.5px solid transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 觸發啟用時漸顯 + 放大 */
+.comeback-btn.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+}
+
+/* 藍隊反擊色：深藍漸變底 + 霓虹藍邊與呼吸光暈 */
+.comeback-btn.btn-blue {
+    background: linear-gradient(135deg, #09132e, #0052d4);
+    border-color: #007aff;
+    box-shadow: 0 4px 10px rgba(0, 122, 255, 0.15);
+    animation: pulse-blue 2s infinite;
+}
+
+/* 紅隊反擊色：深紅漸變底 + 霓虹紅邊與呼吸光暈 */
+.comeback-btn.btn-red {
+    background: linear-gradient(135deg, #24050a, #b21f1f);
+    border-color: #ff3b30;
+    box-shadow: 0 4px 10px rgba(255, 59, 48, 0.15);
+    animation: pulse-red 2s infinite;
+}
+
+/* 藍隊呼吸光暈動畫 */
+@keyframes pulse-blue {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 122, 255, 0.5);
+    }
+    70% {
+        box-shadow: 0 0 10px 5px rgba(0, 122, 255, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 122, 255, 0);
+    }
+}
+
+/* 紅隊呼吸光暈動畫 */
+@keyframes pulse-red {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.5);
+    }
+    70% {
+        box-shadow: 0 0 10px 5px rgba(255, 59, 48, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 59, 48, 0);
+    }
+}
+
+/* 按鈕點擊或懸停微光效果 */
+.comeback-btn:hover {
+    filter: brightness(1.15);
+}
+.comeback-btn:active {
+    transform: scale(0.96);
+}
+
+/* ================= 5. 特殊極端螢幕優化（斷點 Media Query） ================= */
 @media (max-height: 380px) {
     .team-side { gap: 6px; padding: 6px 4px; } /* 在超扁螢幕時，自動縮限間距防爆版 */
     .score-display { font-size: 13vh; } 
     .btn-score { height: 5vh; }
     .flip-card-container, .card-deck { height: 26vh; }
     .card-front p { font-size: 0.6rem; line-height: 1.15; }
+    .comeback-container { height: 32px; margin-top: 4px; }
 }
