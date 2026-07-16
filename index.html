@@ -1,187 +1,825 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WHONEXT 2026 羽球卡牌系統</title>
-    <link rel="stylesheet" href="style.css?v=1.03">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>對戰計分牌 · 抽卡系統</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0B0C12;
+    --paper: #16171F;
+    --paper-line: #272935;
+    --ink: #E8E3D6;
+    --ink-soft: #8B899B;
+    --line: #2C2E3B;
+
+    --c-red: #C1495F;
+    --c-red-soft: rgba(193,73,95,0.14);
+    --c-blue: #5C7FE0;
+    --c-blue-soft: rgba(92,127,224,0.14);
+    --c-green: #4FA184;
+    --c-green-soft: rgba(79,161,132,0.14);
+    --c-yellow: #D8AE5C;
+    --c-yellow-soft: rgba(216,174,92,0.14);
+    --c-gray: #55566A;
+    --c-gray-soft: rgba(140,140,165,0.10);
+
+    --gold: #E8C468;
+    --gold-soft: rgba(232,196,104,0.14);
+    --shadow: 0 6px 24px rgba(0,0,0,0.5);
+    --radius: 3px;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; overflow-x:hidden; }
+  body{
+    background:
+      radial-gradient(1px 1px at 12% 22%, rgba(232,227,214,0.5) 0, transparent 45%),
+      radial-gradient(1px 1px at 78% 12%, rgba(232,227,214,0.35) 0, transparent 45%),
+      radial-gradient(1px 1px at 60% 68%, rgba(232,227,214,0.3) 0, transparent 45%),
+      radial-gradient(1px 1px at 30% 82%, rgba(232,227,214,0.4) 0, transparent 45%),
+      radial-gradient(1px 1px at 90% 55%, rgba(232,227,214,0.25) 0, transparent 45%),
+      radial-gradient(1px 1px at 45% 40%, rgba(232,227,214,0.2) 0, transparent 45%),
+      radial-gradient(ellipse at top left, rgba(92,127,224,0.10), transparent 45%),
+      radial-gradient(ellipse at bottom right, rgba(193,73,95,0.08), transparent 45%),
+      var(--bg);
+    color: var(--ink);
+    font-family:'Noto Sans TC', sans-serif;
+    min-height:100vh;
+    padding-bottom: 60px;
+    width:100%;
+  }
+
+  h1,h2,h3{ font-family:'Shippori Mincho', serif; margin:0; letter-spacing:.03em; }
+
+  button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+  button:disabled{ cursor:not-allowed; opacity:.4; }
+
+  /* ---------- TOP CONTROL ---------- */
+  .top-control{
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    flex-wrap:wrap;
+    padding: clamp(12px,4vw,18px) clamp(10px,4vw,16px) clamp(10px,3vw,14px);
+    border-bottom:1px solid var(--line);
+    background: transparent;
+  }
+  .top-control .brand{
+    font-size:13px; letter-spacing:.35em; color:var(--ink-soft);
+    margin-right:auto; padding-left:4px;
+  }
+  .tc-btn{
+    background: transparent;
+    color: var(--ink);
+    padding: clamp(6px,2vw,8px) clamp(10px,3vw,16px);
+    font-size: clamp(12px,3vw,13.5px);
+    letter-spacing: .06em;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    transition: all .2s ease;
+    white-space: nowrap;
+  }
+  .tc-btn:hover{ border-color: var(--line); background: rgba(232,227,214,0.05); }
+  .tc-btn .ic{ margin-right:5px; opacity:.7; }
+
+  /* ---------- WRAP ---------- */
+  .wrap{ max-width: 980px; margin: 0 auto; padding: clamp(16px,4vw,28px) clamp(10px,4vw,20px) 0; }
+
+  /* ---------- TEAM SETUP PANEL ---------- */
+  .setup-panel{
+    background: var(--paper);
+    border:1px solid var(--paper-line);
+    border-radius: var(--radius);
+    padding: clamp(14px,4vw,18px) clamp(14px,4vw,22px);
+    margin-bottom: clamp(18px,4.5vw,26px);
+    box-shadow: var(--shadow);
+    display:none;
+  }
+  .setup-panel.open{ display:block; }
+  .setup-title{ font-size: clamp(11.5px,2.8vw,13px); color:var(--ink-soft); letter-spacing:.1em; margin-bottom:12px; }
+  .chip-row{ display:flex; gap: clamp(6px,2vw,10px); flex-wrap:wrap; }
+  .chip{
+    display:flex; align-items:center; gap:8px;
+    padding: clamp(7px,2vw,9px) clamp(12px,3vw,16px) clamp(7px,2vw,9px) clamp(10px,2.5vw,12px);
+    border-radius: 999px;
+    border:1.5px solid var(--line);
+    background: var(--paper);
+    font-size: clamp(12px,3vw,13.5px);
+    color: var(--ink-soft);
+    transition: all .2s ease;
+  }
+  .chip .dot{ width:10px; height:10px; border-radius:50%; background:var(--c-gray); border:1px solid rgba(255,255,255,.08); }
+  .chip.active{ border-color: currentColor; color: var(--ink); font-weight:500; }
+  .chip.active[data-color="red"]{ background: var(--c-red-soft); border-color: var(--c-red); }
+  .chip.active[data-color="blue"]{ background: var(--c-blue-soft); border-color: var(--c-blue); }
+  .chip.active[data-color="green"]{ background: var(--c-green-soft); border-color: var(--c-green); }
+  .chip.active[data-color="yellow"]{ background: var(--c-yellow-soft); border-color: var(--c-yellow); }
+  .chip.active[data-color="red"] .dot{ background:var(--c-red); box-shadow: 0 0 6px var(--c-red); }
+  .chip.active[data-color="blue"] .dot{ background:var(--c-blue); box-shadow: 0 0 6px var(--c-blue); }
+  .chip.active[data-color="green"] .dot{ background:var(--c-green); box-shadow: 0 0 6px var(--c-green); }
+  .chip.active[data-color="yellow"] .dot{ background:var(--c-yellow); box-shadow: 0 0 6px var(--c-yellow); }
+  .chip:hover{ transform: translateY(-1px); }
+  .setup-hint{ margin-top:10px; font-size:12px; color:var(--ink-soft); }
+
+  /* ---------- SCORE ROW ---------- */
+  .score-row{ display:flex; gap: clamp(8px,3vw,18px); margin-bottom: clamp(20px,5vw,30px); }
+  .score-card{
+    flex:1;
+    min-width:0;
+    background: var(--paper);
+    border: 1px solid var(--paper-line);
+    border-radius: var(--radius);
+    padding: clamp(14px,4vw,22px) clamp(8px,3vw,20px) clamp(12px,3vw,20px);
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+    box-shadow: var(--shadow);
+    transition: box-shadow .3s ease, border-color .3s ease;
+  }
+  .score-card::before{
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background: var(--c-gray);
+  }
+  .score-card[data-color="red"]::before{ background: var(--c-red); box-shadow: 0 0 10px var(--c-red); }
+  .score-card[data-color="blue"]::before{ background: var(--c-blue); box-shadow: 0 0 10px var(--c-blue); }
+  .score-card[data-color="green"]::before{ background: var(--c-green); box-shadow: 0 0 10px var(--c-green); }
+  .score-card[data-color="yellow"]::before{ background: var(--c-yellow); box-shadow: 0 0 10px var(--c-yellow); }
+
+  .score-card.glow{
+    animation: pulseGlow 1.8s ease-in-out infinite;
+    border-color: rgba(232,196,104,0.4);
+  }
+  @keyframes pulseGlow{
+    0%,100%{ box-shadow: 0 0 0 0 rgba(232,196,104,0.0), var(--shadow); }
+    50%{ box-shadow: 0 0 0 6px rgba(232,196,104,0.18), var(--shadow); }
+  }
+
+  .team-name{ font-size: clamp(10px,2.8vw,13px); letter-spacing:.15em; color:var(--ink-soft); margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .team-name .label{ font-weight:500; }
+  .team-name[data-color="red"] .label{ color: var(--c-red); }
+  .team-name[data-color="blue"] .label{ color: var(--c-blue); }
+  .team-name[data-color="green"] .label{ color: var(--c-green); }
+  .team-name[data-color="yellow"] .label{ color: var(--c-yellow); }
+
+  .score-num{
+    font-family:'JetBrains Mono', monospace;
+    font-size: clamp(32px,10vw,64px);
+    font-weight:700;
+    line-height:1;
+    letter-spacing:.02em;
+    margin: clamp(4px,1.5vw,6px) 0 clamp(10px,3vw,16px);
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    text-shadow: 0 0 22px rgba(232,227,214,0.08);
+  }
+  .score-controls{ display:flex; justify-content:center; gap: clamp(6px,2.5vw,10px); }
+  .score-btn{
+    width: clamp(30px,9vw,38px); height: clamp(30px,9vw,38px); border-radius:50%;
+    font-size: clamp(14px,4vw,18px); font-weight:600;
+    border:1.5px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    transition: all .15s ease;
+    flex-shrink:0;
+  }
+  .score-card[data-color="red"] .score-btn{ border-color: var(--c-red); color:var(--c-red); }
+  .score-card[data-color="blue"] .score-btn{ border-color: var(--c-blue); color:var(--c-blue); }
+  .score-card[data-color="green"] .score-btn{ border-color: var(--c-green); color:var(--c-green); }
+  .score-card[data-color="yellow"] .score-btn{ border-color: var(--c-yellow); color:var(--c-yellow); }
+  .score-btn:hover{ transform: scale(1.08); }
+  .score-btn:active{ transform: scale(.94); }
+
+  .milestone-tag{
+    margin-top: clamp(8px,2.5vw,12px); font-size: clamp(9.5px,2.4vw,11.5px); letter-spacing:.08em;
+    color: var(--gold); height:14px; white-space:nowrap;
+  }
+
+  /* ---------- CARD SECTION ---------- */
+  .card-section{
+    background: var(--paper);
+    border:1px solid var(--paper-line);
+    border-radius: var(--radius);
+    padding: clamp(16px,4.5vw,28px) clamp(10px,3.5vw,26px) clamp(18px,4.5vw,30px);
+    box-shadow: var(--shadow);
+  }
+  .card-section-head{
+    display:flex; flex-direction:column;
+    margin-bottom: clamp(14px,3.5vw,20px); gap: clamp(10px,3vw,14px);
+  }
+  .card-section-head h2{ font-size: clamp(16px,4vw,19px); }
+  .card-section-head .sub{ font-size: clamp(10.5px,2.6vw,12px); color:var(--ink-soft); margin-top:4px; letter-spacing:.03em; }
+
+  .card-body{ display:flex; flex-direction:column; gap: clamp(16px,4vw,22px); }
+
+  .pool-row{ display:flex; gap: clamp(8px,3vw,22px); justify-content:center; flex-wrap:nowrap; }
+  .pool-face .cf-placeholder{ font-size: clamp(10px,2.5vw,12px); }
+  .pool-face .cf-placeholder span.unlocked{ color:#A67C2E; font-weight:600; }
+
+  .cards-row{ display:flex; gap: clamp(8px,3vw,22px); justify-content:center; flex-wrap:nowrap; }
+  .card-slot{ display:flex; flex-direction:column; align-items:center; gap: clamp(6px,2vw,10px); flex:1 1 0; min-width:0; max-width:240px; }
+  .card-slot-label{
+    font-size: clamp(10px,2.6vw,12.5px); letter-spacing:.08em; color:var(--ink-soft);
+    display:flex; align-items:center; gap: clamp(4px,1.5vw,6px);
+    max-width:100%; overflow:hidden; width:100%; justify-content:center;
+  }
+  .card-slot-label .label-t{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; }
+  .card-slot-label .dot{ width:8px; height:8px; border-radius:50%; background:var(--c-gray); flex-shrink:0; }
+  .card-slot-label[data-color="red"] .dot{ background:var(--c-red); }
+  .card-slot-label[data-color="blue"] .dot{ background:var(--c-blue); }
+  .card-slot-label[data-color="green"] .dot{ background:var(--c-green); }
+  .card-slot-label[data-color="yellow"] .dot{ background:var(--c-yellow); }
+  .card-slot-label[data-color="red"] .label-t{ color:var(--c-red); }
+  .card-slot-label[data-color="blue"] .label-t{ color:var(--c-blue); }
+  .card-slot-label[data-color="green"] .label-t{ color:var(--c-green); }
+  .card-slot-label[data-color="yellow"] .label-t{ color:var(--c-yellow); }
+
+  .mini-history-btn{
+    flex-shrink:0;
+    font-size: clamp(9px,2.2vw,10.5px);
+    padding: 2px clamp(6px,2vw,9px);
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    background: var(--paper);
+    letter-spacing:.05em;
+    transition: all .2s ease;
+  }
+  .mini-history-btn[data-color="red"]{ border-color: var(--c-red); color: var(--c-red); }
+  .mini-history-btn[data-color="blue"]{ border-color: var(--c-blue); color: var(--c-blue); }
+  .mini-history-btn[data-color="green"]{ border-color: var(--c-green); color: var(--c-green); }
+  .mini-history-btn[data-color="yellow"]{ border-color: var(--c-yellow); color: var(--c-yellow); }
+  .mini-history-btn:hover{ opacity:.7; }
+
+  /* card face used for BOTH the pool logo & the revealed card (same size, per spec) */
+  .card-face{
+    width: 100%;
+    aspect-ratio: 11 / 15;
+    max-width: 220px;
+    min-height: 180px;
+    border-radius: 8px;
+    border: 2px solid rgba(139,101,42,0.25);
+    background: linear-gradient(165deg, #F8F4E7 0%, #EEE6CF 100%);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.4), inset 0 0 36px rgba(139,101,42,0.08);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding: clamp(8px,3vw,18px);
+    text-align:center;
+    position:relative;
+    transition: transform .5s ease, border-color .3s ease, box-shadow .3s ease;
+    --ink: #2B2B26;
+    --ink-soft: #6B6659;
+  }
+  .card-face[data-color="red"]{ border-color: var(--c-red); }
+  .card-face[data-color="blue"]{ border-color: var(--c-blue); }
+  .card-face[data-color="green"]{ border-color: var(--c-green); }
+  .card-face[data-color="yellow"]{ border-color: var(--c-yellow); }
+  .card-face.ace{ border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold) inset, 0 0 18px rgba(232,196,104,0.3); }
+  .card-face .ace-tag{
+    position:absolute; top: clamp(5px,1.5vw,10px); right: clamp(5px,1.5vw,10px);
+    font-size: clamp(8.5px,2vw,10.5px); color:#1A1400; background:var(--gold);
+    padding: 2px clamp(5px,1.5vw,8px); border-radius: 999px; letter-spacing:.06em;
+    font-weight:600;
+  }
+  .logo-emblem{
+    width: clamp(48px,15vw,86px); height: clamp(48px,15vw,86px); border-radius:50% 48% 52% 47% / 50% 52% 46% 54%;
+    border: 1.5px solid #A67C2E; display:flex; align-items:center; justify-content:center;
+    font-family:'Shippori Mincho', serif; font-size: clamp(18px,5vw,28px); color:#A67C2E;
+    transform: rotate(-2deg);
+    margin-bottom: clamp(8px,2.5vw,14px);
+    box-shadow: 0 0 10px rgba(166,124,46,0.25);
+  }
+  .card-face .cf-name{ font-family:'Shippori Mincho', serif; font-size: clamp(13px,3.6vw,19px); font-weight:600; margin-bottom: clamp(6px,2vw,10px); color: var(--ink); }
+  .card-face .cf-desc{ font-size: clamp(9.5px,2.4vw,12.5px); color:var(--ink-soft); line-height:1.6; }
+  .card-face .cf-placeholder{ font-size: clamp(9.5px,2.4vw,12.5px); color:var(--ink-soft); line-height:1.7; }
+  .card-face img.pool-logo{ width: clamp(38px,12vw,70px); height: clamp(38px,12vw,70px); object-fit:contain; margin-bottom: clamp(8px,2.5vw,14px); filter: drop-shadow(0 0 6px rgba(166,124,46,0.22)); }
+
+  .card-face.flip-in{ animation: flipIn .5s ease; }
+  @keyframes flipIn{
+    0%{ transform: rotateY(90deg); opacity:0; }
+    100%{ transform: rotateY(0deg); opacity:1; }
+  }
+
+  .pool-face{
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .pool-face:active{ cursor: grabbing; }
+  .pool-face.dragging{ transition: none; }
+  .pool-face:focus-visible{ outline: 2px solid var(--gold); outline-offset: 3px; }
+  .pool-face.pool-ready{
+    border-color: var(--gold);
+    animation: poolPulse 2s ease-in-out infinite;
+  }
+  @keyframes poolPulse{
+    0%,100%{ box-shadow: 0 10px 28px rgba(0,0,0,0.4), inset 0 0 36px rgba(139,101,42,0.08), 0 0 0 0 rgba(232,196,104,0.0); }
+    50%{ box-shadow: 0 10px 28px rgba(0,0,0,0.4), inset 0 0 36px rgba(139,101,42,0.08), 0 0 26px 3px rgba(232,196,104,0.4); }
+  }
+
+  .swipe-hint{
+    position:absolute; bottom: clamp(10px,3vw,16px); left:50%; transform: translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:2px;
+    font-size: clamp(8.5px,2.2vw,10px); color: var(--ink-soft); letter-spacing:.08em;
+    pointer-events:none;
+  }
+  .swipe-arrow{
+    font-size: clamp(12px,3vw,15px); line-height:1;
+    animation: swipeBounce 1.8s ease-in-out infinite;
+  }
+  @keyframes swipeBounce{
+    0%,100%{ transform: translateY(0); opacity:.5; }
+    50%{ transform: translateY(-6px); opacity:1; }
+  }
+  .pool-face.pool-ready .swipe-hint{ color:#A67C2E; font-weight:600; }
+  .pool-face.pool-ready .swipe-arrow{ color:#A67C2E; }
+
+  /* ---------- MODAL ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background: rgba(5,5,9,0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display:none; align-items:center; justify-content:center; padding: clamp(12px,4vw,20px); z-index:100;
+  }
+  .modal-overlay.open{ display:flex; }
+  .modal-box{
+    background: var(--paper); border-radius: var(--radius);
+    max-width: 480px; width:100%; max-height:82vh; overflow-y:auto;
+    padding: clamp(18px,5vw,26px) clamp(16px,5vw,26px) clamp(16px,4vw,22px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    border:1px solid var(--paper-line);
+  }
+  .modal-box h3{ font-size: clamp(16px,4vw,18px); margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; gap:10px; color: var(--ink); }
+  .modal-box h3 .close{ font-size: clamp(12px,3vw,14px); color:var(--ink-soft); font-family:'Noto Sans TC',sans-serif; flex-shrink:0; }
+  .modal-box .rules-text{ font-size: clamp(12.5px,3vw,13.5px); line-height:1.85; color:var(--ink); white-space:pre-line; }
+  .history-item{
+    padding: 10px 0; border-bottom:1px solid var(--paper-line);
+    display:flex; gap:10px; align-items:flex-start;
+  }
+  .history-item:last-child{ border-bottom:none; }
+  .history-item .h-dot{ width:9px; height:9px; border-radius:50%; margin-top:5px; flex-shrink:0; }
+  .history-item .h-name{ font-size: clamp(12.5px,3vw,13.5px); font-weight:500; color: var(--ink); }
+  .history-item .h-name .ace-mini{ font-size:10px; color:var(--gold); border:1px solid var(--gold); border-radius:999px; padding:1px 6px; margin-left:6px; }
+  .history-item .h-desc{ font-size: clamp(11px,2.6vw,12px); color:var(--ink-soft); margin-top:3px; line-height:1.6; }
+  .history-item .h-meta{ font-size: clamp(10px,2.4vw,11px); color:var(--ink-soft); margin-top:3px; }
+  .empty-hist{ font-size:13px; color:var(--ink-soft); text-align:center; padding: 30px 0; }
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    max-width: calc(100vw - 32px);
+    background: var(--paper); color: var(--ink); font-size:13px; padding:10px 20px;
+    border: 1px solid var(--paper-line);
+    border-radius: 999px; opacity:0; transition: all .3s ease; pointer-events:none; z-index:200;
+    letter-spacing:.03em; text-align:center;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  @media (max-width: 480px){
+    .top-control{ justify-content:flex-start; }
+    .top-control .brand{ width:100%; text-align:center; margin:0 0 4px; order:-1; }
+    .tc-btn .ic{ margin-right:3px; }
+  }
+
+  @media (max-width: 360px){
+    .cards-row{ gap:6px; }
+    .score-row{ gap:6px; }
+  }
+</style>
 </head>
 <body>
 
-    <!-- 全域控制列（改為絕對定位，不佔用垂直空間） -->
-    <div class="top-controls">
-        <button id="resetAllBtn" class="btn-top-action">全部重置</button>
-        <!-- 新增的規則說明按鈕 -->
-        <button id="ruleBtn" class="btn-top-action">規則說明</button>         
-        <button id="switchSidesBtn" class="btn-top-action">交換場地</button>
+  <div class="top-control">
+    <span class="brand">SCORE &amp; CARD</span>
+    <button class="tc-btn" id="btnReset"><span class="ic">↺</span>全部重置</button>
+    <button class="tc-btn" id="btnRules"><span class="ic">?</span>規則說明</button>
+    <button class="tc-btn" id="btnSwap"><span class="ic">⇄</span>交換場地</button>
+    <button class="tc-btn" id="btnSetup"><span class="ic">⚙</span>隊伍設定</button>
+  </div>
+
+  <div class="wrap">
+
+    <div class="setup-panel" id="setupPanel">
+      <div class="setup-title">隊伍設定 — 選擇兩隊顏色（需先取消一隊才能更換）</div>
+      <div class="chip-row" id="chipRow">
+        <button class="chip" data-color="red"><span class="dot"></span>紅隊</button>
+        <button class="chip" data-color="blue"><span class="dot"></span>藍隊</button>
+        <button class="chip" data-color="green"><span class="dot"></span>綠隊</button>
+        <button class="chip" data-color="yellow"><span class="dot"></span>黃隊</button>
+      </div>
+      <div class="setup-hint">未選滿兩隊時，對應比分區塊將顯示為灰色。</div>
     </div>
 
-    <div class="app-landscape-container">
-        
-        <!-- ================= 左側：藍隊 A ================= -->
-        <div class="team-side team-blue">
-            <div class="score-box">
-                <div class="team-name">TEAM BLUE</div>
-                <div class="score-display" id="scoreA">00</div>
-                <div class="score-controls">
-                    <button class="btn-score minus" onclick="changeScore('A', -1)">-</button>
-                    <button class="btn-score plus" onclick="changeScore('A', 1)">+</button>
-                </div>
-            </div>
-
-            <!-- 藍隊結果區（尺寸與卡池一致） -->
-            <div class="flip-card-container" id="flipContainerA">
-                <div class="card-front">
-                    <div class="card-tag">等待抽卡</div>
-                    <h2 id="cardTitleA">請抽卡</h2>
-                    <p id="cardDescA">向上撥動下方卡牌...</p>
-                </div>
-            </div>
-            
-            <!-- 藍隊抽卡區（尺寸與結果一致） -->
-            <div class="interactive-zone">
-                <div class="card-deck" id="cardDeckA">
-                    <div class="swipe-card" id="swipeCardA">
-                        <img src="image/logo.png" alt="Card Cover" class="card-back-image" />
-                    </div>
-                    <div class="deck-shadow shadow-1"></div>
-                    <div class="deck-shadow shadow-2"></div>
-                </div>
-                <div class="deck-label">藍隊卡池</div>
-                <div class="comeback-container">
-                    <button id="comebackBtnA" class="comeback-btn btn-blue" onclick="triggerComebackDraw('A')">
-                        <span>⚡ 逆境反擊抽卡</span>
-                    </button>
-                </div>
-            </div>
+    <div class="score-row">
+      <div class="score-card" id="scoreCard0" data-color="red">
+        <div class="team-name" data-color="red"><span class="label">TEAM A</span></div>
+        <div class="score-num" id="scoreNum0">00</div>
+        <div class="score-controls">
+          <button class="score-btn" data-side="0" data-delta="-1">−</button>
+          <button class="score-btn" data-side="0" data-delta="1">+</button>
         </div>
-
-        <!-- ================= 右側：紅隊 B ================= -->
-        <div class="team-side team-red">
-            <div class="score-box">
-                <div class="team-name">TEAM RED</div>
-                <div class="score-display" id="scoreB">00</div>
-                <div class="score-controls">
-                    <button class="btn-score minus" onclick="changeScore('B', -1)">-</button>
-                    <button class="btn-score plus" onclick="changeScore('B', 1)">+</button>
-                </div>
-            </div>
-
-            <!-- 紅隊結果區（尺寸與卡池一致） -->
-            <div class="flip-card-container" id="flipContainerB">
-                <div class="card-front">
-                    <div class="card-tag">等待抽卡</div>
-                    <h2 id="cardTitleB">請抽卡</h2>
-                    <p id="cardDescB">向上撥動下方卡牌...</p>
-                </div>
-            </div>
-            
-            <!-- 紅隊抽卡區（尺寸與結果一致） -->
-            <div class="interactive-zone">
-                <div class="card-deck" id="cardDeckB">
-                    <div class="swipe-card" id="swipeCardB">
-                        <img src="image/logo.png" alt="Card Cover" class="card-back-image" />
-                    </div>
-                    <div class="deck-shadow shadow-1"></div>
-                    <div class="deck-shadow shadow-2"></div>
-                </div>
-                <div class="deck-label">紅隊卡池</div>
-                <div class="comeback-container">
-                    <button id="comebackBtnB" class="comeback-btn btn-red" onclick="triggerComebackDraw('B')">
-                        <span>⚡ 逆境反擊抽卡</span>
-                    </button>
-                </div>
-            </div>
+        <div class="milestone-tag" id="milestoneTag0"></div>
+      </div>
+      <div class="score-card" id="scoreCard1" data-color="blue">
+        <div class="team-name" data-color="blue"><span class="label">TEAM B</span></div>
+        <div class="score-num" id="scoreNum1">00</div>
+        <div class="score-controls">
+          <button class="score-btn" data-side="1" data-delta="-1">−</button>
+          <button class="score-btn" data-side="1" data-delta="1">+</button>
         </div>
-
-    </div>
-
-
-        
-    <!-- 規則說明彈出視窗 -->
-    <div id="ruleModal" class="modal-overlay">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3>📖 WHONEXT 2026 X 卡牌對決 - 規則說明</h3>
-                <button id="closeRuleBtn" class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="rule-section">
-                    <h4>🎴 基本抽卡機制</h4>
-                    <p>當隊伍分數首次達到 <strong>5、10、15、20 分</strong> 時，隊伍外框會觸發<strong>螢光提示</strong>，此時該隊可向上撥動下方卡牌進行抽卡。</p>
-                </div>
-                
-                <div class="rule-section">
-                    <h4>🔥 落後反擊機制</h4>
-                    <p>當有一方<strong>落後達 10 分（含）以上</strong>時，畫面會浮現「落後反擊」按鈕。點擊即可直接獲得一次抽卡機會（不限分數，每隊每場限用一次）。</p>
-                </div>
-
-                <div class="rule-section">
-                    <h4>⚙️ 系統重置與換邊</h4>
-                    <ul>
-                        <li><strong>全部重置：</strong>分數歸零、重新洗牌、重置反擊按鈕狀態。</li>
-                        <li><strong>交換場地：</strong>藍紅兩隊的配置與分數版面左右互換，方便實體比賽換邊。</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="confirmRuleBtn" class="btn-modal-confirm">我明白了</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ================= 2. 底部彈窗 (請與 ruleModal 放在同一個層級) ================= -->
-<div id="historyModal" class="rule-modal">
-  <div class="rule-content" style="max-width: 600px;"> <!-- 稍微寬一點點，方便左右並列或雙欄易讀 -->
-    <div class="rule-header">
-      <h3>卡牌使用歷史</h3>
-      <button class="close-btn" id="closeHistoryBtn">&times;</button>
-    </div>
-    
-    <div class="rule-body">
-      <div class="history-split-layout">
-        
-        <!-- 藍隊使用歷史 -->
-        <div class="history-team-column team-blue-history">
-          <div class="team-history-header">
-            <span class="team-dot dot-blue"></span> 藍隊已使用
-          </div>
-          <div class="team-history-list" id="historyListA">
-            <!-- 預設無紀錄時顯示 -->
-            <div class="history-empty-text">尚無使用紀錄</div>
-            
-            <!-- 動態加入的歷史卡牌範例結構：
-            <div class="history-item-card">
-              <div class="item-card-title">
-                <span class="card-name">免死金牌</span>
-                <span class="card-score-badge">05 分時</span>
-              </div>
-              <p class="item-card-desc">比賽結束前可觸發一次，我方主動失誤該球不算分...</p>
-            </div> 
-            -->
-          </div>
-        </div>
-
-        <!-- 分隔線 (僅在電腦版並列時明顯，手機版會自動轉為上下堆疊) -->
-        <div class="history-divider"></div>
-
-        <!-- 紅隊使用歷史 -->
-        <div class="history-team-column team-red-history">
-          <div class="team-history-header">
-            <span class="team-dot dot-red"></span> 紅隊已使用
-          </div>
-          <div class="team-history-list" id="historyListB">
-            <!-- 預設無紀錄時顯示 -->
-            <div class="history-empty-text">尚無使用紀錄</div>
-          </div>
-        </div>
-
+        <div class="milestone-tag" id="milestoneTag1"></div>
       </div>
     </div>
-    
-    <button class="confirm-btn" id="confirmHistoryBtn">確認</button>
+
+    <div class="card-section">
+      <div class="card-section-head">
+        <div>
+          <h2>請抽卡</h2>
+          <div class="sub">向上滑動所屬牌池即可抽卡・牌池共用</div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="cards-row">
+          <div class="card-slot">
+            <div class="card-slot-label" data-color="red" id="cardLabel0">
+              <span class="dot"></span><span class="label-t" id="cardLabelText0">紅隊 · 卡牌說明</span>
+              <button class="mini-history-btn" data-color="red" data-side="0" id="historyBtn0" title="紅隊抽牌歷史">歷史</button>
+            </div>
+            <div class="card-face" id="cardFace0">
+              <div class="cf-placeholder">尚未抽取<br>達成里程碑即可抽卡</div>
+            </div>
+          </div>
+          <div class="card-slot">
+            <div class="card-slot-label" data-color="blue" id="cardLabel1">
+              <span class="dot"></span><span class="label-t" id="cardLabelText1">藍隊 · 卡牌說明</span>
+              <button class="mini-history-btn" data-color="blue" data-side="1" id="historyBtn1" title="藍隊抽牌歷史">歷史</button>
+            </div>
+            <div class="card-face" id="cardFace1">
+              <div class="cf-placeholder">尚未抽取<br>達成里程碑即可抽卡</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pool-row">
+          <div class="card-slot">
+            <div class="card-slot-label" data-color="red" id="poolLabel0"><span class="dot"></span><span class="label-t" id="poolLabelText0">紅隊牌池</span></div>
+            <div class="card-face pool-face" id="poolFace0" data-side="0" tabindex="0" role="button" aria-label="向上滑動或按 Enter 為紅隊抽卡">
+              <img class="pool-logo" src="image/logo.png" alt="" onerror="this.style.display='none'; document.getElementById('logoFallbackPool0').style.display='flex';">
+              <div class="logo-emblem" id="logoFallbackPool0" style="display:none;">牌</div>
+              <div class="cf-placeholder" id="poolInfo0">共 <span id="poolCount0">0</span> 張卡牌<br><span id="poolAceStatus0">王牌卡尚未解鎖</span></div>
+              <div class="swipe-hint"><span class="swipe-arrow">↑</span>向上滑動抽卡</div>
+            </div>
+          </div>
+          <div class="card-slot">
+            <div class="card-slot-label" data-color="blue" id="poolLabel1"><span class="dot"></span><span class="label-t" id="poolLabelText1">藍隊牌池</span></div>
+            <div class="card-face pool-face" id="poolFace1" data-side="1" tabindex="0" role="button" aria-label="向上滑動或按 Enter 為藍隊抽卡">
+              <img class="pool-logo" src="image/logo.png" alt="" onerror="this.style.display='none'; document.getElementById('logoFallbackPool1').style.display='flex';">
+              <div class="logo-emblem" id="logoFallbackPool1" style="display:none;">牌</div>
+              <div class="cf-placeholder" id="poolInfo1">共 <span id="poolCount1">0</span> 張卡牌<br><span id="poolAceStatus1">王牌卡尚未解鎖</span></div>
+              <div class="swipe-hint"><span class="swipe-arrow">↑</span>向上滑動抽卡</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
-</div>
-    <script src="app.js"></script>
+
+  <div class="modal-overlay" id="rulesModal">
+    <div class="modal-box">
+      <h3>規則說明 <span class="close" id="closeRules">關閉 ✕</span></h3>
+      <div class="rules-text">（文字後補：此處為比賽規則與抽卡規則的詳細說明區塊，可依實際比賽需求填入完整文字內容。）
+
+基本規則：
+・雙方比分可分別以 +／− 按鈕調整，範圍 00～99。
+・分數每達到 5 的倍數（5、10、15、20…）時，該隊區塊會顯示螢光外框，並開放抽取一張卡牌。
+・任一隊落後對手 10 分以上時，開放「逆境反擊抽卡」，全場限用一次。
+・一般卡牌抽中機率較高（牌池中有兩份），王牌卡僅有一份，且需任一隊分數超過 10 分後才會出現在牌池中。</div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="historyModal">
+    <div class="modal-box">
+      <h3><span id="historyModalTitle">抽牌歷史</span> <span class="close" id="closeHistory">關閉 ✕</span></h3>
+      <div id="historyList"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+  const COLORS = {
+    red:    { name:'紅', hex:'#B3413F' },
+    blue:   { name:'藍', hex:'#2F5A82' },
+    green:  { name:'緑', hex:'#4C7A5A' },
+    yellow: { name:'黄', hex:'#BD8F35' },
+    gray:   { name:'—', hex:'#A39C8D' }
+  };
+
+  const cardPool = [
+    { name: "免死金牌", desc: "比賽結束前可觸發一次，我方主動失誤(出界、掛網)該球不算分，並由我方重新發球。" },
+    { name: "消失邊界", desc: "共有3分的額度，對手回球落於限制區外的話我方得分。" },
+    { name: "加倍奉還", desc: "比賽結束前可觸發一次，我方連續得2分後，立刻加2分。", isAce: true },
+    { name: "雙手奉上", desc: "指定對方一名球員，接下來3分必須雙手握拍回球(發球可用單手)。" },
+    { name: "霧裡看花", desc: "指定對方一名球員，接下來3分必須閉上一隻眼睛。" },
+    { name: "畫地為牢", desc: "指定對方一名球員，接下來3分只能活動於底線區域。" },
+    { name: "天使祝福", desc: "即刻生效，若是我方分數落後於對手，立刻提高分數強制平手(分數高則此卡無效)。", isAce: true },
+    { name: "惡魔契約", desc: "我方分數立刻扣3分，但下來3回合，我方得1分算3分。", isAce: true },
+    { name: "左右互搏", desc: "指定對方一名球員，接下來5分必須使用非慣用手持拍。" },
+    { name: "降維打擊", desc: "指定對方一名球員，接下來5分必須用匹克球拍。"},
+    { name: "劫富濟貧", desc: "比賽結束前可觸發一次，一旦對手領先，我方分數加2分，且對手扣2分", isAce: true }
+  ];
+
+  let state = {
+    teamSlots: ['red', 'blue'],
+    scores: [0, 0],
+    drawnAtScore: [null, null],
+    comebackUsed: false,
+    history: []
+  };
+
+  const $ = id => document.getElementById(id);
+
+  function showToast(msg){
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(showToast._tm);
+    showToast._tm = setTimeout(()=> t.classList.remove('show'), 2200);
+  }
+
+  /* ---------- TEAM SETUP ---------- */
+  function toggleColor(color){
+    const idx = state.teamSlots.indexOf(color);
+    if(idx !== -1){
+      state.teamSlots[idx] = null;
+    } else {
+      const emptyIdx = state.teamSlots.indexOf(null);
+      if(emptyIdx !== -1){
+        state.teamSlots[emptyIdx] = color;
+      } else {
+        showToast('請先取消一隊，才能選擇新隊伍');
+        return;
+      }
+    }
+    render();
+  }
+
+  document.querySelectorAll('.chip').forEach(chip=>{
+    chip.addEventListener('click', ()=> toggleColor(chip.dataset.color));
+  });
+
+  /* ---------- SCORE ---------- */
+  document.querySelectorAll('.score-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const side = Number(btn.dataset.side);
+      const delta = Number(btn.dataset.delta);
+      let v = state.scores[side] + delta;
+      v = Math.max(0, Math.min(99, v));
+      state.scores[side] = v;
+      render();
+    });
+  });
+
+  /* ---------- CARD DRAW ---------- */
+  function buildDeck(){
+    const maxScore = Math.max(state.scores[0], state.scores[1]);
+    const aceUnlocked = maxScore > 10;
+    let deck = [];
+    cardPool.forEach(c=>{
+      if(c.isAce){
+        if(aceUnlocked) deck.push(c);
+      } else {
+        deck.push(c); deck.push(c);
+      }
+    });
+    return deck;
+  }
+
+  function drawForSide(side){
+    const score = state.scores[side];
+    const eligible = score > 0 && score % 5 === 0 && state.drawnAtScore[side] !== score;
+    if(!eligible) return;
+    const deck = buildDeck();
+    const card = deck[Math.floor(Math.random() * deck.length)];
+    state.drawnAtScore[side] = score;
+    revealCard(card, side, false);
+  }
+
+  function drawComeback(){
+    const diff = state.scores[0] - state.scores[1];
+    const losingSide = diff <= -10 ? 0 : (diff >= 10 ? 1 : -1);
+    if(losingSide === -1 || state.comebackUsed) return;
+    const deck = buildDeck();
+    const card = deck[Math.floor(Math.random() * deck.length)];
+    state.comebackUsed = true;
+    revealCard(card, losingSide, true);
+  }
+
+  function revealCard(card, side, isComeback){
+    const color = state.teamSlots[side] || 'gray';
+    state.history.unshift({
+      ...card, side, isComeback, color,
+      score0: state.scores[0], score1: state.scores[1]
+    });
+
+    const face = $('cardFace' + side);
+    face.classList.remove('flip-in');
+    face.classList.toggle('ace', !!card.isAce);
+    face.innerHTML =
+      (card.isAce ? '<div class="ace-tag">王牌</div>' : '') +
+      (isComeback ? '<div class="ace-tag" style="right:auto;left:10px;background:var(--gold);">逆境反擊</div>' : '') +
+      '<div class="cf-name">' + card.name + '</div>' +
+      '<div class="cf-desc">' + card.desc + '</div>';
+    void face.offsetWidth;
+    face.classList.add('flip-in');
+
+    render();
+  }
+
+  function isSideEligible(side){
+    const score = state.scores[side];
+    return !!state.teamSlots[side] && score > 0 && score % 5 === 0 && state.drawnAtScore[side] !== score;
+  }
+
+  function getComebackSide(){
+    const diff = state.scores[0] - state.scores[1];
+    return diff <= -10 ? 0 : (diff >= 10 ? 1 : -1);
+  }
+
+  function isComebackEligible(){
+    const side = getComebackSide();
+    return side !== -1 && !!state.teamSlots[side] && !state.comebackUsed;
+  }
+
+  function isComebackEligibleForSide(side){
+    return getComebackSide() === side && !!state.teamSlots[side] && !state.comebackUsed;
+  }
+
+  function attemptDrawForSide(side){
+    if(isSideEligible(side)){ drawForSide(side); return; }
+    if(isComebackEligibleForSide(side)){ drawComeback(); return; }
+    showToast('目前尚未達成抽卡條件');
+  }
+
+  /* ---------- SWIPE-UP ON POOL TO DRAW (shared deck, per-team pool card) ---------- */
+  function setupPoolSwipe(el, side){
+    let startY = null;
+    let dragging = false;
+    const THRESHOLD = 46;
+    const MAX_PULL = 90;
+
+    function begin(y){
+      startY = y; dragging = true;
+      el.classList.add('dragging');
+    }
+    function moveTo(y){
+      if(!dragging) return;
+      const dy = Math.max(0, Math.min(startY - y, MAX_PULL));
+      el.style.transform = 'translateY(' + (-dy * 0.45) + 'px)';
+      el.style.opacity = String(1 - dy * 0.0025);
+    }
+    function finish(y){
+      if(!dragging) return;
+      const dy = startY - y;
+      dragging = false;
+      el.classList.remove('dragging');
+      el.style.transform = '';
+      el.style.opacity = '';
+      if(dy > THRESHOLD) attemptDrawForSide(side);
+    }
+
+    el.addEventListener('touchstart', e=> begin(e.touches[0].clientY), {passive:true});
+    el.addEventListener('touchmove', e=>{ moveTo(e.touches[0].clientY); e.preventDefault(); }, {passive:false});
+    el.addEventListener('touchend', e=> finish(e.changedTouches[0].clientY));
+    el.addEventListener('touchcancel', ()=>{ dragging=false; el.classList.remove('dragging'); el.style.transform=''; el.style.opacity=''; });
+
+    el.addEventListener('mousedown', e=>{ begin(e.clientY); e.preventDefault(); });
+    window.addEventListener('mousemove', e=>{ if(dragging) moveTo(e.clientY); });
+    window.addEventListener('mouseup', e=>{ finish(e.clientY); });
+
+    el.addEventListener('keydown', e=>{
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); attemptDrawForSide(side); }
+    });
+  }
+  setupPoolSwipe($('poolFace0'), 0);
+  setupPoolSwipe($('poolFace1'), 1);
+
+  /* ---------- TOP CONTROLS ---------- */
+  $('btnReset').addEventListener('click', ()=>{
+    state = { teamSlots:['red','blue'], scores:[0,0], drawnAtScore:[null,null], comebackUsed:false, history:[] };
+    [0,1].forEach(side=>{
+      const face = $('cardFace' + side);
+      face.className = 'card-face';
+      face.innerHTML = '<div class="cf-placeholder">尚未抽取<br>達成里程碑即可抽卡</div>';
+    });
+    render();
+    showToast('已全部重置');
+  });
+
+  $('btnSwap').addEventListener('click', ()=>{
+    state.teamSlots.reverse();
+    state.scores.reverse();
+    state.drawnAtScore.reverse();
+    render();
+    showToast('已交換場地');
+  });
+
+  $('btnSetup').addEventListener('click', ()=>{
+    $('setupPanel').classList.toggle('open');
+  });
+
+  $('btnRules').addEventListener('click', ()=> $('rulesModal').classList.add('open'));
+  $('closeRules').addEventListener('click', ()=> $('rulesModal').classList.remove('open'));
+  $('historyBtn0').addEventListener('click', ()=>{ renderHistory(0); $('historyModal').classList.add('open'); });
+  $('historyBtn1').addEventListener('click', ()=>{ renderHistory(1); $('historyModal').classList.add('open'); });
+  $('closeHistory').addEventListener('click', ()=> $('historyModal').classList.remove('open'));
+  [$('rulesModal'), $('historyModal')].forEach(m=>{
+    m.addEventListener('click', e=>{ if(e.target === m) m.classList.remove('open'); });
+  });
+
+  /* ---------- RENDER ---------- */
+  function render(){
+    // team setup chips
+    document.querySelectorAll('.chip').forEach(chip=>{
+      const c = chip.dataset.color;
+      chip.classList.toggle('active', state.teamSlots.includes(c));
+    });
+
+    for(let side=0; side<2; side++){
+      const color = state.teamSlots[side] || 'gray';
+      const info = COLORS[color];
+      const card = $('scoreCard'+side);
+      const nameEl = card.querySelector('.team-name');
+      const label = state.teamSlots[side] ? (info.name + '隊') : ('TEAM ' + (side===0?'A':'B') + ' · 未選擇');
+
+      card.dataset.color = color;
+      nameEl.dataset.color = color;
+      nameEl.querySelector('.label').textContent = label;
+      $('scoreNum'+side).textContent = String(state.scores[side]).padStart(2,'0');
+
+      const milestoneEligible = isSideEligible(side);
+      const comebackEligible = isComebackEligibleForSide(side);
+      const canDraw = milestoneEligible || comebackEligible;
+      card.classList.toggle('glow', canDraw);
+      $('milestoneTag'+side).textContent = canDraw ? '✦ 符合條件，可抽卡' : '';
+
+      const cardLabel = $('cardLabel'+side);
+      cardLabel.dataset.color = color;
+      $('cardLabelText'+side).textContent = state.teamSlots[side] ? (info.name + '隊 · 卡牌說明') : ('未選擇 · 卡牌說明');
+      $('cardFace'+side).dataset.color = color;
+
+      // per-team pool card (shares the same underlying deck)
+      const poolLabelText = state.teamSlots[side] ? (info.name + '隊牌池') : ('TEAM ' + (side===0?'A':'B') + ' · 未選擇');
+      $('poolLabelText'+side).textContent = poolLabelText;
+      $('poolLabel'+side).dataset.color = color;
+      const poolFaceEl = $('poolFace'+side);
+      poolFaceEl.dataset.color = color;
+      poolFaceEl.classList.toggle('pool-ready', canDraw);
+      poolFaceEl.setAttribute('aria-label', state.teamSlots[side]
+        ? ('向上滑動或按 Enter 為' + info.name + '隊抽卡')
+        : ('向上滑動或按 Enter 抽卡'));
+    }
+
+    // shared deck info, mirrored on both pool cards
+    const deck = buildDeck();
+    const aceUnlocked = Math.max(state.scores[0], state.scores[1]) > 10;
+    [0,1].forEach(side=>{
+      $('poolCount'+side).textContent = deck.length;
+      const aceStatusEl = $('poolAceStatus'+side);
+      aceStatusEl.textContent = aceUnlocked ? '王牌卡已解鎖' : '王牌卡尚未解鎖';
+      aceStatusEl.classList.toggle('unlocked', aceUnlocked);
+    });
+  }
+
+  function renderHistory(side){
+    const list = $('historyList');
+    const teamColor = state.teamSlots[side];
+    const teamInfo = COLORS[teamColor] || COLORS.gray;
+    $('historyModalTitle').textContent = state.teamSlots[side]
+      ? (teamInfo.name + '隊抽牌歷史')
+      : ('TEAM ' + (side===0?'A':'B') + ' 抽牌歷史');
+
+    const items = state.history.filter(h => h.side === side);
+    if(items.length === 0){
+      list.innerHTML = '<div class="empty-hist">尚無抽牌紀錄</div>';
+      return;
+    }
+    list.innerHTML = items.map(h=>{
+      const info = COLORS[h.color] || COLORS.gray;
+      return '<div class="history-item">' +
+        '<span class="h-dot" style="background:' + info.hex + '"></span>' +
+        '<div>' +
+          '<div class="h-name">' + h.name + (h.isAce ? '<span class="ace-mini">王牌</span>' : '') + (h.isComeback ? '<span class="ace-mini" style="border-color:var(--ink-soft);color:var(--ink-soft);">逆境反擊</span>' : '') + '</div>' +
+          '<div class="h-desc">' + h.desc + '</div>' +
+          '<div class="h-meta">當時比分 ' + h.score0 + ' : ' + h.score1 + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  render();
+</script>
 </body>
 </html>
