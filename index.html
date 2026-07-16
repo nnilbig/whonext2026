@@ -11,6 +11,8 @@
     <!-- 全域控制列（改為絕對定位，不佔用垂直空間） -->
     <div class="top-controls">
         <button id="resetAllBtn" class="btn-top-action">全部重置</button>
+        <!-- 新增的規則說明按鈕 -->
+        <button id="ruleBtn" class="btn-top-action">規則說明</button>       
         <button id="switchSidesBtn" class="btn-top-action">交換場地</button>
     </div>
 
@@ -94,6 +96,39 @@
 
     </div>
 
+
+        
+    <!-- 規則說明彈出視窗 -->
+    <div id="ruleModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>📖 WHONEXT 2026 X 卡牌對決 - 規則說明</h3>
+                <button id="closeRuleBtn" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="rule-section">
+                    <h4>🎴 基本抽卡機制</h4>
+                    <p>當分數達到 <strong>5、10、15、20 分</strong> 時，隊伍外框會觸發<strong>螢光閃爍提示</strong>，此時該隊可向上撥動下方卡牌進行抽卡。</p>
+                </div>
+                
+                <div class="rule-section">
+                    <h4>🔥 落後反擊機制</h4>
+                    <p>當有一方<strong>落後達 10 分（含）以上</strong>時，畫面會浮現「落後反擊」按鈕。點擊即可直接獲得一次抽卡機會（不限分數，每隊每場限用一次）。</p>
+                </div>
+
+                <div class="rule-section">
+                    <h4>⚙️ 系統重置與換邊</h4>
+                    <ul>
+                        <li><strong>全部重置：</strong>分數歸零、重新洗牌、重置反擊按鈕狀態。</li>
+                        <li><strong>交換場地：</strong>藍紅兩隊的配置與分數版面左右互換，方便實體比賽換邊。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmRuleBtn" class="btn-modal-confirm">我明白了</button>
+            </div>
+        </div>
+    </div>
     <script src="app.js"></script>
 </body>
 </html>

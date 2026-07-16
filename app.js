@@ -346,6 +346,32 @@ function setupSwipeEntry(team) {
     window.addEventListener('mouseup', onEnd);
 }
 
+// ==================== 規則說明視窗邏輯 ====================
+const ruleModal = document.getElementById('ruleModal');
+const ruleBtn = document.getElementById('ruleBtn');
+const closeRuleBtn = document.getElementById('closeRuleBtn');
+const confirmRuleBtn = document.getElementById('confirmRuleBtn');
+
+// 開啟說明視窗
+ruleBtn.addEventListener('click', () => {
+    ruleModal.classList.add('show');
+});
+
+// 關閉說明視窗（點擊 X、點擊「我明白了」或是點擊視窗外部黑底）
+function closeRuleModal() {
+    ruleModal.classList.remove('show');
+}
+
+closeRuleBtn.addEventListener('click', closeRuleModal);
+confirmRuleBtn.addEventListener('click', closeRuleModal);
+
+// 點擊半透明遮罩背景也能關閉
+ruleModal.addEventListener('click', (e) => {
+    if (e.target === ruleModal) {
+        closeRuleModal();
+    }
+});
+
 // 監聽與初始化
 document.getElementById('resetAllBtn').addEventListener('click', resetAll);
 document.getElementById('switchSidesBtn').addEventListener('click', switchSides);
