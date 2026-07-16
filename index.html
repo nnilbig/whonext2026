@@ -14,7 +14,7 @@
     --ink: #E8E3D6;
     --ink-soft: #8B899B;
     --line: #2C2E3B;
-
+ 
     --c-red: #C1495F;
     --c-red-soft: rgba(193,73,95,0.14);
     --c-blue: #5C7FE0;
@@ -25,13 +25,13 @@
     --c-yellow-soft: rgba(216,174,92,0.14);
     --c-gray: #55566A;
     --c-gray-soft: rgba(140,140,165,0.10);
-
+ 
     --gold: #E8C468;
     --gold-soft: rgba(232,196,104,0.14);
     --shadow: 0 6px 24px rgba(0,0,0,0.5);
     --radius: 3px;
   }
-
+ 
   *{ box-sizing:border-box; }
   html,body{ margin:0; padding:0; overflow-x:hidden; }
   body{
@@ -51,12 +51,12 @@
     padding-bottom: 60px;
     width:100%;
   }
-
+ 
   h1,h2,h3{ font-family:'Shippori Mincho', serif; margin:0; letter-spacing:.03em; }
-
+ 
   button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
   button:disabled{ cursor:not-allowed; opacity:.4; }
-
+ 
   /* ---------- TOP CONTROL ---------- */
   .top-control{
     display:flex; align-items:center; justify-content:center; gap:4px;
@@ -88,10 +88,10 @@
   }
   .tc-btn:hover{ border-color: var(--line); background: rgba(232,227,214,0.05); }
   .tc-btn .ic{ margin-right:4px; opacity:.7; }
-
+ 
   /* ---------- WRAP ---------- */
   .wrap{ max-width: 980px; margin: 0 auto; padding: clamp(10px,2.5vw,20px) clamp(10px,4vw,20px) 0; }
-
+ 
   /* ---------- TEAM SETUP PANEL ---------- */
   .setup-panel{
     background: var(--paper);
@@ -127,7 +127,7 @@
   .chip.active[data-color="yellow"] .dot{ background:var(--c-yellow); box-shadow: 0 0 6px var(--c-yellow); }
   .chip:hover{ transform: translateY(-1px); }
   .setup-hint{ margin-top:10px; font-size:12px; color:var(--ink-soft); }
-
+ 
   /* ---------- SCORE ROW ---------- */
   .score-row{ display:flex; gap: clamp(8px,3vw,18px); margin-bottom: clamp(20px,5vw,30px); }
   .score-card{
@@ -151,7 +151,7 @@
   .score-card[data-color="blue"]::before{ background: var(--c-blue); box-shadow: 0 0 10px var(--c-blue); }
   .score-card[data-color="green"]::before{ background: var(--c-green); box-shadow: 0 0 10px var(--c-green); }
   .score-card[data-color="yellow"]::before{ background: var(--c-yellow); box-shadow: 0 0 10px var(--c-yellow); }
-
+ 
   .score-card.glow{
     animation: pulseGlow 1.8s ease-in-out infinite;
     border-color: rgba(232,196,104,0.4);
@@ -160,14 +160,14 @@
     0%,100%{ box-shadow: 0 0 0 0 rgba(232,196,104,0.0), var(--shadow); }
     50%{ box-shadow: 0 0 0 6px rgba(232,196,104,0.18), var(--shadow); }
   }
-
+ 
   .team-name{ font-size: clamp(10px,2.8vw,13px); letter-spacing:.15em; color:var(--ink-soft); margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .team-name .label{ font-weight:500; }
   .team-name[data-color="red"] .label{ color: var(--c-red); }
   .team-name[data-color="blue"] .label{ color: var(--c-blue); }
   .team-name[data-color="green"] .label{ color: var(--c-green); }
   .team-name[data-color="yellow"] .label{ color: var(--c-yellow); }
-
+ 
   .score-num{
     font-family:'JetBrains Mono', monospace;
     font-size: clamp(30px,9vw,58px);
@@ -202,12 +202,12 @@
   .score-card[data-color="yellow"] .score-btn{ border-color: var(--c-yellow); color:var(--c-yellow); }
   .score-btn:hover{ transform: scale(1.08); }
   .score-btn:active{ transform: scale(.94); }
-
+ 
   .milestone-tag{
     margin-top: clamp(8px,2.5vw,12px); font-size: clamp(9.5px,2.4vw,11.5px); letter-spacing:.08em;
     color: var(--gold); height:14px; white-space:nowrap;
   }
-
+ 
   /* ---------- CARD SECTION ---------- */
   .card-section{
     background: var(--paper);
@@ -222,11 +222,11 @@
   }
   .card-section-head h2{ font-size: clamp(16px,4vw,19px); }
   .card-section-head .sub{ font-size: clamp(10.5px,2.6vw,12px); color:var(--ink-soft); margin-top:4px; letter-spacing:.03em; }
-
+ 
   .card-body{ display:flex; flex-direction:column; gap: clamp(16px,4vw,22px); }
-
+ 
   .pool-row{ display:flex; gap: clamp(8px,3vw,22px); justify-content:center; flex-wrap:nowrap; }
-
+ 
   .cards-row{ display:flex; gap: clamp(8px,3vw,22px); justify-content:center; flex-wrap:nowrap; }
   .card-slot{ display:flex; flex-direction:column; align-items:center; gap: clamp(6px,2vw,10px); flex:1 1 0; min-width:0; max-width:240px; }
   .card-slot-label{
@@ -244,7 +244,7 @@
   .card-slot-label[data-color="blue"] .label-t{ color:var(--c-blue); }
   .card-slot-label[data-color="green"] .label-t{ color:var(--c-green); }
   .card-slot-label[data-color="yellow"] .label-t{ color:var(--c-yellow); }
-
+ 
   .mini-history-btn{
     flex-shrink:0;
     font-size: clamp(9px,2.2vw,10.5px);
@@ -261,7 +261,7 @@
   .mini-history-btn[data-color="green"]{ border-color: var(--c-green); color: var(--c-green); }
   .mini-history-btn[data-color="yellow"]{ border-color: var(--c-yellow); color: var(--c-yellow); }
   .mini-history-btn:hover{ opacity:.7; }
-
+ 
   /* card face used for BOTH the pool logo & the revealed card (same size, per spec) */
   .card-face{
     width: 100%;
@@ -276,10 +276,14 @@
     padding: clamp(8px,3vw,18px);
     text-align:center;
     position:relative;
+    overflow-y:auto;
+    scrollbar-width:thin;
     transition: transform .5s ease, border-color .3s ease, box-shadow .3s ease;
     --ink: #2B2B26;
     --ink-soft: #6B6659;
   }
+  .card-face::-webkit-scrollbar{ width:4px; }
+  .card-face::-webkit-scrollbar-thumb{ background: rgba(139,101,42,0.3); border-radius:4px; }
   .card-face[data-color="red"]{ border-color: var(--c-red); }
   .card-face[data-color="blue"]{ border-color: var(--c-blue); }
   .card-face[data-color="green"]{ border-color: var(--c-green); }
@@ -298,17 +302,17 @@
     transform: rotate(-2deg);
     box-shadow: 0 0 14px rgba(166,124,46,0.25);
   }
-  .card-face .cf-name{ font-family:'Shippori Mincho', serif; font-size: clamp(13px,3.6vw,19px); font-weight:600; margin-bottom: clamp(6px,2vw,10px); color: var(--ink); }
-  .card-face .cf-desc{ font-size: clamp(9.5px,2.4vw,12.5px); color:var(--ink-soft); line-height:1.6; }
-  .card-face .cf-placeholder{ font-size: clamp(9.5px,2.4vw,12.5px); color:var(--ink-soft); line-height:1.7; }
+  .card-face .cf-name{ font-family:'Shippori Mincho', serif; font-size: clamp(15px,4.2vw,22px); font-weight:600; margin-bottom: clamp(6px,2vw,10px); color: var(--ink); }
+  .card-face .cf-desc{ font-size: clamp(11.5px,3vw,15px); color:var(--ink-soft); line-height:1.6; }
+  .card-face .cf-placeholder{ font-size: clamp(11.5px,3vw,15px); color:var(--ink-soft); line-height:1.7; }
   .card-face img.pool-logo{ width: clamp(58px,20vw,110px); height: clamp(58px,20vw,110px); object-fit:contain; filter: drop-shadow(0 0 8px rgba(166,124,46,0.22)); }
-
+ 
   .card-face.flip-in{ animation: flipIn .5s ease; }
   @keyframes flipIn{
     0%{ transform: rotateY(90deg); opacity:0; }
     100%{ transform: rotateY(0deg); opacity:1; }
   }
-
+ 
   .pool-face{
     cursor: grab;
     touch-action: none;
@@ -326,7 +330,7 @@
     0%,100%{ box-shadow: 0 10px 28px rgba(0,0,0,0.4), inset 0 0 36px rgba(139,101,42,0.08), 0 0 0 0 rgba(232,196,104,0.0); }
     50%{ box-shadow: 0 10px 28px rgba(0,0,0,0.4), inset 0 0 36px rgba(139,101,42,0.08), 0 0 26px 3px rgba(232,196,104,0.4); }
   }
-
+ 
   .swipe-hint{
     position:absolute; bottom: clamp(10px,3vw,16px); left:50%; transform: translateX(-50%);
     display:flex; flex-direction:column; align-items:center; gap:2px;
@@ -343,7 +347,7 @@
   }
   .pool-face.pool-ready .swipe-hint{ color:#A67C2E; font-weight:600; }
   .pool-face.pool-ready .swipe-arrow{ color:#A67C2E; }
-
+ 
   /* ---------- MODAL ---------- */
   .modal-overlay{
     position:fixed; inset:0; background: rgba(5,5,9,0.7);
@@ -373,7 +377,7 @@
   .history-item .h-desc{ font-size: clamp(11px,2.6vw,12px); color:var(--ink-soft); margin-top:3px; line-height:1.6; }
   .history-item .h-meta{ font-size: clamp(10px,2.4vw,11px); color:var(--ink-soft); margin-top:3px; }
   .empty-hist{ font-size:13px; color:var(--ink-soft); text-align:center; padding: 30px 0; }
-
+ 
   .toast{
     position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
     max-width: calc(100vw - 32px);
@@ -384,22 +388,22 @@
     box-shadow: 0 8px 30px rgba(0,0,0,0.5);
   }
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
-
+ 
   @media (max-width: 480px){
     .top-control{ justify-content:flex-start; gap:3px; }
     .top-control .brand{ display:none; }
     .tc-btn{ padding: 5px 8px; font-size:11px; }
     .tc-btn .ic{ margin-right:3px; }
-
+ 
     .wrap{ padding-top:8px; }
-
+ 
     .score-row{ gap:6px; margin-bottom:10px; }
     .score-card{ padding: 8px 4px 8px; }
     .score-controls{ margin: 2px 0 6px; gap:4px; }
     .score-num{ min-width:0; font-size: clamp(24px,8vw,40px); }
     .score-btn{ width:26px; height:26px; font-size:13px; }
     .milestone-tag{ margin-top:4px; height:12px; }
-
+ 
     .card-section{ padding: 10px 8px 12px; }
     .card-section-head{ margin-bottom:8px; gap:2px; }
     .card-section-head .sub{ display:none; }
@@ -408,21 +412,21 @@
     .card-slot{ gap:3px; }
     .card-slot-label{ font-size:9.5px; }
     .mini-history-btn{ padding:1px 6px; font-size:8.5px; }
-
+ 
     .card-face{
       aspect-ratio: 1 / 1;
       max-width: 150px;
       min-height: 0;
       padding: 8px;
     }
-    .card-face .cf-name{ font-size:11.5px; margin-bottom:3px; }
-    .card-face .cf-desc, .card-face .cf-placeholder{ font-size:8.5px; line-height:1.4; }
+    .card-face .cf-name{ font-size:13.5px; margin-bottom:3px; }
+    .card-face .cf-desc, .card-face .cf-placeholder{ font-size:10.5px; line-height:1.35; }
     .logo-emblem{ width:70px; height:70px; font-size:26px; }
     .card-face img.pool-logo{ width:64px; height:64px; }
     .swipe-hint{ bottom:5px; font-size:7.5px; }
     .swipe-arrow{ font-size:10px; }
   }
-
+ 
   @media (max-width: 360px){
     .cards-row{ gap:4px; }
     .pool-row{ gap:4px; }
