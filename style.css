@@ -142,7 +142,7 @@ body {
 .flip-card-container, .card-deck {
     width: 85%;         
     max-width: 260px;    
-    height: 18vh;        /* 微調卡片與卡池的高度，讓出一些物理空間供 gap 伸展 */
+    height: 20vh;        /* 微調卡片與卡池的高度，讓出一些物理空間供 gap 伸展 */
     min-height: 90px;
     margin: 0;           
 }
@@ -263,6 +263,22 @@ body {
 .team-red.glow-active {
     box-shadow: 0 0 20px 5px rgba(220, 53, 69, 0.8);
     border: 2px solid rgba(220, 53, 69, 1);
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* ================= 螢光提示轉移至卡牌池 ================= */
+
+/* 藍隊卡牌池螢光提示 */
+.card-deck.glow-active-blue {
+    box-shadow: 0 0 15px 4px rgba(0, 122, 255, 0.7);
+    border-color: rgba(0, 122, 255, 1) !important;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+/* 紅隊卡牌池螢光提示 */
+.card-deck.glow-active-red {
+    box-shadow: 0 0 15px 4px rgba(255, 59, 48, 0.7);
+    border-color: rgba(255, 59, 48, 1) !important;
     transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
