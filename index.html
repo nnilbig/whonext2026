@@ -12,7 +12,7 @@
     <div class="top-controls">
         <button id="resetAllBtn" class="btn-top-action">全部重置</button>
         <!-- 新增的規則說明按鈕 -->
-        <button id="ruleBtn" class="btn-top-action">規則說明</button>       
+        <button id="ruleBtn" class="btn-top-action">規則說明</button>         
         <button id="switchSidesBtn" class="btn-top-action">交換場地</button>
     </div>
 
@@ -130,18 +130,58 @@
         </div>
     </div>
 
-        <!-- 已使用卡片歷史紀錄彈出視窗 -->
-    <div id="historyModal" class="modal-overlay">
-        <div class="modal-content">
-            <h3 id="historyModalTitle">藍隊 已使用卡片</h3>
-            <div id="historyList" class="history-list">
-                <!-- 歷史卡片會動態生成在這裡 -->
-            </div>
-            <div class="modal-buttons">
-                <button id="closeHistoryBtn" class="btn">關閉</button>
-            </div>
-        </div>
+    <!-- ================= 2. 底部彈窗 (請與 ruleModal 放在同一個層級) ================= -->
+<div id="historyModal" class="rule-modal">
+  <div class="rule-content" style="max-width: 600px;"> <!-- 稍微寬一點點，方便左右並列或雙欄易讀 -->
+    <div class="rule-header">
+      <h3>卡牌使用歷史</h3>
+      <button class="close-btn" id="closeHistoryBtn">&times;</button>
     </div>
+    
+    <div class="rule-body">
+      <div class="history-split-layout">
+        
+        <!-- 藍隊使用歷史 -->
+        <div class="history-team-column team-blue-history">
+          <div class="team-history-header">
+            <span class="team-dot dot-blue"></span> 藍隊已使用
+          </div>
+          <div class="team-history-list" id="historyListA">
+            <!-- 預設無紀錄時顯示 -->
+            <div class="history-empty-text">尚無使用紀錄</div>
+            
+            <!-- 動態加入的歷史卡牌範例結構：
+            <div class="history-item-card">
+              <div class="item-card-title">
+                <span class="card-name">免死金牌</span>
+                <span class="card-score-badge">05 分時</span>
+              </div>
+              <p class="item-card-desc">比賽結束前可觸發一次，我方主動失誤該球不算分...</p>
+            </div> 
+            -->
+          </div>
+        </div>
+
+        <!-- 分隔線 (僅在電腦版並列時明顯，手機版會自動轉為上下堆疊) -->
+        <div class="history-divider"></div>
+
+        <!-- 紅隊使用歷史 -->
+        <div class="history-team-column team-red-history">
+          <div class="team-history-header">
+            <span class="team-dot dot-red"></span> 紅隊已使用
+          </div>
+          <div class="team-history-list" id="historyListB">
+            <!-- 預設無紀錄時顯示 -->
+            <div class="history-empty-text">尚無使用紀錄</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    
+    <button class="confirm-btn" id="confirmHistoryBtn">確認</button>
+  </div>
+</div>
     <script src="app.js"></script>
 </body>
 </html>

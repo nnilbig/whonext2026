@@ -7,7 +7,7 @@ const GLOW_SCORES = [5, 10, 15, 20]; // 觸發抽卡提示的分數門檻
 const cardPool = [
     { name: "免死金牌", desc: "比賽結束前可觸發一次，我方主動失誤(出界、掛網)該球不算分，並由我方重新發球。" },
     { name: "消失邊界", desc: "共有3分的額度，對手回球落於限制區外的話我方得分。" },
-    { name: "加倍奉還", desc: "比賽結束前可觸發一次，我方連續得2分後，立刻加2分。" },
+    { name: "加倍奉還", desc: "比賽結束前可觸發一次，我方連續得2分後，立刻加2分。", isAce: true },
     { name: "雙手奉上", desc: "指定對方一名球員，接下來3分必須雙手握拍回球(發球可用單手)。" },
     { name: "霧裡看花", desc: "指定對方一名球員，接下來3分必須閉上一隻眼睛。" },
     { name: "畫地為牢", desc: "指定對方一名球員，接下來3分只能活動於底線區域。" },
@@ -56,16 +56,20 @@ function checkGlowAndComeback() {
     const teamElementB = document.querySelector('.team-red');
 
     // ---- 1. 偵測 5, 10, 15, 20 分的外框螢光提示（未抽過牌才亮燈） ----
-    if (GLOW_SCORES.includes(scoreA) && !gameState.A.drawnThresholds.includes(scoreA)) {
-        teamElementA.classList.add('glow-active');
-    } else {
-        teamElementA.classList.remove('glow-active');
+    if (teamElementA) {
+        if (GLOW_SCORES.includes(scoreA) && !gameState.A.drawnThresholds.includes(scoreA)) {
+            teamElementA.classList.add('glow-active');
+        } else {
+            teamElementA.classList.remove('glow-active');
+        }
     }
 
-    if (GLOW_SCORES.includes(scoreB) && !gameState.B.drawnThresholds.includes(scoreB)) {
-        teamElementB.classList.add('glow-active');
-    } else {
-        teamElementB.classList.remove('glow-active');
+    if (teamElementB) {
+        if (GLOW_SCORES.includes(scoreB) && !gameState.B.drawnThresholds.includes(scoreB)) {
+            teamElementB.classList.add('glow-active');
+        } else {
+            teamElementB.classList.remove('glow-active');
+        }
     }
 
     // ---- 2. 偵測落後 10 分以上反擊機制（觸發後常駐） ----
@@ -80,19 +84,26 @@ function checkGlowAndComeback() {
         gameState.B.triggeredComeback = true;
     }
 
-    // A 隊按鈕顯示邏輯：一旦觸發過且未使用，便常駐顯示
+    // A 隊按鈕顯示邏輯
     if (gameState.A.triggeredComeback && !gameState.A.usedComeback) {
         if (comebackBtnA) comebackBtnA.classList.add('show');
     } else {
         if (comebackBtnA) comebackBtnA.classList.remove('show');
     }
 
-    // B 隊按鈕顯示邏輯：一旦觸發過且未使用，便常駐顯示
+    // B 隊按鈕顯示邏輯
     if (gameState.B.triggeredComeback && !gameState.B.usedComeback) {
         if (comebackBtnB) comebackBtnB.classList.add('show');
     } else {
         if (comebackBtnB) comebackBtnB.classList.remove('show');
     }
+}
+
+// 驗證該隊目前是否具備「手勢滑動抽卡」的資格 (一般分數抽卡)
+function canSwipeDraw(team) {
+    const currentScore = gameState[team].score;
+    // 必須分數符合門檻，且該門檻分數尚未抽過卡，才允許滑動
+    return GLOW_SCORES.includes(currentScore) && !gameState[team].drawnThresholds.includes(currentScore);
 }
 
 // 觸發落後反擊抽卡（不限時機，點擊按鈕直接抽）
@@ -110,7 +121,7 @@ function triggerComebackDraw(team) {
     executeDrawFlow(team);
 }
 
-// 封裝原本的抽卡後續邏輯，方便一般抽卡與反擊按鈕共用
+// 封裝原本的抽卡後續邏輯
 function executeDrawFlow(team) {
     const swipeCard = document.getElementById(`swipeCard${team}`);
     const cardDeck = document.getElementById(`cardDeck${team}`);
@@ -141,12 +152,14 @@ function executeDrawFlow(team) {
                 tag.textContent = drawnCard.isAce ? '★ 藍隊王牌 ★' : '藍隊技能';
                 container.classList.add('has-result-blue');
                 // 抽完卡後，立刻手動移除藍隊螢光框
-                document.querySelector('.team-blue').classList.remove('glow-active');
+                const teamEl = document.querySelector('.team-blue');
+                if (teamEl) teamEl.classList.remove('glow-active');
             } else {
                 tag.textContent = drawnCard.isAce ? '★ 紅隊王牌 ★' : '紅隊技能';
                 container.classList.add('has-result-red');
                 // 抽完卡後，立刻手動移除紅隊螢光框
-                document.querySelector('.team-red').classList.remove('glow-active');
+                const teamEl = document.querySelector('.team-red');
+                if (teamEl) teamEl.classList.remove('glow-active');
             }
         }
         
@@ -157,7 +170,7 @@ function executeDrawFlow(team) {
             swipeCard.style.opacity = '1';
         } else {
             swipeCard.style.display = 'none';
-            cardDeck.style.opacity = '0.2';
+            if (cardDeck) cardDeck.style.opacity = '0.2';
         }
         
         setTimeout(() => {
@@ -193,28 +206,33 @@ function initDeck(team) {
     
     const swipeCard = document.getElementById(`swipeCard${team}`);
     const cardDeck = document.getElementById(`cardDeck${team}`);
-    swipeCard.style.display = 'flex';
-    swipeCard.style.transform = 'translateY(0) scale(1)';
-    swipeCard.style.opacity = '1';
-    cardDeck.style.opacity = '1';
+    if (swipeCard) {
+        swipeCard.style.display = 'flex';
+        swipeCard.style.transform = 'translateY(0) scale(1)';
+        swipeCard.style.opacity = '1';
+    }
+    if (cardDeck) cardDeck.style.opacity = '1';
     
     const container = document.getElementById(`flipContainer${team}`);
     const title = document.getElementById(`cardTitle${team}`);
     const desc = document.getElementById(`cardDesc${team}`);
-    const tag = container.querySelector('.card-tag');
+    const tag = container ? container.querySelector('.card-tag') : null;
     
-    container.classList.remove('has-result-blue', 'has-result-red');
-    tag.textContent = "等待抽卡";
-    title.textContent = "請抽卡";
-    desc.textContent = "向上撥動下方卡牌...";
+    if (container) container.classList.remove('has-result-blue', 'has-result-red');
+    if (tag) tag.textContent = "等待抽卡";
+    if (title) title.textContent = "請抽卡";
+    if (desc) desc.textContent = "向上撥動下方卡牌...";
 }
 
 // 全部重置
 function resetAll() {
     gameState.A.score = 0;
     gameState.B.score = 0;
-    document.getElementById('scoreA').textContent = "00";
-    document.getElementById('scoreB').textContent = "00";
+    const scoreA = document.getElementById('scoreA');
+    const scoreB = document.getElementById('scoreB');
+    if (scoreA) scoreA.textContent = "00";
+    if (scoreB) scoreB.textContent = "00";
+    
     initDeck('A');
     initDeck('B');
     
@@ -229,7 +247,7 @@ function resetAll() {
     if (comebackBtnA) comebackBtnA.classList.remove('show');
     if (comebackBtnB) comebackBtnB.classList.remove('show');
 
-    if(teamA && teamB) {
+    if (teamA && teamB) {
         teamA.classList.remove('position-right');
         teamA.classList.add('position-left');
         teamB.classList.remove('position-left');
@@ -305,9 +323,12 @@ function verifyAndDrawCard(team) {
     return chosenCard;
 }
 
+// 滑動手勢綁定（加上「抽卡條件」限制）
 function setupSwipeEntry(team) {
     const swipeCard = document.getElementById(`swipeCard${team}`);
     const container = document.getElementById(`flipContainer${team}`);
+    if (!swipeCard || !container) return;
+    
     const tag = container.querySelector('.card-tag');
     
     let startY = 0;
@@ -316,20 +337,24 @@ function setupSwipeEntry(team) {
     const swipeThreshold = -50; 
 
     function onStart(y) {
-        if (gameState[team].deck.length === 0) return;
+        // 🌟【防護點 1】：牌組沒牌，或是「不符合一般分數抽卡條件」，直接阻斷不給抽
+        if (gameState[team].deck.length === 0 || !canSwipeDraw(team)) {
+            return; 
+        }
+        
         startY = y;
         currentY = y;
         isDragging = true;
         
         container.classList.remove('has-result-blue', 'has-result-red');
-        tag.textContent = "等待抽卡";
+        if (tag) tag.textContent = "等待抽卡";
     }
 
     function onMove(y) {
         if (!isDragging) return;
         currentY = y;
         let moveY = currentY - startY;
-        if (moveY > 0) moveY = 0; 
+        if (moveY > 0) moveY = 0; // 僅限向上拖動
         
         const scale = 1 + (moveY * 0.001);
         swipeCard.style.transform = `translateY(${moveY}px) scale(${Math.max(scale, 0.85)})`;
@@ -344,22 +369,38 @@ function setupSwipeEntry(team) {
             executeDrawFlow(team);
         } else {
             swipeCard.style.transform = 'translateY(0) scale(1)';
-            if (container.classList.contains('has-result-blue')) {
-                tag.textContent = '藍隊技能';
-            } else if (container.classList.contains('has-result-red')) {
-                tag.textContent = '紅隊技能';
-            } else {
-                tag.textContent = "等待抽卡";
+            if (tag) {
+                if (container.classList.contains('has-result-blue')) {
+                    tag.textContent = '藍隊技能';
+                } else if (container.classList.contains('has-result-red')) {
+                    tag.textContent = '紅隊技能';
+                } else {
+                    tag.textContent = "等待抽卡";
+                }
             }
         }
     }
 
-    swipeCard.addEventListener('touchstart', (e) => onStart(e.touches[0].clientY));
-    swipeCard.addEventListener('touchmove', (e) => onMove(e.touches[0].clientY), {passive: false});
+    // 手機觸控
+    swipeCard.addEventListener('touchstart', (e) => onStart(e.touches[0].clientY), {passive: true});
+    swipeCard.addEventListener('touchmove', (e) => { 
+        if (isDragging) onMove(e.touches[0].clientY); 
+    }, {passive: true});
     swipeCard.addEventListener('touchend', onEnd);
 
-    swipeCard.addEventListener('mousedown', (e) => onStart(e.clientY));
-    window.addEventListener('mousemove', (e) => { if (isDragging) onMove(e.clientY); });
+    // 電腦滑鼠
+    swipeCard.addEventListener('mousedown', (e) => {
+        // 🌟【防護點 2】：滑鼠按下時也要檢查條件，符合才 preventDefault 開始拖曳
+        if (gameState[team].deck.length > 0 && canSwipeDraw(team)) {
+            e.preventDefault(); 
+            onStart(e.clientY);
+        }
+    });
+
+    window.addEventListener('mousemove', (e) => { 
+        if (isDragging) onMove(e.clientY); 
+    });
+    
     window.addEventListener('mouseup', onEnd);
 }
 

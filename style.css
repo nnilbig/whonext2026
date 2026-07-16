@@ -510,3 +510,105 @@ body {
 .btn-modal-confirm:active {
     transform: scale(0.98);
 }
+
+/* 歷史紀錄彈窗專用排版 */
+.history-split-layout {
+  display: flex;
+  gap: 20px;
+}
+
+.history-team-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.team-history-header {
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.team-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.dot-blue { background-color: #007aff; box-shadow: 0 0 8px #007aff; }
+.dot-red { background-color: #ff3b30; box-shadow: 0 0 8px #ff3b30; }
+
+.team-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+/* 單張歷史卡牌效果 */
+.history-item-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 10px 12px;
+  transition: background 0.2s;
+}
+
+.history-item-card:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.item-card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.item-card-title .card-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.item-card-title .card-score-badge {
+  font-size: 0.75rem;
+  opacity: 0.5;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+
+.item-card-desc {
+  font-size: 0.8rem;
+  opacity: 0.7;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.history-empty-text {
+  text-align: center;
+  padding: 30px 0;
+  font-size: 0.85rem;
+  opacity: 0.4;
+}
+
+.history-divider {
+  width: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* 響應式手機版自動轉換為單欄 */
+@media (max-width: 576px) {
+  .history-split-layout {
+    flex-direction: column;
+    gap: 25px;
+  }
+  .history-divider {
+    display: none;
+  }
+}
