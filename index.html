@@ -556,24 +556,24 @@
 
 <script>
   const COLORS = {
-    red:    { name:'紅', hex:'#B3413F' },
-    blue:   { name:'藍', hex:'#2F5A82' },
-    green:  { name:'緑', hex:'#4C7A5A' },
-    yellow: { name:'黄', hex:'#BD8F35' },
-    gray:   { name:'—', hex:'#A39C8D' }
+    red:    { name:'紅', hex:'#C1495F' },
+    blue:   { name:'藍', hex:'#5C7FE0' },
+    green:  { name:'緑', hex:'#4FA184' },
+    yellow: { name:'黄', hex:'#D8AE5C' },
+    gray:   { name:'—', hex:'#55566A' }
   };
 
   const cardPool = [
     { name: "免死金牌", desc: "比賽結束前可觸發一次，我方主動失誤(出界、掛網)該球不算分，並由我方重新發球。" },
     { name: "消失邊界", desc: "共有3分的額度，對手回球落於限制區外的話我方得分。" },
-    { name: "加倍奉還", desc: "比賽結束前可觸發一次，我方連續得2分後，立刻加2分。", isAce: true },
     { name: "雙手奉上", desc: "指定對方一名球員，接下來3分必須雙手握拍回球(發球可用單手)。" },
     { name: "霧裡看花", desc: "指定對方一名球員，接下來3分必須閉上一隻眼睛。" },
     { name: "畫地為牢", desc: "指定對方一名球員，接下來3分只能活動於底線區域。" },
     { name: "天使祝福", desc: "即刻生效，若是我方分數落後於對手，立刻提高分數強制平手(分數高則此卡無效)。", isAce: true },
     { name: "惡魔契約", desc: "我方分數立刻扣3分，但下來3回合，我方得1分算3分。", isAce: true },
+    { name: "加倍奉還", desc: "比賽結束前可觸發一次，我方連續得2分後，立刻加2分。", isAce: true },
     { name: "左右互搏", desc: "指定對方一名球員，接下來5分必須使用非慣用手持拍。" },
-    { name: "降維打擊", desc: "指定對方一名球員，接下來5分必須用匹克球拍。"},
+    { name: "降維打擊", desc: "指定對方一名球員，接下來5分必須用匹克球拍擊球。"},
     { name: "劫富濟貧", desc: "比賽結束前可觸發一次，一旦對手領先，我方分數加2分，且對手扣2分", isAce: true }
   ];
 
@@ -816,6 +816,10 @@
       cardLabel.dataset.color = color;
       $('cardLabelText'+side).textContent = state.teamSlots[side] ? (info.name + '隊 · 卡牌說明') : ('未選擇 · 卡牌說明');
       $('cardFace'+side).dataset.color = color;
+
+      const historyBtn = $('historyBtn'+side);
+      historyBtn.dataset.color = color;
+      historyBtn.title = state.teamSlots[side] ? (info.name + '隊抽牌歷史') : '抽牌歷史';
 
       // per-team pool card (shares the same underlying deck)
       const poolLabelText = state.teamSlots[side] ? (info.name + '隊牌池') : ('TEAM ' + (side===0?'A':'B') + ' · 未選擇');
