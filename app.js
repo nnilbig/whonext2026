@@ -22,12 +22,14 @@ let gameState = {
     A: { 
         score: 0, 
         deck: [], 
-        usedComeback: false // 紀錄 A 隊本場是否使用過落後反擊抽卡
+        usedComeback: false,  // 紀錄 A 隊本場是否使用過落後反擊抽卡
+        drawnThresholds: []  // 新增：紀錄 A 隊在此分數時是否已抽過牌
     },
     B: { 
         score: 0, 
         deck: [], 
-        usedComeback: false // 紀錄 B 隊本場是否使用過落後反擊抽卡
+        usedComeback: false,  // 紀錄 B 隊本場是否使用過落後反擊抽卡
+        drawnThresholds: []  // 新增：紀錄 B 隊在此分數時是否已抽過牌
     }
 };
 
@@ -51,14 +53,14 @@ function checkGlowAndComeback() {
     const teamElementA = document.querySelector('.team-blue');
     const teamElementB = document.querySelector('.team-red');
 
-    // ---- 1. 偵測 5, 10, 15, 20 分的外框螢光提示 ----
-    if (GLOW_SCORES.includes(scoreA)) {
+    // ---- 1. 偵測 5, 10, 15, 20 分的外框螢光提示（新增限制：未抽過牌才亮燈） ----
+    if (GLOW_SCORES.includes(scoreA) && !gameState.A.drawnThresholds.includes(scoreA)) {
         teamElementA.classList.add('glow-active');
     } else {
         teamElementA.classList.remove('glow-active');
     }
 
-    if (GLOW_SCORES.includes(scoreB)) {
+    if (GLOW_SCORES.includes(scoreB) && !gameState.B.drawnThresholds.includes(scoreB)) {
         teamElementB.classList.add('glow-active');
     } else {
         teamElementB.classList.remove('glow-active');
@@ -107,6 +109,12 @@ function executeDrawFlow(team) {
     const desc = document.getElementById(`cardDesc${team}`);
     const tag = container.querySelector('.card-tag');
 
+    // 關鍵：抽卡的同時，紀錄該隊當前分數已經完成抽卡
+    const currentScore = gameState[team].score;
+    if (!gameState[team].drawnThresholds.includes(currentScore)) {
+        gameState[team].drawnThresholds.push(currentScore);
+    }
+
     // 抽卡特效演出
     swipeCard.style.transition = 'transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.15s';
     swipeCard.style.transform = 'translateY(-250px) scale(0.6)';
@@ -149,9 +157,7 @@ function executeDrawFlow(team) {
     }, 200);
 }
 
-// =========================================================
-// 核心修正：初始化牌組（一般卡放兩份、王牌卡放一份）
-// =========================================================
+// 初始化/重置牌組
 function initDeck(team) {
     let customDeck = [];
     
@@ -172,6 +178,7 @@ function initDeck(team) {
     
     gameState[team].deck = customDeck;
     gameState[team].usedComeback = false; // 重置反擊卡使用狀態
+    gameState[team].drawnThresholds = []; // 重置已抽過牌的分數紀錄
     
     const swipeCard = document.getElementById(`swipeCard${team}`);
     const cardDeck = document.getElementById(`cardDeck${team}`);
@@ -241,7 +248,7 @@ function switchSides() {
     }
 }
 
-// 隨機抽卡邏輯
+// 隨機抽卡與王牌卡判定邏輯
 function verifyAndDrawCard(team) {
     const opponent = (team === 'A') ? 'B' : 'A';
     const opponentScore = gameState[opponent].score;
@@ -323,7 +330,6 @@ function setupSwipeEntry(team) {
         const moveY = currentY - startY;
 
         if (moveY < swipeThreshold) {
-            // 原本的滑動抽卡
             executeDrawFlow(team);
         } else {
             swipeCard.style.transform = 'translateY(0) scale(1)';
@@ -352,25 +358,24 @@ const ruleBtn = document.getElementById('ruleBtn');
 const closeRuleBtn = document.getElementById('closeRuleBtn');
 const confirmRuleBtn = document.getElementById('confirmRuleBtn');
 
-// 開啟說明視窗
-ruleBtn.addEventListener('click', () => {
-    ruleModal.classList.add('show');
-});
+if (ruleBtn && ruleModal) {
+    ruleBtn.addEventListener('click', () => {
+        ruleModal.classList.add('show');
+    });
 
-// 關閉說明視窗（點擊 X、點擊「我明白了」或是點擊視窗外部黑底）
-function closeRuleModal() {
-    ruleModal.classList.remove('show');
+    const closeRuleModal = () => {
+        ruleModal.classList.remove('show');
+    };
+
+    if (closeRuleBtn) closeRuleBtn.addEventListener('click', closeRuleModal);
+    if (confirmRuleBtn) confirmRuleBtn.addEventListener('click', closeRuleModal);
+
+    ruleModal.addEventListener('click', (e) => {
+        if (e.target === ruleModal) {
+            closeRuleModal();
+        }
+    });
 }
-
-closeRuleBtn.addEventListener('click', closeRuleModal);
-confirmRuleBtn.addEventListener('click', closeRuleModal);
-
-// 點擊半透明遮罩背景也能關閉
-ruleModal.addEventListener('click', (e) => {
-    if (e.target === ruleModal) {
-        closeRuleModal();
-    }
-});
 
 // 監聽與初始化
 document.getElementById('resetAllBtn').addEventListener('click', resetAll);
