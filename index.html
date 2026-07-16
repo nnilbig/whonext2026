@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WHONEXT 2026 羽球卡牌系統</title>
-    <link rel="stylesheet" href="style.css?v=1.01">
+    <link rel="stylesheet" href="style.css?v=1.03">
 </head>
 <body>
 
@@ -126,6 +126,19 @@
             </div>
             <div class="modal-footer">
                 <button id="confirmRuleBtn" class="btn-modal-confirm">我明白了</button>
+            </div>
+        </div>
+    </div>
+
+        <!-- 已使用卡片歷史紀錄彈出視窗 -->
+    <div id="historyModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 id="historyModalTitle">藍隊 已使用卡片</h3>
+            <div id="historyList" class="history-list">
+                <!-- 歷史卡片會動態生成在這裡 -->
+            </div>
+            <div class="modal-buttons">
+                <button id="closeHistoryBtn" class="btn">關閉</button>
             </div>
         </div>
     </div>

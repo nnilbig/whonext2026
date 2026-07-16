@@ -142,7 +142,7 @@ body {
 .flip-card-container, .card-deck {
     width: 85%;         
     max-width: 260px;    
-    height: 25vh;        /* 微調卡片與卡池的高度，讓出一些物理空間供 gap 伸展 */
+    height: 18vh;        /* 微調卡片與卡池的高度，讓出一些物理空間供 gap 伸展 */
     min-height: 90px;
     margin: 0;           
 }

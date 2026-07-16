@@ -22,14 +22,16 @@ let gameState = {
     A: { 
         score: 0, 
         deck: [], 
-        usedComeback: false,  // 紀錄 A 隊本場是否使用過落後反擊抽卡
-        drawnThresholds: []  // 新增：紀錄 A 隊在此分數時是否已抽過牌
+        triggeredComeback: false, // 紀錄 A 隊本場是否曾觸發過反擊資格
+        usedComeback: false,      // 紀錄 A 隊本場是否使用過落後反擊抽卡
+        drawnThresholds: []       // 紀錄 A 隊在此分數時是否已抽過牌
     },
     B: { 
         score: 0, 
         deck: [], 
-        usedComeback: false,  // 紀錄 B 隊本場是否使用過落後反擊抽卡
-        drawnThresholds: []  // 新增：紀錄 B 隊在此分數時是否已抽過牌
+        triggeredComeback: false, // 紀錄 B 隊本場是否曾觸發過反擊資格
+        usedComeback: false,      // 紀錄 B 隊本場是否使用過落後反擊抽卡
+        drawnThresholds: []       // 紀錄 B 隊在此分數時是否已抽過牌
     }
 };
 
@@ -53,7 +55,7 @@ function checkGlowAndComeback() {
     const teamElementA = document.querySelector('.team-blue');
     const teamElementB = document.querySelector('.team-red');
 
-    // ---- 1. 偵測 5, 10, 15, 20 分的外框螢光提示（新增限制：未抽過牌才亮燈） ----
+    // ---- 1. 偵測 5, 10, 15, 20 分的外框螢光提示（未抽過牌才亮燈） ----
     if (GLOW_SCORES.includes(scoreA) && !gameState.A.drawnThresholds.includes(scoreA)) {
         teamElementA.classList.add('glow-active');
     } else {
@@ -66,19 +68,27 @@ function checkGlowAndComeback() {
         teamElementB.classList.remove('glow-active');
     }
 
-    // ---- 2. 偵測落後 10 分以上反擊機制（改用 Class 控制漸顯動畫） ----
+    // ---- 2. 偵測落後 10 分以上反擊機制（觸發後常駐） ----
     const comebackBtnA = document.getElementById('comebackBtnA');
     const comebackBtnB = document.getElementById('comebackBtnB');
 
-    // A 隊落後 B 隊 10 分以上，且 A 隊這場還沒用過反擊卡
+    // 判斷是否「首次達到」落後 10 分的門檻
     if (scoreB - scoreA >= 10 && !gameState.A.usedComeback) {
+        gameState.A.triggeredComeback = true;
+    }
+    if (scoreA - scoreB >= 10 && !gameState.B.usedComeback) {
+        gameState.B.triggeredComeback = true;
+    }
+
+    // A 隊按鈕顯示邏輯：一旦觸發過且未使用，便常駐顯示
+    if (gameState.A.triggeredComeback && !gameState.A.usedComeback) {
         if (comebackBtnA) comebackBtnA.classList.add('show');
     } else {
         if (comebackBtnA) comebackBtnA.classList.remove('show');
     }
 
-    // B 隊落後 A 隊 10 分以上，且 B 隊這場還沒用過反擊卡
-    if (scoreA - scoreB >= 10 && !gameState.B.usedComeback) {
+    // B 隊按鈕顯示邏輯：一旦觸發過且未使用，便常駐顯示
+    if (gameState.B.triggeredComeback && !gameState.B.usedComeback) {
         if (comebackBtnB) comebackBtnB.classList.add('show');
     } else {
         if (comebackBtnB) comebackBtnB.classList.remove('show');
@@ -177,8 +187,9 @@ function initDeck(team) {
     }
     
     gameState[team].deck = customDeck;
-    gameState[team].usedComeback = false; // 重置反擊卡使用狀態
-    gameState[team].drawnThresholds = []; // 重置已抽過牌的分數紀錄
+    gameState[team].triggeredComeback = false; // 重置反擊卡觸發狀態
+    gameState[team].usedComeback = false;      // 重置反擊卡使用狀態
+    gameState[team].drawnThresholds = [];      // 重置已抽過牌的分數紀錄
     
     const swipeCard = document.getElementById(`swipeCard${team}`);
     const cardDeck = document.getElementById(`cardDeck${team}`);
