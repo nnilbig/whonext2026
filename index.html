@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>對戰計分牌 · 抽卡系統</title>
+<title>WHONEXT x 卡牌系統</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;800&family=Noto+Sans+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -170,18 +170,23 @@
 
   .score-num{
     font-family:'JetBrains Mono', monospace;
-    font-size: clamp(32px,10vw,64px);
+    font-size: clamp(30px,9vw,58px);
     font-weight:700;
     line-height:1;
     letter-spacing:.02em;
-    margin: clamp(4px,1.5vw,6px) 0 clamp(10px,3vw,16px);
     font-variant-numeric: tabular-nums;
     color: var(--ink);
     text-shadow: 0 0 22px rgba(232,227,214,0.08);
+    min-width: clamp(56px,16vw,110px);
+    text-align:center;
   }
-  .score-controls{ display:flex; justify-content:center; gap: clamp(6px,2.5vw,10px); }
+  .score-controls{
+    display:flex; align-items:center; justify-content:center;
+    gap: clamp(6px,2.5vw,14px);
+    margin: clamp(4px,1.5vw,6px) 0 clamp(10px,3vw,16px);
+  }
   .score-btn{
-    width: clamp(30px,9vw,38px); height: clamp(30px,9vw,38px); border-radius:50%;
+    width: clamp(28px,8vw,36px); height: clamp(28px,8vw,36px); border-radius:50%;
     font-size: clamp(14px,4vw,18px); font-weight:600;
     border:1.5px solid var(--line);
     background: var(--paper);
@@ -219,8 +224,6 @@
   .card-body{ display:flex; flex-direction:column; gap: clamp(16px,4vw,22px); }
 
   .pool-row{ display:flex; gap: clamp(8px,3vw,22px); justify-content:center; flex-wrap:nowrap; }
-  .pool-face .cf-placeholder{ font-size: clamp(10px,2.5vw,12px); }
-  .pool-face .cf-placeholder span.unlocked{ color:#A67C2E; font-weight:600; }
 
   .cards-row{ display:flex; gap: clamp(8px,3vw,22px); justify-content:center; flex-wrap:nowrap; }
   .card-slot{ display:flex; flex-direction:column; align-items:center; gap: clamp(6px,2vw,10px); flex:1 1 0; min-width:0; max-width:240px; }
@@ -287,17 +290,16 @@
     font-weight:600;
   }
   .logo-emblem{
-    width: clamp(48px,15vw,86px); height: clamp(48px,15vw,86px); border-radius:50% 48% 52% 47% / 50% 52% 46% 54%;
+    width: clamp(64px,22vw,120px); height: clamp(64px,22vw,120px); border-radius:50% 48% 52% 47% / 50% 52% 46% 54%;
     border: 1.5px solid #A67C2E; display:flex; align-items:center; justify-content:center;
-    font-family:'Shippori Mincho', serif; font-size: clamp(18px,5vw,28px); color:#A67C2E;
+    font-family:'Shippori Mincho', serif; font-size: clamp(24px,7vw,40px); color:#A67C2E;
     transform: rotate(-2deg);
-    margin-bottom: clamp(8px,2.5vw,14px);
-    box-shadow: 0 0 10px rgba(166,124,46,0.25);
+    box-shadow: 0 0 14px rgba(166,124,46,0.25);
   }
   .card-face .cf-name{ font-family:'Shippori Mincho', serif; font-size: clamp(13px,3.6vw,19px); font-weight:600; margin-bottom: clamp(6px,2vw,10px); color: var(--ink); }
   .card-face .cf-desc{ font-size: clamp(9.5px,2.4vw,12.5px); color:var(--ink-soft); line-height:1.6; }
   .card-face .cf-placeholder{ font-size: clamp(9.5px,2.4vw,12.5px); color:var(--ink-soft); line-height:1.7; }
-  .card-face img.pool-logo{ width: clamp(38px,12vw,70px); height: clamp(38px,12vw,70px); object-fit:contain; margin-bottom: clamp(8px,2.5vw,14px); filter: drop-shadow(0 0 6px rgba(166,124,46,0.22)); }
+  .card-face img.pool-logo{ width: clamp(58px,20vw,110px); height: clamp(58px,20vw,110px); object-fit:contain; filter: drop-shadow(0 0 8px rgba(166,124,46,0.22)); }
 
   .card-face.flip-in{ animation: flipIn .5s ease; }
   @keyframes flipIn{
@@ -391,7 +393,7 @@
 
     .score-row{ gap:6px; margin-bottom:10px; }
     .score-card{ padding: 8px 6px 8px; }
-    .score-num{ margin: 2px 0 6px; }
+    .score-controls{ margin: 2px 0 6px; gap:6px; }
     .milestone-tag{ margin-top:4px; height:12px; }
 
     .card-section{ padding: 10px 8px 12px; }
@@ -411,8 +413,8 @@
     }
     .card-face .cf-name{ font-size:11.5px; margin-bottom:3px; }
     .card-face .cf-desc, .card-face .cf-placeholder{ font-size:8.5px; line-height:1.4; }
-    .logo-emblem{ width:34px; height:34px; font-size:13px; margin-bottom:4px; }
-    .card-face img.pool-logo{ width:30px; height:30px; margin-bottom:4px; }
+    .logo-emblem{ width:70px; height:70px; font-size:26px; }
+    .card-face img.pool-logo{ width:64px; height:64px; }
     .swipe-hint{ bottom:5px; font-size:7.5px; }
     .swipe-arrow{ font-size:10px; }
   }
@@ -428,7 +430,7 @@
 <body>
 
   <div class="top-control">
-    <span class="brand"> WHONEXT 2026</span>
+    <span class="brand">WHONEXT 2026</span>
     <button class="tc-btn" id="btnReset"><span class="ic">↺</span>全部重置</button>
     <button class="tc-btn" id="btnRules"><span class="ic">?</span>規則說明</button>
     <button class="tc-btn" id="btnSwap"><span class="ic">⇄</span>交換場地</button>
@@ -451,18 +453,18 @@
     <div class="score-row">
       <div class="score-card" id="scoreCard0" data-color="red">
         <div class="team-name" data-color="red"><span class="label">TEAM A</span></div>
-        <div class="score-num" id="scoreNum0">00</div>
         <div class="score-controls">
           <button class="score-btn" data-side="0" data-delta="-1">−</button>
+          <div class="score-num" id="scoreNum0">00</div>
           <button class="score-btn" data-side="0" data-delta="1">+</button>
         </div>
         <div class="milestone-tag" id="milestoneTag0"></div>
       </div>
       <div class="score-card" id="scoreCard1" data-color="blue">
         <div class="team-name" data-color="blue"><span class="label">TEAM B</span></div>
-        <div class="score-num" id="scoreNum1">00</div>
         <div class="score-controls">
           <button class="score-btn" data-side="1" data-delta="-1">−</button>
+          <div class="score-num" id="scoreNum1">00</div>
           <button class="score-btn" data-side="1" data-delta="1">+</button>
         </div>
         <div class="milestone-tag" id="milestoneTag1"></div>
@@ -505,7 +507,6 @@
             <div class="card-face pool-face" id="poolFace0" data-side="0" tabindex="0" role="button" aria-label="向上滑動或按 Enter 為紅隊抽卡">
               <img class="pool-logo" src="image/logo.png" alt="" onerror="this.style.display='none'; document.getElementById('logoFallbackPool0').style.display='flex';">
               <div class="logo-emblem" id="logoFallbackPool0" style="display:none;">牌</div>
-              <div class="cf-placeholder" id="poolInfo0">共 <span id="poolCount0">0</span> 張卡牌<br><span id="poolAceStatus0">王牌卡尚未解鎖</span></div>
               <div class="swipe-hint"><span class="swipe-arrow">↑</span>向上滑動抽卡</div>
             </div>
           </div>
@@ -514,7 +515,6 @@
             <div class="card-face pool-face" id="poolFace1" data-side="1" tabindex="0" role="button" aria-label="向上滑動或按 Enter 為藍隊抽卡">
               <img class="pool-logo" src="image/logo.png" alt="" onerror="this.style.display='none'; document.getElementById('logoFallbackPool1').style.display='flex';">
               <div class="logo-emblem" id="logoFallbackPool1" style="display:none;">牌</div>
-              <div class="cf-placeholder" id="poolInfo1">共 <span id="poolCount1">0</span> 張卡牌<br><span id="poolAceStatus1">王牌卡尚未解鎖</span></div>
               <div class="swipe-hint"><span class="swipe-arrow">↑</span>向上滑動抽卡</div>
             </div>
           </div>
@@ -819,16 +819,6 @@
         ? ('向上滑動或按 Enter 為' + info.name + '隊抽卡')
         : ('向上滑動或按 Enter 抽卡'));
     }
-
-    // shared deck info, mirrored on both pool cards
-    const deck = buildDeck();
-    const aceUnlocked = Math.max(state.scores[0], state.scores[1]) > 10;
-    [0,1].forEach(side=>{
-      $('poolCount'+side).textContent = deck.length;
-      const aceStatusEl = $('poolAceStatus'+side);
-      aceStatusEl.textContent = aceUnlocked ? '王牌卡已解鎖' : '王牌卡尚未解鎖';
-      aceStatusEl.classList.toggle('unlocked', aceUnlocked);
-    });
   }
 
   function renderHistory(side){
