@@ -577,15 +577,15 @@
 
   const cardPool = [
     { name: "免死金牌", desc: "比賽結束前可觸發一次，我方主動失誤(出界、掛網)該球不算分，並由我方重新發球。" },
-    { name: "消失邊界", desc: "共有3分的額度，對手回球落於限制區外的話我方得分。" },
+    { name: "消失邊界", desc: "比賽結束前可觸發一次，對手回球落於限制區外的話我方得分。" },
     { name: "雙手奉上", desc: "指定對方一名球員，接下來3分必須雙手握拍回球(發球可用單手)。" },
     { name: "霧裡看花", desc: "指定對方一名球員，接下來3分必須閉上一隻眼睛。" },
     { name: "畫地為牢", desc: "指定對方一名球員，接下來3分只能活動於底線區域。" },
     { name: "天使祝福", desc: "即刻生效，若是我方分數落後於對手，立刻提高分數強制平手(分數高則此卡無效)。", isAce: true },
     { name: "惡魔契約", desc: "我方分數立刻扣3分，但下來3回合，我方得1分算3分。", isAce: true },
     { name: "加倍奉還", desc: "比賽結束前可觸發一次，我方連續得2分後，立刻加2分。", isAce: true },
-    { name: "左右互搏", desc: "指定對方一名球員，接下來5分必須使用非慣用手持拍。" },
-    { name: "降維打擊", desc: "指定對方一名球員，接下來5分必須用匹克球拍擊球。"},
+    { name: "左右互搏", desc: "指定對方一名球員，接下來3分必須使用非慣用手持拍。" },
+    { name: "降維打擊", desc: "指定對方一名球員，接下來3分必須用匹克球拍擊球。"},
     { name: "劫富濟貧", desc: "比賽結束前可觸發一次，一旦對手領先，我方分數加2分，且對手扣2分", isAce: true }
   ];
 
@@ -641,26 +641,58 @@
   });
 
   /* ---------- CARD DRAW ---------- */
-  function buildDeck(){
+  const ACE_CARDS = cardPool.filter(c => c.isAce);
+  const NORMAL_CARDS = cardPool.filter(c => !c.isAce);
+
+  function shuffled(arr){
+    const a = arr.slice();
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function freshDeckState(){
+    return { normal: shuffled(NORMAL_CARDS), ace: shuffled(ACE_CARDS) };
+  }
+
+  let deckState = freshDeckState();
+
+  function drawFromCategory(pileKey, fullList){
+    if(deckState[pileKey].length === 0){
+      deckState[pileKey] = shuffled(fullList);
+    }
+    return deckState[pileKey].pop();
+  }
+
+  function pickCardForSide(side){
+    const other = side === 0 ? 1 : 0;
     const maxScore = Math.max(state.scores[0], state.scores[1]);
-    const aceUnlocked = maxScore > 10;
-    let deck = [];
-    cardPool.forEach(c=>{
-      if(c.isAce){
-        if(aceUnlocked) deck.push(c);
-      } else {
-        deck.push(c); deck.push(c);
-      }
-    });
-    return deck;
+    const aceUnlocked = maxScore >= 10;
+
+    if(!aceUnlocked){
+      return drawFromCategory('normal', NORMAL_CARDS);
+    }
+
+    // Leading side's ace chance = share of aces in the full 11-card pool.
+    // Trailing side gets exactly double that chance.
+    const leadingAceProb = ACE_CARDS.length / cardPool.length; // 4/11
+    const trailingAceProb = Math.min(1, leadingAceProb * 2);
+    const isTrailing = state.scores[side] < state.scores[other];
+    const aceProb = isTrailing ? trailingAceProb : leadingAceProb;
+
+    if(Math.random() < aceProb){
+      return drawFromCategory('ace', ACE_CARDS);
+    }
+    return drawFromCategory('normal', NORMAL_CARDS);
   }
 
   function drawForSide(side){
     const score = state.scores[side];
     const eligible = score > 0 && score % 5 === 0 && state.drawnAtScore[side] !== score;
     if(!eligible) return;
-    const deck = buildDeck();
-    const card = deck[Math.floor(Math.random() * deck.length)];
+    const card = pickCardForSide(side);
     state.drawnAtScore[side] = score;
     revealCard(card, side, false);
   }
@@ -669,8 +701,7 @@
     const diff = state.scores[0] - state.scores[1];
     const losingSide = diff <= -10 ? 0 : (diff >= 10 ? 1 : -1);
     if(losingSide === -1 || state.comebackUsed) return;
-    const deck = buildDeck();
-    const card = deck[Math.floor(Math.random() * deck.length)];
+    const card = pickCardForSide(losingSide);
     state.comebackUsed = true;
     revealCard(card, losingSide, true);
   }
@@ -762,6 +793,7 @@
   /* ---------- TOP CONTROLS ---------- */
   $('btnReset').addEventListener('click', ()=>{
     state = { teamSlots:['N','E'], scores:[0,0], drawnAtScore:[null,null], comebackUsed:false, history:[] };
+    deckState = freshDeckState();
     [0,1].forEach(side=>{
       const face = $('cardFace' + side);
       face.className = 'card-face';
