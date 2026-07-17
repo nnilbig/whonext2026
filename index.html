@@ -460,8 +460,6 @@
     <button class="tc-btn" id="btnRules"><span class="ic">?</span>規則說明</button>
     <button class="tc-btn" id="btnSwap"><span class="ic">⇄</span>交換場地</button>
     <button class="tc-btn" id="btnSetup"><span class="ic">⚙</span>隊伍設定</button>
-    <button class="tc-btn" id="btnLogo"><span class="ic">⬆</span>上傳LOGO</button>
-    <input type="file" id="logoInput" accept="image/*" style="display:none;">
   </div>
 
   <div class="wrap">
@@ -760,36 +758,6 @@
   }
   setupPoolSwipe($('poolFace0'), 0);
   setupPoolSwipe($('poolFace1'), 1);
-
-  const DEFAULT_LOGO_HTML = '<span class="lg-line">WHO</span><span class="lg-line">NEXT</span>';
-
-  $('btnLogo').addEventListener('click', ()=> $('logoInput').click());
-  $('btnLogo').title = '點擊上傳圖片 LOGO，雙擊還原預設字標';
-  $('btnLogo').addEventListener('dblclick', (e)=>{
-    e.preventDefault();
-    [0,1].forEach(side=>{
-      $('logoFallbackPool'+side).innerHTML = DEFAULT_LOGO_HTML;
-    });
-    showToast('已還原預設字標');
-  });
-  $('logoInput').addEventListener('change', (e)=>{
-    const file = e.target.files[0];
-    if(!file) return;
-    if(!file.type.startsWith('image/')){
-      showToast('請選擇圖片檔案');
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (ev)=>{
-      const dataUrl = ev.target.result;
-      [0,1].forEach(side=>{
-        $('logoFallbackPool'+side).innerHTML = '<img src="' + dataUrl + '" alt="LOGO">';
-      });
-      showToast('LOGO 已套用至牌池');
-    };
-    reader.readAsDataURL(file);
-    e.target.value = '';
-  });
 
   /* ---------- TOP CONTROLS ---------- */
   $('btnReset').addEventListener('click', ()=>{
