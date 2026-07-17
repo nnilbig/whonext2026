@@ -667,8 +667,7 @@
     return deckState[pileKey].pop();
   }
 
-  function pickCardForSide(side){
-    const other = side === 0 ? 1 : 0;
+  function pickCardForSide(side, isComeback){
     const maxScore = Math.max(state.scores[0], state.scores[1]);
     const aceUnlocked = maxScore >= 10;
 
@@ -676,12 +675,10 @@
       return drawFromCategory('normal', NORMAL_CARDS);
     }
 
-    // Leading side's ace chance = share of aces in the full 11-card pool.
-    // Trailing side gets exactly double that chance.
-    const leadingAceProb = ACE_CARDS.length / cardPool.length; // 4/11
-    const trailingAceProb = Math.min(1, leadingAceProb * 2);
-    const isTrailing = state.scores[side] < state.scores[other];
-    const aceProb = isTrailing ? trailingAceProb : leadingAceProb;
+    // Base ace chance = share of aces in the full card pool.
+    // Only the comeback draw (triggered by the trailing side) gets double that chance.
+    const baseAceProb = ACE_CARDS.length / cardPool.length;
+    const aceProb = isComeback ? Math.min(1, baseAceProb * 2) : baseAceProb;
 
     if(Math.random() < aceProb){
       return drawFromCategory('ace', ACE_CARDS);
@@ -693,7 +690,7 @@
     const score = state.scores[side];
     const eligible = score > 0 && score % 5 === 0 && state.drawnAtScore[side] !== score;
     if(!eligible) return;
-    const card = pickCardForSide(side);
+    const card = pickCardForSide(side, false);
     state.drawnAtScore[side] = score;
     revealCard(card, side, false);
   }
@@ -702,7 +699,7 @@
     const diff = state.scores[0] - state.scores[1];
     const losingSide = diff <= -10 ? 0 : (diff >= 10 ? 1 : -1);
     if(losingSide === -1 || state.comebackUsed) return;
-    const card = pickCardForSide(losingSide);
+    const card = pickCardForSide(losingSide, true);
     state.comebackUsed = true;
     revealCard(card, losingSide, true);
   }
