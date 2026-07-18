@@ -587,7 +587,7 @@
     { name: "左右互搏", desc: "指定對方一名球員，接下來3分必須使用非慣用手持拍。" },
     { name: "球桶突襲", desc: "指定對方一名球員，接下來3分必須用羽球桶擊球。"},
     { name: "匹克突襲", desc: "指定對方一名球員，接下來3分必須用匹克球拍擊球。"},
-    { name: "廚房禁區", desc: "接下來3分對方球員不可整隻腳踩入網前廚房區擊球，違反視同掉分。"},
+    { name: "廚房禁區", desc: "接下來3分對方球員不可雙腳踩入網前廚房區擊球，違反視同掉分。"},
     { name: "劫富濟貧", desc: "持有期間可觸發一次，一旦對手領先，我方分數加2分，且對手扣2分。", isAce: true },
     { name: "歷史重演", desc: "即刻生效，可以指定使用我方歷史牌池的任一卡牌。", isAce: true }
   ];
@@ -671,7 +671,7 @@
 
   function pickCardForSide(side){
     const other = side === 0 ? 1 : 0;
-    const aceUnlocked = state.scores[0] > 6 && state.scores[1] > 6;
+    const aceUnlocked = state.scores[0] > 5 && state.scores[1] > 5;
 
     if(!aceUnlocked){
       return drawFromCategory('normal', NORMAL_CARDS);
