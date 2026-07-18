@@ -57,6 +57,12 @@
     box-shadow: var(--shadow), inset 0 1px 0 var(--line-soft), inset 0 -1px 0 rgba(0,0,0,0.45);
   }
 
+  /* ---------- TEAM ACCENTS (variations within the metal/grayscale family) ---------- */
+  [data-team="N"]{ --team-accent:#9FB3C8; --team-glow: rgba(159,179,200,0.42); } /* 鋼 steel — cool blue-gray */
+  [data-team="E"]{ --team-accent:#C9B79B; --team-glow: rgba(201,183,155,0.42); } /* 鎳 nickel — warm pewter */
+  [data-team="X"]{ --team-accent:#B9B9BD; --team-glow: rgba(185,185,189,0.42); } /* 銀 silver — neutral */
+  [data-team="T"]{ --team-accent:#E9E9E4; --team-glow: rgba(233,233,228,0.42); } /* 鉑 platinum — bright chrome */
+
   /* ---------- TOP CONTROL ---------- */
   .top-control{
     display:flex; align-items:center; justify-content:center; gap:4px;
@@ -119,9 +125,9 @@
     transition: all .2s ease;
   }
   .chip.active{
-    color: var(--ink);
-    border-color: rgba(255,255,255,0.4);
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.65), inset 0 -1px 0 var(--line-soft), 0 0 14px rgba(255,255,255,0.14);
+    color: var(--team-accent, var(--ink));
+    border-color: var(--team-accent, rgba(255,255,255,0.4));
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.65), inset 0 -1px 0 var(--line-soft), 0 0 14px var(--team-glow, rgba(255,255,255,0.14));
   }
   .chip:hover{ transform: translateY(-1px); }
   .setup-hint{ margin-top:12px; font-size:12px; color:var(--ink-soft); }
@@ -140,7 +146,7 @@
   }
   .score-card::before{
     content:''; position:absolute; top:0; left:0; right:0; height:2px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+    background: linear-gradient(90deg, transparent, var(--team-accent, rgba(255,255,255,.55)), transparent);
     opacity:.35;
     transition: opacity .3s ease;
   }
@@ -157,16 +163,16 @@
 
   .score-card.glow{
     animation: pulseGlow 1.8s ease-in-out infinite;
-    border-color: rgba(255,255,255,0.4);
+    border-color: var(--team-accent, rgba(255,255,255,0.4));
   }
   .score-card.glow::before{ opacity:1; }
   @keyframes pulseGlow{
     0%,100%{ box-shadow: var(--shadow), 0 0 0 0 rgba(255,255,255,0.0); }
-    50%{ box-shadow: var(--shadow), 0 0 26px 4px rgba(255,255,255,0.2); }
+    50%{ box-shadow: var(--shadow), 0 0 26px 4px var(--team-glow, rgba(255,255,255,0.2)); }
   }
 
   .team-name{ font-size: clamp(10px,2.8vw,13px); letter-spacing:.15em; color:var(--ink-soft); margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; position:relative; z-index:1; }
-  .team-name .label{ font-weight:500; color: var(--ink); }
+  .team-name .label{ font-weight:500; color: var(--team-accent, var(--ink)); }
 
   .score-num{
     font-family:'JetBrains Mono', monospace;
@@ -332,12 +338,12 @@
   .pool-face.dragging{ transition: none; }
   .pool-face:focus-visible{ outline: 1px solid var(--ink); outline-offset: 3px; }
   .pool-face.pool-ready{
-    border-color: rgba(255,255,255,0.5);
+    border-color: var(--team-accent, rgba(255,255,255,0.5));
     animation: poolPulse 2s ease-in-out infinite;
   }
   @keyframes poolPulse{
     0%,100%{ box-shadow: 0 10px 26px rgba(0,0,0,0.5), inset 0 1px 0 var(--line-soft), 0 0 0 0 rgba(255,255,255,0.0); }
-    50%{ box-shadow: 0 10px 26px rgba(0,0,0,0.5), inset 0 1px 0 var(--line-soft), 0 0 26px 3px rgba(255,255,255,0.28); }
+    50%{ box-shadow: 0 10px 26px rgba(0,0,0,0.5), inset 0 1px 0 var(--line-soft), 0 0 26px 3px var(--team-glow, rgba(255,255,255,0.28)); }
   }
 
   .swipe-hint{
@@ -354,8 +360,8 @@
     0%,100%{ transform: translateY(0); opacity:.5; }
     50%{ transform: translateY(-6px); opacity:1; }
   }
-  .pool-face.pool-ready .swipe-hint{ color:var(--ink); font-weight:600; }
-  .pool-face.pool-ready .swipe-arrow{ color:var(--ink); }
+  .pool-face.pool-ready .swipe-hint{ color: var(--team-accent, var(--ink)); font-weight:600; }
+  .pool-face.pool-ready .swipe-arrow{ color: var(--team-accent, var(--ink)); }
 
   /* ---------- MODAL ---------- */
   .modal-overlay{
@@ -382,9 +388,9 @@
   .history-item .h-mono{
     width:22px; height:22px; border-radius:50%; margin-top:1px; flex-shrink:0;
     display:flex; align-items:center; justify-content:center;
-    font-family:'Bebas Neue', sans-serif; font-size:12px; color:var(--ink);
+    font-family:'Bebas Neue', sans-serif; font-size:12px; color: var(--team-accent, var(--ink));
     background: linear-gradient(160deg,#232427,#141517);
-    border: 1px solid var(--line);
+    border: 1px solid var(--team-accent, var(--line));
   }
   .history-item .h-name{ font-size: clamp(12.5px,3vw,13.5px); font-weight:500; color: var(--ink); }
   .history-item .h-name .ace-mini{ font-size:10px; color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:1px 6px; margin-left:6px; }
@@ -882,7 +888,7 @@
     }
     list.innerHTML = items.map(h=>{
       return '<div class="history-item">' +
-        '<span class="h-mono">' + (h.team || '–') + '</span>' +
+        '<span class="h-mono" data-team="' + (h.team || '') + '">' + (h.team || '–') + '</span>' +
         '<div>' +
           '<div class="h-name">' + h.name + (h.isAce ? '<span class="ace-mini">王牌</span>' : '') + (h.isComeback ? '<span class="ace-mini">逆境反擊</span>' : '') + '</div>' +
           '<div class="h-desc">' + h.desc + '</div>' +
