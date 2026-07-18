@@ -577,17 +577,17 @@
 
   const cardPool = [
     { name: "免死金牌", desc: "持有期間可觸發一次，我方主動失誤(出界、掛網)該球不算分，並由我方重新發球。" },
-    { name: "消失邊界", desc: "持有期間可觸發一次，對手回球落於限制區外的話我方得分。" },
+    { name: "區域限制", desc: "持有期間可觸發一次，對手回球落於限制區外的話我方得分。" },
     { name: "雙手奉上", desc: "指定對方一名球員，接下來3分必須雙手握拍回球(發球可用單手)。" },
     { name: "霧裡看花", desc: "指定對方一名球員，接下來3分必須閉上一隻眼睛。" },
-    { name: "畫地為牢", desc: "指定對方一名球員，接下來3分只能活動於底線區域。" },
+    { name: "底線牢籠", desc: "指定對方一名球員，接下來3分只能活動於底線區域。" },
     { name: "強制平手", desc: "即刻生效，若是我方分數落後於對手，立刻提高分數強制平手(分數高則此卡無效)。", isAce: true },
     { name: "加倍奉還", desc: "我方分數立刻扣3分，但下來3回合，我方得1分算3分。", isAce: true },
     { name: "乘勝追擊", desc: "持有期間可觸發一次，我方連續得2分後，立刻加2分。", isAce: true },
     { name: "左右互搏", desc: "指定對方一名球員，接下來3分必須使用非慣用手持拍。" },
     { name: "球桶突襲", desc: "指定對方一名球員，接下來3分必須用羽球桶擊球。"},
     { name: "匹克突襲", desc: "指定對方一名球員，接下來3分必須用匹克球拍擊球。"},
-    { name: "廚房禁區", desc: "接下來3分對方球員不可進入網前廚房區擊球，違反視同掉分。"},
+    { name: "廚房禁區", desc: "接下來3分對方球員不可整隻腳踩入網前廚房區擊球，違反視同掉分。"},
     { name: "劫富濟貧", desc: "持有期間可觸發一次，一旦對手領先，我方分數加2分，且對手扣2分。", isAce: true },
     { name: "歷史重演", desc: "即刻生效，可以指定使用我方歷史牌池的任一卡牌。", isAce: true }
   ];
@@ -669,18 +669,19 @@
     return deckState[pileKey].pop();
   }
 
-  function pickCardForSide(side, isComeback){
-    const maxScore = Math.max(state.scores[0], state.scores[1]);
-    const aceUnlocked = maxScore >= 10;
+  function pickCardForSide(side){
+    const other = side === 0 ? 1 : 0;
+    const aceUnlocked = state.scores[0] > 6 && state.scores[1] > 6;
 
     if(!aceUnlocked){
       return drawFromCategory('normal', NORMAL_CARDS);
     }
 
     // Base ace chance = share of aces in the full card pool.
-    // Only the comeback draw (triggered by the trailing side) gets double that chance.
+    // The trailing side gets a flat +10 percentage point bump over that base rate.
     const baseAceProb = ACE_CARDS.length / cardPool.length;
-    const aceProb = isComeback ? Math.min(1, baseAceProb * 2) : baseAceProb;
+    const isTrailing = state.scores[side] < state.scores[other];
+    const aceProb = isTrailing ? Math.min(1, baseAceProb + 0.10) : baseAceProb;
 
     if(Math.random() < aceProb){
       return drawFromCategory('ace', ACE_CARDS);
@@ -692,7 +693,7 @@
     const score = state.scores[side];
     const eligible = score > 0 && score % 5 === 0 && state.drawnAtScore[side] !== score;
     if(!eligible) return;
-    const card = pickCardForSide(side, false);
+    const card = pickCardForSide(side);
     state.drawnAtScore[side] = score;
     revealCard(card, side, false);
   }
@@ -701,7 +702,7 @@
     const diff = state.scores[0] - state.scores[1];
     const losingSide = diff <= -10 ? 0 : (diff >= 10 ? 1 : -1);
     if(losingSide === -1 || state.comebackUsed) return;
-    const card = pickCardForSide(losingSide, true);
+    const card = pickCardForSide(losingSide);
     state.comebackUsed = true;
     revealCard(card, losingSide, true);
   }
