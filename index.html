@@ -561,7 +561,7 @@
         ・比賽分數25不延長。
         ・混雙組合對上男雙組合以5:0開始。
         ・落後對手 10 分以上時，觸發「逆境反擊抽卡」，全場限用一次。
-        ・卡牌功能有分為「比賽結束前持續有效」、「條件觸發後失效」、「分數達到後解除」等條件。
+        ・牌型分為「即刻生效」、「持有期間皆有效，觸發後失效」、「觸發條件持續生效」。
       </div>
     </div>
   </div>
@@ -583,57 +583,38 @@
     T: { name: 'T' }
   };
 
- /*---- 測試版本
   const cardPool = [
-    { name: "免死金牌", desc: "持有期間可觸發一次，我方主動失誤(出界、掛網)該球不算分，並由我方重新發球。" },
-    { name: "區域限制", desc: "持有期間可觸發一次，...測試用" },
-    { name: "雙手奉上", desc: "指定對方一名球員，...測試用" },
-    { name: "霧裡看花", desc: "指定對方一名球員，...測試用。" },
-    { name: "底線牢籠", desc: "指定對方一名球員，...測試用" },
-    { name: "強制平手", desc: "即刻生效，...測試用。", isAce: true },
-    { name: "加倍奉還", desc: "我方分數...測試用。", isAce: true },
-    { name: "乘勝追擊", desc: "持有期間可觸發一次...測試用。", isAce: true },
-    { name: "左右互搏", desc: "指定對方一名球員，接下來3分必須使用非慣用手持拍。" },
-    { name: "球桶突襲", desc: "指定對方一名球員，...測試用"},
-    { name: "匹克突襲", desc: "指定對方一名球員，...測試用"},
-    { name: "廚房禁區", desc: "接下來3分對方球員不可雙腳踩入網前廚房區擊球，違反視同掉分。"},
-    { name: "劫富濟貧", desc: "持有期間可觸發一次，...測試用。", isAce: true },
-    { name: "歷史重演", desc: "即刻生效，可以指定使用我方歷史牌池的任一卡牌。", isAce: true }
-  ];
-   ---*/
- 
-  /*---- 正式版本 ----*/
-  const cardPool = [
-    { name: "免死金牌", desc: "持有期間可觸發一次，我方主動失誤(出界、掛網)該球不算分，並由我方重新發球。" },
-    { name: "區域限制", desc: "持有期間可觸發一次，對手回球落於發球限制區外的話我方得分。" },
+    { name: "免死金牌", desc: "持有期間，我方主動失誤(出界、掛網)該球不算分，並由我方重新發球，條件觸發後失效。" },
+    { name: "區域限制", desc: "持有期間，對手回球落於發球限制區外的話我方得分，條件觸發後失效。" },
     { name: "雙手奉上", desc: "指定對方一名球員，接下來3分必須雙手握拍回球(發球可用單手)。" },
     { name: "霧裡看花", desc: "指定對方一名球員，接下來3分必須閉上一隻眼睛。" },
     { name: "底線牢籠", desc: "指定對方一名球員，接下來3分只能活動於底線區域。" },
     { name: "強制平手", desc: "即刻生效，若是我方分數落後於對手，立刻提高分數強制平手(分數高則此卡無效)。", isAce: true },
     { name: "加倍奉還", desc: "即刻生效，我方分數立刻扣3分，接下來3分我方每得1分算3分。", isAce: true },
-    { name: "乘勝追擊", desc: "持有期間可觸發一次，我方連續得2分後，立刻加2分。", isAce: true },
+    { name: "乘勝追擊", desc: "持有期間，我方連續得2分後，立刻加2分，條件觸發後失效。", isAce: true },
     { name: "左右互搏", desc: "指定對方一名球員，接下來3分必須使用非慣用手持拍。" },
     { name: "球桶突襲", desc: "指定對方一名球員，接下來3分必須用羽球桶擊球。"},
     { name: "匹克突襲", desc: "指定對方一名球員，接下來3分必須用匹克球拍擊球。"},
     { name: "廚房禁區", desc: "接下來3分對方球員不可踩入網前廚房區域擊球，違反視同掉分。"},
-    { name: "劫富濟貧", desc: "持有期間可觸發一次，一旦對手領先，我方分數加2分，且對手扣2分。", isAce: true },
+    { name: "劫富濟貧", desc: "持有期間，一旦對手領先，我方分數加2分，且對手扣2分，條件觸發後失效。", isAce: true },
     { name: "歷史重演", desc: "即刻生效，可以指定使用我方歷史牌池的任一卡牌。", isAce: true },
     { name: "反射力量", desc: "即刻生效，可以指定使用對方歷史牌池的任一卡牌。", isAce: true },
-    { name: "隱藏效果·接觸", desc: "持續生效【不必告知對方】一旦對方肢體接觸(如擊掌、拍背)，我方加1分，每回合限觸發一次。"},
-    { name: "隱藏效果·穿越", desc: "持續生效【不必告知條件】一旦對方從網子下方撥球，則我方加1分，每回合限觸發一次。"},
-    { name: "隱藏效果·裁判", desc: "持續生效【不必告知條件】一旦對方與裁判交談，則我方加1分，每回合限觸發一次。"},
-    { name: "隱藏效果·偷襲", desc: "持續生效【不必告知條件】一旦對方發球發後場球，則我方加1分，每回合限觸發一次"},
-    { name: "隱藏效果·換球", desc: "持續生效【不必告知條件】一旦主動提出更換新球，則我方加1分，每回合限觸發一次"},
-    { name: "隱藏效果·觸身", desc: "持續生效【不必告知條件】一旦羽球擊中對方球員身體，則我方加一分，每回合限觸發一次。" }
-    ]
- 
-  
+    { name: "隱藏效果·接觸", desc: "【不必宣告】一旦對方肢體接觸(如擊掌、拍背)，我方加1分，每回合限觸發一次，持續生效。", isHidden: true },
+    { name: "隱藏效果·穿越", desc: "【不必宣告】一旦對方從網子下方撥球，則我方加1分，每回合限觸發一次，持續生效。", isHidden: true },
+    { name: "隱藏效果·裁判", desc: "【不必宣告】一旦對方與裁判交談，則我方加1分，每回合限觸發一次，持續生效。", isHidden: true },
+    { name: "隱藏效果·偷襲", desc: "【不必宣告】一旦對方發球發後場球，則我方加1分，每回合限觸發一次，持續生效。", isHidden: true },
+    { name: "隱藏效果·換球", desc: "【不必宣告】一旦主動提出更換新球，則我方加1分，每回合限觸發一次，持續生效。", isHidden: true },
+    { name: "隱藏效果·觸身", desc: "【不必宣告】一旦羽球擊中對方球員身體，則我方加一分，每回合限觸發一次，持續生效。", isHidden: true },
+    { name: "隱藏效果·界外", desc: "【不必宣告】一旦隔壁球場羽球飛入場地造成暫停，則我方加一分，每回合限觸發一次，持續生效。", isHidden: true }
+  ];
+
   let state = {
     teamSlots: ['N', 'E'],
     scores: [0, 0],
     drawnAtScore: [null, null],
     comebackUsed: false,
-    history: []
+    history: [],
+    hiddenDrawn: [false, false]
   };
 
   const $ = id => document.getElementById(id);
@@ -705,12 +686,34 @@
     return deckState[pileKey].pop();
   }
 
+  function drawNormalForSide(side){
+    if(deckState.normal.length === 0){
+      deckState.normal = shuffled(NORMAL_CARDS);
+    }
+    let candidates = state.hiddenDrawn[side]
+      ? deckState.normal.filter(c => !c.isHidden)
+      : deckState.normal;
+
+    if(candidates.length === 0){
+      // Only hidden cards were left and this side already used its one — reshuffle and retry.
+      deckState.normal = shuffled(NORMAL_CARDS);
+      candidates = state.hiddenDrawn[side]
+        ? deckState.normal.filter(c => !c.isHidden)
+        : deckState.normal;
+    }
+
+    const card = candidates[Math.floor(Math.random() * candidates.length)];
+    deckState.normal.splice(deckState.normal.indexOf(card), 1);
+    if(card.isHidden) state.hiddenDrawn[side] = true;
+    return card;
+  }
+
   function pickCardForSide(side){
     const other = side === 0 ? 1 : 0;
     const aceUnlocked = state.scores[0] > 5 && state.scores[1] > 5;
 
     if(!aceUnlocked){
-      return drawFromCategory('normal', NORMAL_CARDS);
+      return drawNormalForSide(side);
     }
 
     // Base ace chance = share of aces in the full card pool.
@@ -722,7 +725,7 @@
     if(Math.random() < aceProb){
       return drawFromCategory('ace', ACE_CARDS);
     }
-    return drawFromCategory('normal', NORMAL_CARDS);
+    return drawNormalForSide(side);
   }
 
   function drawForSide(side){
@@ -829,7 +832,7 @@
 
   /* ---------- TOP CONTROLS ---------- */
   $('btnReset').addEventListener('click', ()=>{
-    state = { teamSlots:['N','E'], scores:[0,0], drawnAtScore:[null,null], comebackUsed:false, history:[] };
+    state = { teamSlots:['N','E'], scores:[0,0], drawnAtScore:[null,null], comebackUsed:false, history:[], hiddenDrawn:[false,false] };
     deckState = freshDeckState();
     [0,1].forEach(side=>{
       const face = $('cardFace' + side);
@@ -844,6 +847,7 @@
     state.teamSlots.reverse();
     state.scores.reverse();
     state.drawnAtScore.reverse();
+    state.hiddenDrawn.reverse();
     state.history.forEach(h=>{ h.side = h.side === 0 ? 1 : 0; });
     render();
     showToast('已交換場地');
