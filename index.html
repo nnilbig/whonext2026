@@ -328,6 +328,8 @@
     100%{ transform: rotateY(0deg); opacity:1; }
   }
 
+  .card-face.has-card{ cursor: pointer; }
+
   .pool-face{
     cursor: grab;
     touch-action: none;
@@ -561,7 +563,6 @@
         ・比賽分數25不延長。
         ・混雙組合對上男雙組合以5:0開始。
         ・落後對手 10 分以上時，觸發「逆境反擊抽卡」，全場限用一次。
-        ・牌型分為「即刻生效」、「持有期間皆有效，觸發後失效」、「觸發條件持續生效」。
       </div>
     </div>
   </div>
@@ -584,27 +585,27 @@
   };
 
   const cardPool = [
-    { name: "免死金牌", desc: "持有期間，我方主動失誤(出界、掛網)該球不算分，並由我方重新發球，條件觸發後失效。" },
-    { name: "區域限制", desc: "持有期間，對手回球落於發球限制區外的話我方得分，條件觸發後失效。" },
+    { name: "免死金牌", desc: "持有期間可觸發一次，我方主動失誤(出界、掛網)該球不算分，並由我方重新發球。" },
+    { name: "區域限制", desc: "持有期間可觸發一次，對手回球落於發球限制區外的話我方得分。" },
     { name: "雙手奉上", desc: "指定對方一名球員，接下來3分必須雙手握拍回球(發球可用單手)。" },
     { name: "霧裡看花", desc: "指定對方一名球員，接下來3分必須閉上一隻眼睛。" },
     { name: "底線牢籠", desc: "指定對方一名球員，接下來3分只能活動於底線區域。" },
     { name: "強制平手", desc: "即刻生效，若是我方分數落後於對手，立刻提高分數強制平手(分數高則此卡無效)。", isAce: true },
     { name: "加倍奉還", desc: "即刻生效，我方分數立刻扣3分，接下來3分我方每得1分算3分。", isAce: true },
-    { name: "乘勝追擊", desc: "持有期間，我方連續得2分後，立刻加2分，條件觸發後失效。", isAce: true },
+    { name: "乘勝追擊", desc: "持有期間可觸發一次，我方連續得2分後，立刻加2分。", isAce: true },
     { name: "左右互搏", desc: "指定對方一名球員，接下來3分必須使用非慣用手持拍。" },
     { name: "球桶突襲", desc: "指定對方一名球員，接下來3分必須用羽球桶擊球。"},
     { name: "匹克突襲", desc: "指定對方一名球員，接下來3分必須用匹克球拍擊球。"},
     { name: "廚房禁區", desc: "接下來3分對方球員不可踩入網前廚房區域擊球，違反視同掉分。"},
-    { name: "劫富濟貧", desc: "持有期間，一旦對手領先，我方分數加2分，且對手扣2分，條件觸發後失效。", isAce: true },
+    { name: "劫富濟貧", desc: "持有期間可觸發一次，一旦對手領先，我方分數加2分，且對手扣2分。", isAce: true },
     { name: "歷史重演", desc: "即刻生效，可以指定使用我方歷史牌池的任一卡牌。", isAce: true },
     { name: "隱藏效果·接觸", desc: "【不必宣告】一旦對方肢體接觸(如擊掌、拍背)，我方加1分，每回合限觸發一次，持續生效。", isHidden: true },
     { name: "隱藏效果·穿越", desc: "【不必宣告】一旦對方從網子下方撥球，則我方加1分，每回合限觸發一次，持續生效。", isHidden: true },
     { name: "隱藏效果·裁判", desc: "【不必宣告】一旦對方與裁判交談，則我方加1分，每回合限觸發一次，持續生效。", isHidden: true },
     { name: "隱藏效果·偷襲", desc: "【不必宣告】一旦對方發球發後場球，則我方加1分，每回合限觸發一次，持續生效。", isHidden: true },
-    { name: "隱藏效果·換球", desc: "【不必宣告】一旦對方主動提出更換新球，則我方加1分，每回合限觸發一次，持續生效。", isHidden: true },
-    { name: "隱藏效果·觸身", desc: "【不必宣告】一旦羽球擊中對方球員身體，則我方加1分，每回合限觸發一次，持續生效。", isHidden: true },
-    { name: "隱藏效果·飛入", desc: "【不必宣告】一旦隔壁球場羽球飛入對方場地造成暫停，則我方加1分，每回合限觸發一次，持續生效。", isHidden: true }
+    { name: "隱藏效果·換球", desc: "【不必宣告】一旦主動提出更換新球，則我方加1分，每回合限觸發一次，持續生效。", isHidden: true },
+    { name: "隱藏效果·觸身", desc: "【不必宣告】一旦羽球擊中對方球員身體，則我方加一分，每回合限觸發一次，持續生效。", isHidden: true },
+    { name: "隱藏效果·界外", desc: "【不必宣告】一旦隔壁球場羽球飛入對方場地造成暫停，則我方加一分，每回合限觸發一次，持續生效。", isHidden: true }
   ];
 
   let state = {
@@ -745,6 +746,9 @@
     revealCard(card, losingSide, true);
   }
 
+  let cardCache = [null, null];
+  let cardCovered = [false, false];
+
   function revealCard(card, side, isComeback){
     const team = state.teamSlots[side] || null;
     state.history.unshift({
@@ -752,19 +756,46 @@
       score0: state.scores[0], score1: state.scores[1]
     });
 
-    const face = $('cardFace' + side);
-    face.classList.remove('flip-in');
-    face.classList.toggle('ace', !!card.isAce);
-    face.innerHTML =
+    const html =
       (card.isAce ? '<div class="ace-tag">王牌</div>' : '') +
       (isComeback ? '<div class="ace-tag" style="right:auto;left:10px;">逆境反擊</div>' : '') +
       '<div class="cf-name">' + card.name + '</div>' +
       '<div class="cf-desc">' + card.desc + '</div>';
+
+    cardCache[side] = { html, ace: !!card.isAce };
+    cardCovered[side] = false;
+
+    const face = $('cardFace' + side);
+    face.classList.remove('flip-in', 'covered');
+    face.classList.add('has-card');
+    face.classList.toggle('ace', !!card.isAce);
+    face.innerHTML = html;
     void face.offsetWidth;
     face.classList.add('flip-in');
 
     render();
   }
+
+  function toggleCardCover(side){
+    if(!cardCache[side]) return;
+    const face = $('cardFace' + side);
+    cardCovered[side] = !cardCovered[side];
+    face.classList.remove('flip-in');
+
+    if(cardCovered[side]){
+      face.classList.remove('ace');
+      face.innerHTML = '<div class="cf-placeholder">卡牌已蓋牌<br>點擊查看</div>';
+    } else {
+      face.classList.toggle('ace', cardCache[side].ace);
+      face.innerHTML = cardCache[side].html;
+    }
+    void face.offsetWidth;
+    face.classList.add('flip-in');
+  }
+
+  [0, 1].forEach(side=>{
+    $('cardFace' + side).addEventListener('click', ()=> toggleCardCover(side));
+  });
 
   function isSideEligible(side){
     const score = state.scores[side];
@@ -833,6 +864,8 @@
   $('btnReset').addEventListener('click', ()=>{
     state = { teamSlots:['N','E'], scores:[0,0], drawnAtScore:[null,null], comebackUsed:false, history:[], hiddenDrawn:[false,false] };
     deckState = freshDeckState();
+    cardCache = [null, null];
+    cardCovered = [false, false];
     [0,1].forEach(side=>{
       const face = $('cardFace' + side);
       face.className = 'card-face';
@@ -848,6 +881,20 @@
     state.drawnAtScore.reverse();
     state.hiddenDrawn.reverse();
     state.history.forEach(h=>{ h.side = h.side === 0 ? 1 : 0; });
+    cardCache.reverse();
+    cardCovered.reverse();
+    [0,1].forEach(side=>{
+      const face = $('cardFace' + side);
+      if(!cardCache[side]){
+        face.className = 'card-face';
+        face.innerHTML = '<div class="cf-placeholder">尚未抽取<br>達成里程碑即可抽卡</div>';
+      } else {
+        face.className = 'card-face has-card' + (cardCache[side].ace && !cardCovered[side] ? ' ace' : '');
+        face.innerHTML = cardCovered[side]
+          ? '<div class="cf-placeholder">卡牌已蓋牌<br>再點一下查看</div>'
+          : cardCache[side].html;
+      }
+    });
     render();
     showToast('已交換場地');
   });
