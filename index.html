@@ -663,7 +663,8 @@
 
   /* ---------- CARD DRAW ---------- */
   const ACE_CARDS = cardPool.filter(c => c.isAce);
-  const NORMAL_CARDS = cardPool.filter(c => !c.isAce);
+  const HIDDEN_CARDS = cardPool.filter(c => c.isHidden);
+  const NORMAL_CARDS = cardPool.filter(c => !c.isAce && !c.isHidden);
 
   function shuffled(arr){
     const a = arr.slice();
@@ -675,7 +676,11 @@
   }
 
   function freshDeckState(){
-    return { normal: shuffled(NORMAL_CARDS), ace: shuffled(ACE_CARDS) };
+    return {
+      normal: shuffled(NORMAL_CARDS),
+      hidden: shuffled(HIDDEN_CARDS),
+      ace: shuffled(ACE_CARDS)
+    };
   }
 
   let deckState = freshDeckState();
@@ -687,26 +692,19 @@
     return deckState[pileKey].pop();
   }
 
-  function drawNormalForSide(side){
-    if(deckState.normal.length === 0){
-      deckState.normal = shuffled(NORMAL_CARDS);
-    }
-    let candidates = state.hiddenDrawn[side]
-      ? deckState.normal.filter(c => !c.isHidden)
-      : deckState.normal;
+  // Within the non-ace tier, a normal card is at least twice as likely as a
+  // hidden-effect card — unless this side has already used its one hidden card,
+  // in which case it always draws a normal card.
+  const HIDDEN_CATEGORY_PROB = 1 / 3; // normal:hidden = 2:1
 
-    if(candidates.length === 0){
-      // Only hidden cards were left and this side already used its one — reshuffle and retry.
-      deckState.normal = shuffled(NORMAL_CARDS);
-      candidates = state.hiddenDrawn[side]
-        ? deckState.normal.filter(c => !c.isHidden)
-        : deckState.normal;
+  function drawNonAceForSide(side){
+    const hiddenEligible = !state.hiddenDrawn[side];
+    if(hiddenEligible && Math.random() < HIDDEN_CATEGORY_PROB){
+      const card = drawFromCategory('hidden', HIDDEN_CARDS);
+      state.hiddenDrawn[side] = true;
+      return card;
     }
-
-    const card = candidates[Math.floor(Math.random() * candidates.length)];
-    deckState.normal.splice(deckState.normal.indexOf(card), 1);
-    if(card.isHidden) state.hiddenDrawn[side] = true;
-    return card;
+    return drawFromCategory('normal', NORMAL_CARDS);
   }
 
   function pickCardForSide(side){
@@ -714,7 +712,7 @@
     const aceUnlocked = state.scores[0] > 5 && state.scores[1] > 5;
 
     if(!aceUnlocked){
-      return drawNormalForSide(side);
+      return drawNonAceForSide(side);
     }
 
     // Base ace chance = share of aces in the full card pool.
@@ -726,7 +724,7 @@
     if(Math.random() < aceProb){
       return drawFromCategory('ace', ACE_CARDS);
     }
-    return drawNormalForSide(side);
+    return drawNonAceForSide(side);
   }
 
   function drawForSide(side){
@@ -785,7 +783,7 @@
 
     if(cardCovered[side]){
       face.classList.remove('ace');
-      face.innerHTML = '<div class="cf-placeholder">卡牌已蓋牌<br>點擊查看</div>';
+      face.innerHTML = '<div class="cf-placeholder">卡牌已蓋牌<br>再點一下查看</div>';
     } else {
       face.classList.toggle('ace', cardCache[side].ace);
       face.innerHTML = cardCache[side].html;
