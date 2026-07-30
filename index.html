@@ -78,7 +78,7 @@
   .top-control .brand{
     font-family:'Oswald', sans-serif;
     font-weight:600;
-    font-size:12px; letter-spacing:.32em; color:var(--ink-soft);
+    font-size:13px; letter-spacing:.32em; color:var(--ink-soft);
     margin-right:auto; padding-left:4px;
     white-space:nowrap; flex-shrink:0;
     text-transform:uppercase;
@@ -86,8 +86,8 @@
   .tc-btn{
     background: transparent;
     color: var(--ink);
-    padding: clamp(5px,1.8vw,8px) clamp(8px,2.5vw,16px);
-    font-size: clamp(11px,2.6vw,13.5px);
+    padding: clamp(6px,1.8vw,9px) clamp(9px,2.5vw,17px);
+    font-size: clamp(12px,2.8vw,14.5px);
     letter-spacing: .04em;
     border: 1px solid transparent;
     border-radius: var(--radius);
@@ -99,7 +99,7 @@
   .tc-btn .ic{ margin-right:4px; opacity:.7; }
 
   /* ---------- WRAP ---------- */
-  .wrap{ max-width: 980px; margin: 0 auto; padding: clamp(10px,2.5vw,20px) clamp(10px,4vw,20px) 0; }
+  .wrap{ max-width: 1020px; margin: 0 auto; padding: clamp(10px,2.5vw,20px) clamp(10px,4vw,20px) 0; }
 
   /* ---------- TEAM SETUP PANEL ---------- */
   .setup-panel{
@@ -109,17 +109,17 @@
     display:none;
   }
   .setup-panel.open{ display:block; }
-  .setup-title{ font-size: clamp(11.5px,2.8vw,13px); color:var(--ink-soft); letter-spacing:.1em; margin-bottom:14px; }
+  .setup-title{ font-size: clamp(12.5px,2.8vw,14px); color:var(--ink-soft); letter-spacing:.1em; margin-bottom:14px; }
   .chip-row{ display:flex; gap: clamp(10px,3vw,16px); flex-wrap:wrap; }
   .chip{
     display:flex; align-items:center; justify-content:center;
-    width: clamp(42px,11vw,50px); height: clamp(42px,11vw,50px);
+    width: clamp(44px,11vw,52px); height: clamp(44px,11vw,52px);
     border-radius:50%;
     border:1px solid var(--line);
     background: linear-gradient(160deg,#232427,#141517);
     box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 1px 0 var(--line-soft);
     font-family:'Bebas Neue', sans-serif;
-    font-size: clamp(17px,4.4vw,20px);
+    font-size: clamp(18px,4.4vw,21px);
     letter-spacing:.02em;
     color: var(--ink-faint);
     transition: all .2s ease;
@@ -130,7 +130,7 @@
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.65), inset 0 -1px 0 var(--line-soft), 0 0 14px var(--team-glow, rgba(255,255,255,0.14));
   }
   .chip:hover{ transform: translateY(-1px); }
-  .setup-hint{ margin-top:12px; font-size:12px; color:var(--ink-soft); }
+  .setup-hint{ margin-top:12px; font-size:12.5px; color:var(--ink-soft); }
 
   /* ---------- SCORE ROW ---------- */
   .score-row{ display:flex; gap: clamp(8px,3vw,18px); margin-bottom: clamp(20px,5vw,30px); }
@@ -138,10 +138,11 @@
     flex:1;
     min-width:0;
     border-radius: var(--radius);
-    padding: clamp(14px,4vw,22px) clamp(8px,3vw,20px) clamp(12px,3vw,20px);
+    padding: clamp(14px,4vw,24px) clamp(8px,3vw,20px) clamp(14px,3vw,22px);
     text-align:center;
     position:relative;
     overflow:hidden;
+    cursor:default;
     transition: box-shadow .3s ease, border-color .3s ease;
   }
   .score-card::before{
@@ -164,6 +165,7 @@
   .score-card.glow{
     animation: pulseGlow 1.8s ease-in-out infinite;
     border-color: var(--team-accent, rgba(255,255,255,0.4));
+    cursor:pointer;
   }
   .score-card.glow::before{ opacity:1; }
   @keyframes pulseGlow{
@@ -171,19 +173,19 @@
     50%{ box-shadow: var(--shadow), 0 0 26px 4px var(--team-glow, rgba(255,255,255,0.2)); }
   }
 
-  .team-name{ font-size: clamp(10px,2.8vw,13px); letter-spacing:.15em; color:var(--ink-soft); margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; position:relative; z-index:1; }
+  .team-name{ font-size: clamp(11px,3vw,15px); letter-spacing:.15em; color:var(--ink-soft); margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; position:relative; z-index:1; }
   .team-name .label{ font-weight:500; color: var(--team-accent, var(--ink)); }
 
   .score-num{
     font-family:'JetBrains Mono', monospace;
-    font-size: clamp(38px,11vw,72px);
+    font-size: clamp(44px,12vw,84px);
     font-weight:700;
     line-height:1;
     letter-spacing:.02em;
     font-variant-numeric: tabular-nums;
     color: var(--ink);
     text-shadow: 0 1px 0 rgba(255,255,255,.08), 0 -1px 1px rgba(0,0,0,.55);
-    min-width: clamp(50px,15vw,130px);
+    min-width: clamp(56px,16vw,150px);
     text-align:center;
     position:relative; z-index:1;
   }
@@ -191,13 +193,13 @@
     display:flex; align-items:center; justify-content:center;
     flex-wrap:nowrap;
     width:100%;
-    gap: clamp(4px,2vw,14px);
+    gap: clamp(4px,2vw,16px);
     margin: clamp(4px,1.5vw,6px) 0 clamp(10px,3vw,16px);
     position:relative; z-index:1;
   }
   .score-btn{
-    width: clamp(26px,7.5vw,36px); height: clamp(26px,7.5vw,36px); border-radius:50%;
-    font-size: clamp(13px,3.6vw,18px); font-weight:600;
+    width: clamp(28px,7.5vw,40px); height: clamp(28px,7.5vw,40px); border-radius:50%;
+    font-size: clamp(14px,3.6vw,20px); font-weight:600;
     border:1px solid var(--line);
     background: linear-gradient(160deg,#232427,#141517);
     color: var(--ink);
@@ -209,55 +211,39 @@
   .score-btn:active{ transform: scale(.94); }
 
   .milestone-tag{
-    margin-top: clamp(8px,2.5vw,12px); font-size: clamp(9.5px,2.4vw,11.5px); letter-spacing:.08em;
-    color: var(--ink); height:14px; white-space:nowrap; position:relative; z-index:1;
+    margin-top: clamp(8px,2.5vw,12px); font-size: clamp(10.5px,2.6vw,13px); letter-spacing:.08em;
+    color: var(--ink); height:16px; white-space:nowrap; position:relative; z-index:1;
   }
+
+  .score-history-btn{
+    margin-top: clamp(9px,2.4vw,13px);
+    position:relative; z-index:1;
+    font-size: clamp(10.5px,2.4vw,12.5px);
+    padding: clamp(5px,1.5vw,7px) clamp(11px,2.8vw,16px);
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--ink-soft);
+    background: rgba(0,0,0,0.2);
+    letter-spacing:.04em;
+    transition: all .2s ease;
+  }
+  .score-history-btn:hover{ opacity:.8; border-color: rgba(255,255,255,0.3); color: var(--ink); }
 
   /* ---------- CARD SECTION ---------- */
   .card-section{
     border-radius: var(--radius);
-    padding: clamp(16px,4.5vw,28px) clamp(10px,3.5vw,26px) clamp(18px,4.5vw,30px);
+    padding: clamp(16px,4.5vw,30px) clamp(10px,3.5vw,28px) clamp(18px,4.5vw,32px);
   }
   .card-section-head{
-    display:flex; flex-direction:column;
-    margin-bottom: clamp(14px,3.5vw,20px); gap: clamp(10px,3vw,14px);
+    margin-bottom: clamp(14px,3.5vw,20px);
   }
-  .card-section-head h2{ font-size: clamp(16px,4vw,19px); }
-  .card-section-head .sub{ font-size: clamp(10.5px,2.6vw,12px); color:var(--ink-soft); margin-top:4px; letter-spacing:.03em; }
+  .card-section-head h2{ font-size: clamp(18px,4.4vw,22px); }
+  .card-section-head .sub{ font-size: clamp(11.5px,2.8vw,13.5px); color:var(--ink-soft); margin-top:4px; letter-spacing:.03em; }
 
-  .card-body{ display:flex; flex-direction:column; gap: clamp(16px,4vw,22px); }
-
-  .pool-row{ display:flex; gap: clamp(8px,3vw,22px); justify-content:center; flex-wrap:nowrap; }
-
-  .cards-row{ display:flex; gap: clamp(8px,3vw,22px); justify-content:center; flex-wrap:nowrap; }
-  .card-slot{ display:flex; flex-direction:column; align-items:center; gap: clamp(6px,2vw,10px); flex:1 1 0; min-width:0; max-width:240px; }
-  .card-slot-label{
-    font-size: clamp(10px,2.6vw,12.5px); letter-spacing:.08em; color:var(--ink-soft);
-    display:flex; align-items:center; gap: clamp(4px,1.5vw,6px);
-    max-width:100%; overflow:hidden; width:100%; justify-content:center;
-  }
-  .card-slot-label .label-t{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; color: var(--ink); }
-  .card-slot-label .mono{ font-family:'Bebas Neue', sans-serif; font-size:14px; color:var(--ink); flex-shrink:0; }
-
-  .mini-history-btn{
-    flex-shrink:0;
-    font-size: clamp(9px,2.2vw,10.5px);
-    padding: 2px clamp(6px,2vw,9px);
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    color: var(--ink-soft);
-    background: var(--panel-2);
-    letter-spacing:.05em;
-    transition: all .2s ease;
-  }
-  .mini-history-btn:hover{ opacity:.7; border-color: rgba(255,255,255,0.3); color: var(--ink); }
-
-  /* card face used for BOTH the pool logo & the revealed card (same size, per spec) */
-  .card-face{
+  /* ---------- SHARED POOL (single pool, shared by both teams) ---------- */
+  .shared-pool{
     width: 100%;
-    aspect-ratio: 11 / 15;
-    max-width: 220px;
-    min-height: 180px;
+    min-height: clamp(220px, 34vw, 320px);
     border-radius: 8px;
     border: 1px solid var(--line);
     background:
@@ -269,101 +255,91 @@
     background-repeat:no-repeat;
     background-size: 6px 6px, 6px 6px, 6px 6px, 6px 6px, 100% 100%;
     box-shadow: 0 10px 26px rgba(0,0,0,0.5), inset 0 1px 0 var(--line-soft);
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    padding: clamp(8px,3vw,18px);
-    text-align:center;
     position:relative;
-    overflow-y:auto;
-    scrollbar-width:thin;
-    transition: transform .5s ease, border-color .3s ease, box-shadow .3s ease;
+    overflow:hidden;
+    padding: clamp(20px,4.5vw,32px);
+    display:flex;
+    align-items:stretch;
+    cursor:pointer;
+    transition: border-color .3s ease, box-shadow .3s ease;
   }
-  .card-face::-webkit-scrollbar{ width:4px; }
-  .card-face::-webkit-scrollbar-thumb{ background: rgba(255,255,255,0.15); border-radius:4px; }
-  .card-face::after{
+  .shared-pool::after{
     content: attr(data-team);
-    position:absolute; top:-6px; left:50%; transform:translateX(-50%);
+    position:absolute; top:-10px; right:8px;
     font-family:'Bebas Neue', sans-serif;
-    font-size: clamp(70px,26vw,150px);
+    font-size: clamp(84px,18vw,170px);
     line-height:1;
-    color: rgba(255,255,255,0.03);
+    color: rgba(255,255,255,0.035);
     pointer-events:none;
     user-select:none;
   }
-  .card-face.ace{
+  .shared-pool.ace{
     border-color: rgba(255,255,255,0.55);
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.35) inset, 0 0 20px rgba(255,255,255,0.22), 0 10px 26px rgba(0,0,0,0.5);
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.35) inset, 0 0 24px rgba(255,255,255,0.22), 0 10px 26px rgba(0,0,0,0.5);
   }
-  .card-face .ace-tag{
-    position:absolute; top: clamp(5px,1.5vw,10px); right: clamp(5px,1.5vw,10px);
-    font-size: clamp(8.5px,2vw,10.5px); color:#0A0A0B;
-    background: linear-gradient(160deg,#F2F2F0,#B7B8BB);
-    padding: 2px clamp(5px,1.5vw,8px); border-radius: 999px; letter-spacing:.06em;
-    font-weight:700; z-index:1;
+  .shared-pool.ready{ animation: poolPulse 2s ease-in-out infinite; }
+  @keyframes poolPulse{
+    0%,100%{ box-shadow: 0 10px 26px rgba(0,0,0,0.5), inset 0 1px 0 var(--line-soft), 0 0 0 0 rgba(255,255,255,0.0); }
+    50%{ box-shadow: 0 10px 26px rgba(0,0,0,0.5), inset 0 1px 0 var(--line-soft), 0 0 26px 3px rgba(255,255,255,0.22); }
   }
-  .logo-emblem{
-    width: clamp(64px,22vw,120px); height: clamp(64px,22vw,120px); border-radius:50%;
-    border: 1px solid var(--line); display:flex; flex-direction:column; align-items:center; justify-content:center;
-    font-family:'Bebas Neue', sans-serif; color:var(--ink);
-    background: radial-gradient(circle at 35% 30%, #33353A, #16171A 72%);
-    box-shadow: inset 0 1px 0 var(--line-soft), 0 0 14px rgba(255,255,255,0.08);
-    position:relative; z-index:1;
-    gap:1px;
-    overflow:hidden;
-  }
-  .logo-emblem .lg-line{
-    font-size: clamp(11px,3.4vw,18px);
-    letter-spacing:.08em;
-    line-height:1;
-  }
-  .logo-emblem img{
-    width:100%; height:100%; object-fit:cover;
-  }
-  .card-face .cf-name{ font-family:'Noto Sans TC', sans-serif; font-size: clamp(15px,4.2vw,22px); font-weight:700; margin-bottom: clamp(6px,2vw,10px); color: var(--ink); position:relative; z-index:1; }
-  .card-face .cf-desc{ font-size: clamp(11.5px,3vw,15px); color:var(--ink-soft); line-height:1.6; position:relative; z-index:1; }
-  .card-face .cf-placeholder{ font-size: clamp(11.5px,3vw,15px); color:var(--ink-soft); line-height:1.7; position:relative; z-index:1; }
-
-  .card-face.flip-in{ animation: flipIn .5s ease; }
+  .shared-pool.flip-in{ animation: flipIn .45s ease; }
   @keyframes flipIn{
     0%{ transform: rotateY(90deg); opacity:0; }
     100%{ transform: rotateY(0deg); opacity:1; }
   }
 
-  .card-face.has-card{ cursor: pointer; }
+  .logo-emblem{
+    width: clamp(72px,18vw,110px); height: clamp(72px,18vw,110px); border-radius:50%;
+    border: 1px solid var(--line); display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-family:'Bebas Neue', sans-serif; color:var(--ink);
+    background: radial-gradient(circle at 35% 30%, #33353A, #16171A 72%);
+    box-shadow: inset 0 1px 0 var(--line-soft), 0 0 14px rgba(255,255,255,0.08);
+    gap:1px;
+    overflow:hidden;
+  }
+  .logo-emblem .lg-line{ font-size: clamp(12px,3.2vw,17px); letter-spacing:.08em; line-height:1; }
 
-  .pool-face{
-    cursor: grab;
-    touch-action: none;
-    user-select: none;
-    -webkit-user-select: none;
-  }
-  .pool-face:active{ cursor: grabbing; }
-  .pool-face.dragging{ transition: none; }
-  .pool-face:focus-visible{ outline: 1px solid var(--ink); outline-offset: 3px; }
-  .pool-face.pool-ready{
-    border-color: var(--team-accent, rgba(255,255,255,0.5));
-    animation: poolPulse 2s ease-in-out infinite;
-  }
-  @keyframes poolPulse{
-    0%,100%{ box-shadow: 0 10px 26px rgba(0,0,0,0.5), inset 0 1px 0 var(--line-soft), 0 0 0 0 rgba(255,255,255,0.0); }
-    50%{ box-shadow: 0 10px 26px rgba(0,0,0,0.5), inset 0 1px 0 var(--line-soft), 0 0 26px 3px var(--team-glow, rgba(255,255,255,0.28)); }
+  .sp-idle{ position:absolute; inset:0; z-index:1; }
+  .sp-idle .logo-emblem{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
+  .sp-hint{
+    position:absolute; left:50%; bottom:0; transform:translateX(-50%);
+    font-size: clamp(12px,2.8vw,14.5px); color:var(--ink-soft); letter-spacing:.05em;
+    text-align:center; white-space:nowrap;
   }
 
-  .swipe-hint{
-    position:absolute; bottom: clamp(10px,3vw,16px); left:50%; transform: translateX(-50%);
-    display:flex; flex-direction:column; align-items:center; gap:2px;
-    font-size: clamp(8.5px,2.2vw,10px); color: var(--ink-soft); letter-spacing:.08em;
-    pointer-events:none; z-index:1;
+  .sp-covered{ position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; }
+  .sp-covered .logo-emblem{ opacity:.35; }
+  .sp-covered .sp-cover-text{ font-size: clamp(12.5px,3vw,15px); color:var(--ink-soft); letter-spacing:.05em; text-align:center; }
+
+  .sp-tags-col{
+    display:flex; flex-direction:column; align-items:flex-start; gap: clamp(7px,1.8vw,11px);
+    flex:0 0 auto; width: clamp(74px,16vw,120px);
+    position:relative; z-index:1;
   }
-  .swipe-arrow{
-    font-size: clamp(12px,3vw,15px); line-height:1;
-    animation: swipeBounce 1.8s ease-in-out infinite;
+  .sp-mono{ font-family:'Bebas Neue', sans-serif; color:var(--ink); font-size: clamp(36px,8vw,56px); line-height:1; }
+  .sp-tag{
+    font-size: clamp(9.5px,2.2vw,12px); color:#0A0A0B;
+    background: linear-gradient(160deg,#F2F2F0,#B7B8BB);
+    padding: 3px clamp(7px,1.8vw,10px); border-radius:999px; letter-spacing:.05em; font-weight:700;
+    white-space:nowrap;
   }
-  @keyframes swipeBounce{
-    0%,100%{ transform: translateY(0); opacity:.5; }
-    50%{ transform: translateY(-6px); opacity:1; }
+
+  .sp-content-col{
+    flex:1; min-width:0;
+    display:flex; flex-direction:column; justify-content:center; gap: clamp(10px,2.2vw,16px);
+    border-left: 1px solid var(--line); padding-left: clamp(16px,3.2vw,26px);
+    position:relative; z-index:1;
   }
-  .pool-face.pool-ready .swipe-hint{ color: var(--team-accent, var(--ink)); font-weight:600; }
-  .pool-face.pool-ready .swipe-arrow{ color: var(--team-accent, var(--ink)); }
+  .sp-name{
+    font-family:'Noto Sans TC', sans-serif; font-weight:900;
+    font-size: clamp(22px,5vw,36px); color:var(--ink); line-height:1.25;
+  }
+  .sp-desc{ font-size: clamp(15px,3.2vw,20px); color:var(--ink-soft); line-height:1.7; }
+
+  .sp-cover-hint{
+    position:absolute; bottom: clamp(10px,2.5vw,16px); right: clamp(14px,3vw,22px);
+    font-size: clamp(10px,2.2vw,12px); color:var(--ink-faint); letter-spacing:.05em; z-index:1;
+  }
 
   /* ---------- MODAL ---------- */
   .modal-overlay{
@@ -375,35 +351,35 @@
   .modal-overlay.open{ display:flex; }
   .modal-box{
     border-radius: var(--radius);
-    max-width: 480px; width:100%; max-height:82vh; overflow-y:auto;
+    max-width: 500px; width:100%; max-height:82vh; overflow-y:auto;
     padding: clamp(18px,5vw,26px) clamp(16px,5vw,26px) clamp(16px,4vw,22px);
     box-shadow: 0 20px 60px rgba(0,0,0,0.65);
   }
-  .modal-box h3{ font-size: clamp(16px,4vw,18px); margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; gap:10px; color: var(--ink); }
-  .modal-box h3 .close{ font-size: clamp(12px,3vw,14px); color:var(--ink-soft); font-family:'Noto Sans TC',sans-serif; font-weight:400; flex-shrink:0; }
-  .modal-box .rules-text{ font-size: clamp(12.5px,3vw,13.5px); line-height:1.85; color:var(--ink); white-space:pre-line; }
+  .modal-box h3{ font-size: clamp(17px,4vw,20px); margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; gap:10px; color: var(--ink); }
+  .modal-box h3 .close{ font-size: clamp(12.5px,3vw,14.5px); color:var(--ink-soft); font-family:'Noto Sans TC',sans-serif; font-weight:400; flex-shrink:0; }
+  .modal-box .rules-text{ font-size: clamp(13.5px,3vw,15px); line-height:1.9; color:var(--ink); white-space:pre-line; }
   .history-item{
     padding: 10px 0; border-bottom:1px solid var(--line);
     display:flex; gap:10px; align-items:flex-start;
   }
   .history-item:last-child{ border-bottom:none; }
   .history-item .h-mono{
-    width:22px; height:22px; border-radius:50%; margin-top:1px; flex-shrink:0;
+    width:24px; height:24px; border-radius:50%; margin-top:1px; flex-shrink:0;
     display:flex; align-items:center; justify-content:center;
-    font-family:'Bebas Neue', sans-serif; font-size:12px; color: var(--team-accent, var(--ink));
+    font-family:'Bebas Neue', sans-serif; font-size:13px; color: var(--team-accent, var(--ink));
     background: linear-gradient(160deg,#232427,#141517);
     border: 1px solid var(--team-accent, var(--line));
   }
-  .history-item .h-name{ font-size: clamp(12.5px,3vw,13.5px); font-weight:500; color: var(--ink); }
-  .history-item .h-name .ace-mini{ font-size:10px; color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:1px 6px; margin-left:6px; }
-  .history-item .h-desc{ font-size: clamp(11px,2.6vw,12px); color:var(--ink-soft); margin-top:3px; line-height:1.6; }
-  .history-item .h-meta{ font-size: clamp(10px,2.4vw,11px); color:var(--ink-soft); margin-top:3px; }
-  .empty-hist{ font-size:13px; color:var(--ink-soft); text-align:center; padding: 30px 0; }
+  .history-item .h-name{ font-size: clamp(13.5px,3vw,15px); font-weight:500; color: var(--ink); }
+  .history-item .h-name .ace-mini{ font-size:10.5px; color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:1px 6px; margin-left:6px; }
+  .history-item .h-desc{ font-size: clamp(12px,2.8vw,13.5px); color:var(--ink-soft); margin-top:3px; line-height:1.6; }
+  .history-item .h-meta{ font-size: clamp(10.5px,2.4vw,12px); color:var(--ink-soft); margin-top:3px; }
+  .empty-hist{ font-size:14px; color:var(--ink-soft); text-align:center; padding: 30px 0; }
 
   .toast{
     position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
     max-width: calc(100vw - 32px);
-    background: var(--panel-1); color: var(--ink); font-size:13px; padding:10px 20px;
+    background: var(--panel-1); color: var(--ink); font-size:14px; padding:10px 20px;
     border: 1px solid var(--line);
     border-radius: 999px; opacity:0; transition: all .3s ease; pointer-events:none; z-index:200;
     letter-spacing:.03em; text-align:center;
@@ -411,52 +387,40 @@
   }
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
+  @media (max-width: 560px){
+    .shared-pool{ flex-direction:column; align-items:flex-start; gap:12px; }
+    .sp-tags-col{ flex-direction:row; align-items:center; width:100%; gap:10px; }
+    .sp-content-col{ border-left:none; border-top:1px solid var(--line); padding-left:0; padding-top:12px; width:100%; }
+    .sp-cover-hint{ position:static; margin-top:8px; text-align:right; width:100%; }
+  }
+
   @media (max-width: 480px){
     .top-control{ justify-content:flex-start; gap:3px; }
     .top-control .brand{ display:none; }
-    .tc-btn{ padding: 5px 8px; font-size:11px; }
+    .tc-btn{ padding: 6px 9px; font-size:12px; }
     .tc-btn .ic{ margin-right:3px; }
 
     .wrap{ padding-top:8px; }
 
     .score-row{ gap:6px; margin-bottom:10px; }
-    .score-card{ padding: 8px 4px 8px; }
+    .score-card{ padding: 10px 4px 10px; }
     .score-controls{ margin: 2px 0 6px; gap:4px; }
-    .score-num{ min-width:0; font-size: clamp(30px,10vw,48px); }
-    .score-btn{ width:26px; height:26px; font-size:13px; }
-    .milestone-tag{ margin-top:4px; height:12px; }
+    .score-num{ min-width:0; font-size: clamp(34px,10vw,52px); }
+    .score-btn{ width:28px; height:28px; font-size:14px; }
+    .milestone-tag{ margin-top:4px; height:14px; }
+    .score-history-btn{ font-size:9.5px; padding:4px 9px; }
 
-    .card-section{ padding: 10px 8px 12px; }
-    .card-section-head{ margin-bottom:8px; gap:2px; }
-    .card-section-head .sub{ display:none; }
-    .card-body{ gap:8px; }
-    .cards-row, .pool-row{ gap:6px; }
-    .card-slot{ gap:3px; }
-    .card-slot-label{ font-size:9.5px; }
-    .mini-history-btn{ padding:1px 6px; font-size:8.5px; }
-
-    .card-face{
-      aspect-ratio: 1 / 1;
-      max-width: 150px;
-      min-height: 0;
-      padding: 8px;
-    }
-    .card-face .cf-name{ font-size:13.5px; margin-bottom:3px; }
-    .card-face .cf-desc, .card-face .cf-placeholder{ font-size:10.5px; line-height:1.35; }
-    .logo-emblem{ width:70px; height:70px; font-size:28px; }
-    .swipe-hint{ bottom:5px; font-size:7.5px; }
-    .swipe-arrow{ font-size:10px; }
+    .card-section{ padding: 12px 8px 14px; }
+    .card-section-head{ margin-bottom:8px; }
+    .shared-pool{ padding: 16px 14px; }
   }
 
   @media (max-width: 360px){
-    .cards-row{ gap:4px; }
-    .pool-row{ gap:4px; }
     .score-row{ gap:4px; }
-    .card-face{ max-width: 130px; }
-    .score-card{ padding: 6px 2px 6px; }
+    .score-card{ padding: 8px 2px 8px; }
     .score-controls{ gap:2px; }
-    .score-btn{ width:22px; height:22px; font-size:11px; }
-    .score-num{ font-size: clamp(26px,10vw,38px); }
+    .score-btn{ width:24px; height:24px; font-size:12px; }
+    .score-num{ font-size: clamp(28px,10vw,42px); }
   }
 </style>
 </head>
@@ -492,6 +456,7 @@
           <button class="score-btn" data-side="0" data-delta="1">+</button>
         </div>
         <div class="milestone-tag" id="milestoneTag0"></div>
+        <button class="score-history-btn" data-side="0" id="historyBtn0">抽牌歷史</button>
       </div>
       <div class="score-card metal" id="scoreCard1" data-team="E">
         <div class="team-name"><span class="label">E 隊</span></div>
@@ -501,56 +466,17 @@
           <button class="score-btn" data-side="1" data-delta="1">+</button>
         </div>
         <div class="milestone-tag" id="milestoneTag1"></div>
+        <button class="score-history-btn" data-side="1" id="historyBtn1">抽牌歷史</button>
       </div>
     </div>
 
     <div class="card-section metal">
       <div class="card-section-head">
-        <div>
-          <h2>請抽卡</h2>
-          <div class="sub">向上滑動所屬牌池即可抽卡・牌池共用</div>
-        </div>
+        <h2>請抽卡</h2>
+        <div class="sub">點擊符合條件的隊伍分數卡即可抽卡・牌池共用一副牌・再次點擊牌池可翻面</div>
       </div>
 
-      <div class="card-body">
-        <div class="cards-row">
-          <div class="card-slot">
-            <div class="card-slot-label" id="cardLabel0">
-              <span class="mono" id="cardLabelMono0">N</span><span class="label-t" id="cardLabelText0">隊 · 卡牌說明</span>
-              <button class="mini-history-btn" data-side="0" id="historyBtn0" title="N隊抽牌歷史">歷史</button>
-            </div>
-            <div class="card-face" id="cardFace0" data-team="N">
-              <div class="cf-placeholder">尚未抽取<br>達成里程碑即可抽卡</div>
-            </div>
-          </div>
-          <div class="card-slot">
-            <div class="card-slot-label" id="cardLabel1">
-              <span class="mono" id="cardLabelMono1">E</span><span class="label-t" id="cardLabelText1">隊 · 卡牌說明</span>
-              <button class="mini-history-btn" data-side="1" id="historyBtn1" title="E隊抽牌歷史">歷史</button>
-            </div>
-            <div class="card-face" id="cardFace1" data-team="E">
-              <div class="cf-placeholder">尚未抽取<br>達成里程碑即可抽卡</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="pool-row">
-          <div class="card-slot">
-            <div class="card-slot-label" id="poolLabel0"><span class="mono" id="poolLabelMono0">N</span><span class="label-t" id="poolLabelText0">隊牌池</span></div>
-            <div class="card-face pool-face" id="poolFace0" data-side="0" data-team="N" tabindex="0" role="button" aria-label="向上滑動或按 Enter 為 N 隊抽卡">
-              <div class="logo-emblem" id="logoFallbackPool0"><span class="lg-line">WHO</span><span class="lg-line">NEXT</span></div>
-              <div class="swipe-hint"><span class="swipe-arrow">↑</span>向上滑動抽卡</div>
-            </div>
-          </div>
-          <div class="card-slot">
-            <div class="card-slot-label" id="poolLabel1"><span class="mono" id="poolLabelMono1">E</span><span class="label-t" id="poolLabelText1">隊牌池</span></div>
-            <div class="card-face pool-face" id="poolFace1" data-side="1" data-team="E" tabindex="0" role="button" aria-label="向上滑動或按 Enter 為 E 隊抽卡">
-              <div class="logo-emblem" id="logoFallbackPool1"><span class="lg-line">WHO</span><span class="lg-line">NEXT</span></div>
-              <div class="swipe-hint"><span class="swipe-arrow">↑</span>向上滑動抽卡</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="shared-pool" id="sharedPool"></div>
     </div>
 
   </div>
@@ -564,6 +490,7 @@
         ・落後對手 10 分以上時，觸發「逆境反擊抽卡」，全場限用一次。
         ・比賽分數25不延長。
         ・卡牌功能包含「即刻生效達到分數後失效」、「持續生效至達到條件後失效」、「隱藏陷阱」
+        ・王牌卡需雙方分數皆超過5分才會出現，一般卡機率固定為王牌卡的3倍，落後方抽中王牌卡的機率提升50%。
       </div>
     </div>
   </div>
@@ -599,14 +526,7 @@
     { name: "匹克突襲", desc: "指定對方一名球員，接下來3分必須用匹克球拍擊球。"},
     { name: "廚房禁區", desc: "接下來3分對方球員不可踩入網前廚房區域擊球，違反視同掉分。"},
     { name: "劫富濟貧", desc: "持有期間可觸發一次，一旦對手領先，我方分數加2分，且對手扣2分。", isAce: true },
-    { name: "歷史重演", desc: "即刻生效，可以指定使用我方歷史牌池的任一卡牌。", isAce: true },
-    { name: "隱藏陷阱·接觸", desc: "【不必宣告】對方肢體接觸(如擊掌、拍背)，我方額外加1分，每分限觸發一次，猜中前持續生效。", isHidden: true },
-    { name: "隱藏陷阱·穿越", desc: "【不必宣告】對方從網子下方撥球，我方額外加1分，每分限觸發一次，猜中前持續生效。", isHidden: true },
-    { name: "隱藏陷阱·裁判", desc: "【不必宣告】對方與裁判交談，我方額外加1分，每分限觸發一次，猜中前持續生效。", isHidden: true },
-    { name: "隱藏陷阱·後場", desc: "【不必宣告】對方發後場球出界，我方額外加1分，每分限觸發一次，猜中前持續生效。", isHidden: true },
-    { name: "隱藏陷阱·換球", desc: "【不必宣告】對方主動提出更換新球，我方額外加1分，每分限觸發一次，猜中前持續生效。", isHidden: true },
-    { name: "隱藏陷阱·觸身", desc: "【不必宣告】羽球擊中對方球員身體，我方額外加1分，每分限觸發一次，猜中前持續生效。", isHidden: true },
-    { name: "隱藏陷阱·界外", desc: "【不必宣告】隔壁球場羽球飛入對方場地造成暫停，我方額外加1分，每分限觸發一次，猜中前持續生效。", isHidden: true }
+    { name: "歷史重演", desc: "即刻生效，可以指定使用我方歷史牌池的任一卡牌。", isAce: true }
   ];
 
   let state = {
@@ -614,8 +534,7 @@
     scores: [0, 0],
     drawnAtScore: [null, null],
     comebackUsed: false,
-    history: [],
-    hiddenDrawn: [false, false]
+    history: []
   };
 
   const $ = id => document.getElementById(id);
@@ -651,7 +570,8 @@
 
   /* ---------- SCORE ---------- */
   document.querySelectorAll('.score-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
       const side = Number(btn.dataset.side);
       const delta = Number(btn.dataset.delta);
       let v = state.scores[side] + delta;
@@ -661,10 +581,13 @@
     });
   });
 
+  [0,1].forEach(side=>{
+    $('scoreCard'+side).addEventListener('click', ()=> attemptDrawForSide(side));
+  });
+
   /* ---------- CARD DRAW ---------- */
   const ACE_CARDS = cardPool.filter(c => c.isAce);
-  const HIDDEN_CARDS = cardPool.filter(c => c.isHidden);
-  const NORMAL_CARDS = cardPool.filter(c => !c.isAce && !c.isHidden);
+  const NORMAL_CARDS = cardPool.filter(c => !c.isAce);
 
   function shuffled(arr){
     const a = arr.slice();
@@ -676,11 +599,7 @@
   }
 
   function freshDeckState(){
-    return {
-      normal: shuffled(NORMAL_CARDS),
-      hidden: shuffled(HIDDEN_CARDS),
-      ace: shuffled(ACE_CARDS)
-    };
+    return { normal: shuffled(NORMAL_CARDS), ace: shuffled(ACE_CARDS) };
   }
 
   let deckState = freshDeckState();
@@ -692,39 +611,26 @@
     return deckState[pileKey].pop();
   }
 
-  // Within the non-ace tier, a normal card is at least twice as likely as a
-  // hidden-effect card — unless this side has already used its one hidden card,
-  // in which case it always draws a normal card.
-  const HIDDEN_CATEGORY_PROB = 1 / 3; // normal:hidden = 2:1
-
-  function drawNonAceForSide(side){
-    const hiddenEligible = !state.hiddenDrawn[side];
-    if(hiddenEligible && Math.random() < HIDDEN_CATEGORY_PROB){
-      const card = drawFromCategory('hidden', HIDDEN_CARDS);
-      state.hiddenDrawn[side] = true;
-      return card;
-    }
-    return drawFromCategory('normal', NORMAL_CARDS);
-  }
+  // 一般卡機率固定為王牌卡的 3 倍：王牌基礎機率 1/4，一般卡 3/4。
+  const BASE_ACE_PROB = 1 / 4;
+  // 落後方抽中王牌的機率，在基礎值上再提升 50%（相對值，非固定加成）。
+  const TRAILING_ACE_MULTIPLIER = 1.5;
 
   function pickCardForSide(side){
     const other = side === 0 ? 1 : 0;
     const aceUnlocked = state.scores[0] > 5 && state.scores[1] > 5;
 
     if(!aceUnlocked){
-      return drawNonAceForSide(side);
+      return drawFromCategory('normal', NORMAL_CARDS);
     }
 
-    // Base ace chance = share of aces in the full card pool.
-    // The trailing side gets a flat +10 percentage point bump over that base rate.
-    const baseAceProb = ACE_CARDS.length / cardPool.length;
     const isTrailing = state.scores[side] < state.scores[other];
-    const aceProb = isTrailing ? Math.min(1, baseAceProb + 0.10) : baseAceProb;
+    const aceProb = isTrailing ? Math.min(1, BASE_ACE_PROB * TRAILING_ACE_MULTIPLIER) : BASE_ACE_PROB;
 
     if(Math.random() < aceProb){
       return drawFromCategory('ace', ACE_CARDS);
     }
-    return drawNonAceForSide(side);
+    return drawFromCategory('normal', NORMAL_CARDS);
   }
 
   function drawForSide(side){
@@ -745,8 +651,9 @@
     revealCard(card, losingSide, true);
   }
 
-  let cardCache = [null, null];
-  let cardCovered = [false, false];
+  // The single shared pool's current drawn card (for the click-to-flip cover toggle).
+  let lastCard = null;   // { html, ace, team }
+  let isCovered = false;
 
   function revealCard(card, side, isComeback){
     const team = state.teamSlots[side] || null;
@@ -756,44 +663,63 @@
     });
 
     const html =
-      (card.isAce ? '<div class="ace-tag">王牌</div>' : '') +
-      (isComeback ? '<div class="ace-tag" style="right:auto;left:10px;">逆境反擊</div>' : '') +
-      '<div class="cf-name">' + card.name + '</div>' +
-      '<div class="cf-desc">' + card.desc + '</div>';
+      '<div class="sp-tags-col">' +
+        '<div class="sp-mono">' + (team || '–') + '</div>' +
+        (card.isAce ? '<div class="sp-tag">王牌</div>' : '') +
+        (isComeback ? '<div class="sp-tag">逆境反擊</div>' : '') +
+      '</div>' +
+      '<div class="sp-content-col">' +
+        '<div class="sp-name">' + card.name + '</div>' +
+        '<div class="sp-desc">' + card.desc + '</div>' +
+      '</div>' +
+      '<div class="sp-cover-hint">點擊牌池可翻面</div>';
 
-    cardCache[side] = { html, ace: !!card.isAce };
-    cardCovered[side] = false;
-
-    const face = $('cardFace' + side);
-    face.classList.remove('flip-in', 'covered');
-    face.classList.add('has-card');
-    face.classList.toggle('ace', !!card.isAce);
-    face.innerHTML = html;
-    void face.offsetWidth;
-    face.classList.add('flip-in');
-
+    lastCard = { html, ace: !!card.isAce, team };
+    isCovered = false;
+    renderSharedPool();
     render();
   }
 
-  function toggleCardCover(side){
-    if(!cardCache[side]) return;
-    const face = $('cardFace' + side);
-    cardCovered[side] = !cardCovered[side];
-    face.classList.remove('flip-in');
+  function renderSharedPool(){
+    const el = $('sharedPool');
+    el.classList.remove('flip-in');
 
-    if(cardCovered[side]){
-      face.classList.remove('ace');
-      face.innerHTML = '<div class="cf-placeholder">卡牌已蓋牌<br>再點一下查看</div>';
+    if(!lastCard){
+      el.classList.remove('ace');
+      el.dataset.team = '';
+      el.innerHTML =
+        '<div class="sp-idle">' +
+          '<div class="logo-emblem"><span class="lg-line">WHO</span><span class="lg-line">NEXT</span></div>' +
+          '<div class="sp-hint">點擊符合條件的隊伍分數卡即可抽卡</div>' +
+        '</div>';
+    } else if(isCovered){
+      el.classList.remove('ace');
+      el.dataset.team = lastCard.team || '';
+      el.innerHTML =
+        '<div class="sp-covered">' +
+          '<div class="logo-emblem"><span class="lg-line">WHO</span><span class="lg-line">NEXT</span></div>' +
+          '<div class="sp-cover-text">卡牌已蓋牌・再次點擊查看</div>' +
+        '</div>';
     } else {
-      face.classList.toggle('ace', cardCache[side].ace);
-      face.innerHTML = cardCache[side].html;
+      el.classList.toggle('ace', lastCard.ace);
+      el.dataset.team = lastCard.team || '';
+      el.innerHTML = lastCard.html;
     }
-    void face.offsetWidth;
-    face.classList.add('flip-in');
+
+    void el.offsetWidth;
+    el.classList.add('flip-in');
   }
 
-  [0, 1].forEach(side=>{
-    $('cardFace' + side).addEventListener('click', ()=> toggleCardCover(side));
+  $('sharedPool').addEventListener('click', ()=>{
+    if(lastCard){
+      isCovered = !isCovered;
+      renderSharedPool();
+      return;
+    }
+    const eligible = [0,1].filter(s => isSideEligible(s) || isComebackEligibleForSide(s));
+    if(eligible.length === 1){ attemptDrawForSide(eligible[0]); }
+    else if(eligible.length > 1){ showToast('兩隊都符合條件，請點擊該隊的分數卡抽卡'); }
+    else { showToast('目前尚未達成抽卡條件'); }
   });
 
   function isSideEligible(side){
@@ -816,60 +742,13 @@
     showToast('目前尚未達成抽卡條件');
   }
 
-  /* ---------- SWIPE-UP ON POOL TO DRAW (shared deck, per-team pool card) ---------- */
-  function setupPoolSwipe(el, side){
-    let startY = null;
-    let dragging = false;
-    const THRESHOLD = 46;
-    const MAX_PULL = 90;
-
-    function begin(y){
-      startY = y; dragging = true;
-      el.classList.add('dragging');
-    }
-    function moveTo(y){
-      if(!dragging) return;
-      const dy = Math.max(0, Math.min(startY - y, MAX_PULL));
-      el.style.transform = 'translateY(' + (-dy * 0.45) + 'px)';
-      el.style.opacity = String(1 - dy * 0.0025);
-    }
-    function finish(y){
-      if(!dragging) return;
-      const dy = startY - y;
-      dragging = false;
-      el.classList.remove('dragging');
-      el.style.transform = '';
-      el.style.opacity = '';
-      if(dy > THRESHOLD) attemptDrawForSide(side);
-    }
-
-    el.addEventListener('touchstart', e=> begin(e.touches[0].clientY), {passive:true});
-    el.addEventListener('touchmove', e=>{ moveTo(e.touches[0].clientY); e.preventDefault(); }, {passive:false});
-    el.addEventListener('touchend', e=> finish(e.changedTouches[0].clientY));
-    el.addEventListener('touchcancel', ()=>{ dragging=false; el.classList.remove('dragging'); el.style.transform=''; el.style.opacity=''; });
-
-    el.addEventListener('mousedown', e=>{ begin(e.clientY); e.preventDefault(); });
-    window.addEventListener('mousemove', e=>{ if(dragging) moveTo(e.clientY); });
-    window.addEventListener('mouseup', e=>{ finish(e.clientY); });
-
-    el.addEventListener('keydown', e=>{
-      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); attemptDrawForSide(side); }
-    });
-  }
-  setupPoolSwipe($('poolFace0'), 0);
-  setupPoolSwipe($('poolFace1'), 1);
-
   /* ---------- TOP CONTROLS ---------- */
   $('btnReset').addEventListener('click', ()=>{
-    state = { teamSlots:['N','E'], scores:[0,0], drawnAtScore:[null,null], comebackUsed:false, history:[], hiddenDrawn:[false,false] };
+    state = { teamSlots:['N','E'], scores:[0,0], drawnAtScore:[null,null], comebackUsed:false, history:[] };
     deckState = freshDeckState();
-    cardCache = [null, null];
-    cardCovered = [false, false];
-    [0,1].forEach(side=>{
-      const face = $('cardFace' + side);
-      face.className = 'card-face';
-      face.innerHTML = '<div class="cf-placeholder">尚未抽取<br>達成里程碑即可抽卡</div>';
-    });
+    lastCard = null;
+    isCovered = false;
+    renderSharedPool();
     render();
     showToast('已全部重置');
   });
@@ -878,22 +757,7 @@
     state.teamSlots.reverse();
     state.scores.reverse();
     state.drawnAtScore.reverse();
-    state.hiddenDrawn.reverse();
     state.history.forEach(h=>{ h.side = h.side === 0 ? 1 : 0; });
-    cardCache.reverse();
-    cardCovered.reverse();
-    [0,1].forEach(side=>{
-      const face = $('cardFace' + side);
-      if(!cardCache[side]){
-        face.className = 'card-face';
-        face.innerHTML = '<div class="cf-placeholder">尚未抽取<br>達成里程碑即可抽卡</div>';
-      } else {
-        face.className = 'card-face has-card' + (cardCache[side].ace && !cardCovered[side] ? ' ace' : '');
-        face.innerHTML = cardCovered[side]
-          ? '<div class="cf-placeholder">卡牌已蓋牌<br>再點一下查看</div>'
-          : cardCache[side].html;
-      }
-    });
     render();
     showToast('已交換場地');
   });
@@ -904,8 +768,13 @@
 
   $('btnRules').addEventListener('click', ()=> $('rulesModal').classList.add('open'));
   $('closeRules').addEventListener('click', ()=> $('rulesModal').classList.remove('open'));
-  $('historyBtn0').addEventListener('click', ()=>{ renderHistory(0); $('historyModal').classList.add('open'); });
-  $('historyBtn1').addEventListener('click', ()=>{ renderHistory(1); $('historyModal').classList.add('open'); });
+  [0,1].forEach(side=>{
+    $('historyBtn'+side).addEventListener('click', (e)=>{
+      e.stopPropagation();
+      renderHistory(side);
+      $('historyModal').classList.add('open');
+    });
+  });
   $('closeHistory').addEventListener('click', ()=> $('historyModal').classList.remove('open'));
   [$('rulesModal'), $('historyModal')].forEach(m=>{
     m.addEventListener('click', e=>{ if(e.target === m) m.classList.remove('open'); });
@@ -917,6 +786,8 @@
       const t = chip.dataset.team;
       chip.classList.toggle('active', state.teamSlots.includes(t));
     });
+
+    let anyReady = false;
 
     for(let side=0; side<2; side++){
       const team = state.teamSlots[side] || null;
@@ -931,25 +802,12 @@
       const milestoneEligible = isSideEligible(side);
       const comebackEligible = isComebackEligibleForSide(side);
       const canDraw = milestoneEligible || comebackEligible;
+      if(canDraw) anyReady = true;
       card.classList.toggle('glow', canDraw);
       $('milestoneTag'+side).textContent = canDraw ? '✦ 符合條件，可抽卡' : '';
-
-      $('cardLabelMono'+side).textContent = team || '–';
-      $('cardLabelText'+side).textContent = team ? '隊 · 卡牌說明' : '未選擇 · 卡牌說明';
-      $('cardFace'+side).dataset.team = team || '';
-
-      const historyBtn = $('historyBtn'+side);
-      historyBtn.title = team ? (team + '隊抽牌歷史') : '抽牌歷史';
-
-      $('poolLabelMono'+side).textContent = team || '–';
-      $('poolLabelText'+side).textContent = team ? '隊牌池' : ('TEAM ' + (side===0?'A':'B') + ' · 未選擇');
-      const poolFaceEl = $('poolFace'+side);
-      poolFaceEl.dataset.team = team || '';
-      poolFaceEl.classList.toggle('pool-ready', canDraw);
-      poolFaceEl.setAttribute('aria-label', team
-        ? ('向上滑動或按 Enter 為 ' + team + ' 隊抽卡')
-        : ('向上滑動或按 Enter 抽卡'));
     }
+
+    $('sharedPool').classList.toggle('ready', !lastCard && anyReady);
   }
 
   function renderHistory(side){
@@ -976,6 +834,7 @@
     }).join('');
   }
 
+  renderSharedPool();
   render();
 </script>
 </body>
