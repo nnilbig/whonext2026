@@ -2,515 +2,355 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>WHONEXT x 卡牌系統</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg: #0A0A0B;
-    --panel-1: #1C1D20;
-    --panel-2: #131416;
-    --line: #2B2C30;
-    --line-soft: rgba(255,255,255,0.06);
-    --ink: #ECEBE6;
-    --ink-soft: #8B8D92;
-    --ink-faint: #55565B;
-    --hi: rgba(255,255,255,0.55);
-    --lo: rgba(0,0,0,0.7);
-    --glow: rgba(255,255,255,0.22);
-    --radius: 4px;
-    --shadow: 0 12px 34px rgba(0,0,0,0.55);
+    --n-accent:#9FB3C8; --n-glow:rgba(159,179,200,0.5);
+    --e-accent:#C9B79B; --e-glow:rgba(201,183,155,0.5);
+    --x-accent:#B9B9BD; --x-glow:rgba(185,185,189,0.5);
+    --t-accent:#E9E9E4; --t-glow:rgba(233,233,228,0.5);
+
+    --bg:#000000;
+    --card:rgba(255,255,255,0.07);
+    --card-strong:rgba(255,255,255,0.13);
+    --line:rgba(255,255,255,0.14);
+    --label:#F5F5F7;
+    --secondary:rgba(235,235,245,0.62);
+    --tertiary:rgba(235,235,245,0.32);
+
+    --sf: -apple-system, BlinkMacSystemFont, "PingFang TC", "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+    --sf-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
   }
 
-  *{ box-sizing:border-box; }
-  html,body{ margin:0; padding:0; overflow-x:hidden; }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ margin:0; padding:0; }
   body{
     background:
-      repeating-linear-gradient(112deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px),
-      radial-gradient(ellipse at top left, rgba(255,255,255,0.05), transparent 48%),
-      radial-gradient(ellipse at bottom right, rgba(255,255,255,0.035), transparent 55%),
+      radial-gradient(ellipse at 15% -10%, rgba(159,179,200,0.09), transparent 45%),
+      radial-gradient(ellipse at 90% 105%, rgba(201,183,155,0.07), transparent 50%),
       var(--bg);
-    color: var(--ink);
-    font-family:'Noto Sans TC', sans-serif;
+    color: var(--label);
+    font-family: var(--sf);
     min-height:100vh;
-    padding-bottom: 60px;
-    width:100%;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom: max(20px, env(safe-area-inset-bottom));
   }
-
-  h1,h2,h3{ font-family:'Noto Sans TC', sans-serif; font-weight:900; margin:0; letter-spacing:.04em; }
-
   button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
-  button:disabled{ cursor:not-allowed; opacity:.4; }
 
-  /* ---------- METAL PANEL MIXIN (rivet corners via background-image) ---------- */
-  .metal{
-    background-image:
-      radial-gradient(circle at 13px 13px, #7C7E82 0%, #303236 58%, transparent 60%),
-      radial-gradient(circle at calc(100% - 13px) 13px, #7C7E82 0%, #303236 58%, transparent 60%),
-      radial-gradient(circle at 13px calc(100% - 13px), #7C7E82 0%, #303236 58%, transparent 60%),
-      radial-gradient(circle at calc(100% - 13px) calc(100% - 13px), #7C7E82 0%, #303236 58%, transparent 60%),
-      linear-gradient(160deg, var(--panel-1) 0%, var(--panel-2) 100%);
-    background-repeat:no-repeat;
-    background-size: 7px 7px, 7px 7px, 7px 7px, 7px 7px, 100% 100%;
-    border:1px solid var(--line);
-    box-shadow: var(--shadow), inset 0 1px 0 var(--line-soft), inset 0 -1px 0 rgba(0,0,0,0.45);
+  .glass{
+    background: var(--card);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid var(--line);
+    border-radius: 22px;
   }
 
-  /* ---------- TEAM ACCENTS (variations within the metal/grayscale family) ---------- */
-  [data-team="N"]{ --team-accent:#9FB3C8; --team-glow: rgba(159,179,200,0.42); } /* 鋼 steel — cool blue-gray */
-  [data-team="E"]{ --team-accent:#C9B79B; --team-glow: rgba(201,183,155,0.42); } /* 鎳 nickel — warm pewter */
-  [data-team="X"]{ --team-accent:#B9B9BD; --team-glow: rgba(185,185,189,0.42); } /* 銀 silver — neutral */
-  [data-team="T"]{ --team-accent:#E9E9E4; --team-glow: rgba(233,233,228,0.42); } /* 鉑 platinum — bright chrome */
+  [data-team="N"]{ --ac: var(--n-accent); --gl: var(--n-glow); }
+  [data-team="E"]{ --ac: var(--e-accent); --gl: var(--e-glow); }
+  [data-team="X"]{ --ac: var(--x-accent); --gl: var(--x-glow); }
+  [data-team="T"]{ --ac: var(--t-accent); --gl: var(--t-glow); }
 
-  /* ---------- TOP CONTROL ---------- */
-  .top-control{
-    display:flex; align-items:center; justify-content:center; gap:4px;
-    flex-wrap:nowrap;
-    overflow-x:auto;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-    padding: clamp(8px,2.5vw,14px) clamp(8px,3vw,16px);
-    border-bottom:1px solid var(--line);
-    background: transparent;
+  /* ---------- NAV BAR ---------- */
+  .navbar{
+    position:sticky; top:0; z-index:30;
+    padding-top: max(10px, env(safe-area-inset-top));
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border-bottom: 1px solid var(--line);
   }
-  .top-control::-webkit-scrollbar{ display:none; }
-  .top-control .brand{
-    font-family:'Oswald', sans-serif;
-    font-weight:600;
-    font-size:13px; letter-spacing:.32em; color:var(--ink-soft);
-    margin-right:auto; padding-left:4px;
-    white-space:nowrap; flex-shrink:0;
-    text-transform:uppercase;
+  .nav-inner{
+    max-width: 560px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 10px 16px 12px;
   }
-  .tc-btn{
-    background: transparent;
-    color: var(--ink);
-    padding: clamp(6px,1.8vw,9px) clamp(9px,2.5vw,17px);
-    font-size: clamp(12px,2.8vw,14.5px);
-    letter-spacing: .04em;
-    border: 1px solid transparent;
-    border-radius: var(--radius);
-    transition: all .2s ease;
-    white-space: nowrap;
-    flex-shrink:0;
+  .nav-title .eyebrow{
+    font-size:11px; font-weight:700; letter-spacing:.22em; color:var(--tertiary); text-transform:uppercase;
   }
-  .tc-btn:hover{ border-color: var(--line); background: rgba(255,255,255,0.05); }
-  .tc-btn .ic{ margin-right:4px; opacity:.7; }
+  .nav-title h1{ margin:1px 0 0; font-size:20px; font-weight:800; letter-spacing:-.01em; }
+  .nav-actions{ display:flex; gap:6px; }
+  .nav-actions button{
+    width:36px; height:36px; border-radius:50%;
+    background: var(--card);
+    border: 1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-size:16px; color: var(--label);
+    transition: background .15s ease;
+  }
+  .nav-actions button:active{ background: var(--card-strong); }
 
   /* ---------- WRAP ---------- */
-  .wrap{ max-width: 1020px; margin: 0 auto; padding: clamp(10px,2.5vw,20px) clamp(10px,4vw,20px) 0; }
-
-  /* ---------- TEAM SETUP PANEL ---------- */
-  .setup-panel{
-    border-radius: var(--radius);
-    padding: clamp(14px,4vw,18px) clamp(14px,4vw,22px);
-    margin-bottom: clamp(18px,4.5vw,26px);
-    display:none;
-  }
-  .setup-panel.open{ display:block; }
-  .setup-title{ font-size: clamp(12.5px,2.8vw,14px); color:var(--ink-soft); letter-spacing:.1em; margin-bottom:14px; }
-  .chip-row{ display:flex; gap: clamp(10px,3vw,16px); flex-wrap:wrap; }
-  .chip{
-    display:flex; align-items:center; justify-content:center;
-    width: clamp(44px,11vw,52px); height: clamp(44px,11vw,52px);
-    border-radius:50%;
-    border:1px solid var(--line);
-    background: linear-gradient(160deg,#232427,#141517);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.4), inset 0 1px 0 var(--line-soft);
-    font-family:'Bebas Neue', sans-serif;
-    font-size: clamp(18px,4.4vw,21px);
-    letter-spacing:.02em;
-    color: var(--ink-faint);
-    transition: all .2s ease;
-  }
-  .chip.active{
-    color: var(--team-accent, var(--ink));
-    border-color: var(--team-accent, rgba(255,255,255,0.4));
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.65), inset 0 -1px 0 var(--line-soft), 0 0 14px var(--team-glow, rgba(255,255,255,0.14));
-  }
-  .chip:hover{ transform: translateY(-1px); }
-  .setup-hint{ margin-top:12px; font-size:12.5px; color:var(--ink-soft); }
+  .wrap{ max-width: 560px; margin:0 auto; padding: 16px 16px 8px; }
 
   /* ---------- SCORE ROW ---------- */
-  .score-row{ display:flex; gap: clamp(8px,3vw,18px); margin-bottom: clamp(20px,5vw,30px); }
+  .score-row{ display:flex; gap:10px; margin-bottom:18px; }
   .score-card{
-    flex:1;
-    min-width:0;
-    border-radius: var(--radius);
-    padding: clamp(14px,4vw,24px) clamp(8px,3vw,20px) clamp(14px,3vw,22px);
-    text-align:center;
-    position:relative;
-    overflow:hidden;
-    cursor:default;
-    transition: box-shadow .3s ease, border-color .3s ease;
+    flex:1; padding: 18px 12px 16px; text-align:center; position:relative; overflow:hidden;
+    transition: box-shadow .25s ease;
   }
-  .score-card::before{
-    content:''; position:absolute; top:0; left:0; right:0; height:2px;
-    background: linear-gradient(90deg, transparent, var(--team-accent, rgba(255,255,255,.55)), transparent);
-    opacity:.35;
-    transition: opacity .3s ease;
+  .score-card.ready{ box-shadow: 0 0 0 1.5px var(--ac), 0 0 26px var(--gl); }
+  .pill{
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:11.5px; font-weight:700; letter-spacing:.06em; color:var(--ac);
+    background: rgba(255,255,255,0.06);
+    padding:4px 11px 4px 8px; border-radius:999px; margin-bottom:12px;
   }
-  .score-card::after{
-    content: attr(data-team);
-    position:absolute; top:-18px; right:2px;
-    font-family:'Bebas Neue', sans-serif;
-    font-size: clamp(64px,20vw,120px);
-    line-height:1;
-    color: rgba(255,255,255,0.035);
-    pointer-events:none;
-    user-select:none;
-  }
-
-  .score-card.glow{
-    animation: pulseGlow 1.8s ease-in-out infinite;
-    border-color: var(--team-accent, rgba(255,255,255,0.4));
-    cursor:pointer;
-  }
-  .score-card.glow::before{ opacity:1; }
-  @keyframes pulseGlow{
-    0%,100%{ box-shadow: var(--shadow), 0 0 0 0 rgba(255,255,255,0.0); }
-    50%{ box-shadow: var(--shadow), 0 0 26px 4px var(--team-glow, rgba(255,255,255,0.2)); }
-  }
-
-  .team-name{ font-size: clamp(11px,3vw,15px); letter-spacing:.15em; color:var(--ink-soft); margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; position:relative; z-index:1; }
-  .team-name .label{ font-weight:500; color: var(--team-accent, var(--ink)); }
-
+  .pill .dot{ width:7px; height:7px; border-radius:50%; background:var(--ac); box-shadow:0 0 6px var(--gl); flex-shrink:0; }
+  .pill span.label-txt{ white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:90px; }
   .score-num{
-    font-family:'JetBrains Mono', monospace;
-    font-size: clamp(44px,12vw,84px);
-    font-weight:700;
-    line-height:1;
-    letter-spacing:.02em;
-    font-variant-numeric: tabular-nums;
-    color: var(--ink);
-    text-shadow: 0 1px 0 rgba(255,255,255,.08), 0 -1px 1px rgba(0,0,0,.55);
-    min-width: clamp(56px,16vw,150px);
-    text-align:center;
-    position:relative; z-index:1;
+    font-family: var(--sf-mono); font-size: clamp(38px,11vw,52px); font-weight:700; color:var(--label);
+    letter-spacing:-.02em; line-height:1; font-variant-numeric: tabular-nums;
   }
-  .score-controls{
+  .score-controls{ display:flex; align-items:center; justify-content:center; gap:14px; margin-top:12px; }
+  .stepper{
+    width:34px; height:34px; border-radius:50%;
+    background: rgba(255,255,255,0.10);
     display:flex; align-items:center; justify-content:center;
-    flex-wrap:nowrap;
-    width:100%;
-    gap: clamp(4px,2vw,16px);
-    margin: clamp(4px,1.5vw,6px) 0 clamp(10px,3vw,16px);
-    position:relative; z-index:1;
+    font-size:18px; color:var(--label); font-weight:500;
   }
-  .score-btn{
-    width: clamp(28px,7.5vw,40px); height: clamp(28px,7.5vw,40px); border-radius:50%;
-    font-size: clamp(14px,3.6vw,20px); font-weight:600;
-    border:1px solid var(--line);
-    background: linear-gradient(160deg,#232427,#141517);
-    color: var(--ink);
-    box-shadow: 0 3px 8px rgba(0,0,0,0.4), inset 0 1px 0 var(--line-soft);
-    transition: all .15s ease;
-    flex-shrink:0;
-  }
-  .score-btn:hover{ transform: scale(1.08); }
-  .score-btn:active{ transform: scale(.94); }
-
-  .milestone-tag{
-    margin-top: clamp(8px,2.5vw,12px); font-size: clamp(10.5px,2.6vw,13px); letter-spacing:.08em;
-    color: var(--ink); height:16px; white-space:nowrap; position:relative; z-index:1;
+  .stepper:active{ background: rgba(255,255,255,0.18); }
+  .history-link{
+    margin-top:12px; font-size:11.5px; font-weight:600; color: var(--secondary);
+    display:inline-flex; align-items:center; gap:2px;
   }
 
-  .score-history-btn{
-    margin-top: clamp(9px,2.4vw,13px);
-    position:relative; z-index:1;
-    font-size: clamp(10.5px,2.4vw,12.5px);
-    padding: clamp(5px,1.5vw,7px) clamp(11px,2.8vw,16px);
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    color: var(--ink-soft);
-    background: rgba(0,0,0,0.2);
-    letter-spacing:.04em;
-    transition: all .2s ease;
-  }
-  .score-history-btn:hover{ opacity:.8; border-color: rgba(255,255,255,0.3); color: var(--ink); }
+  /* ---------- POOL ---------- */
+  .pool-title{ display:flex; align-items:baseline; justify-content:space-between; padding: 2px 4px 10px; gap:10px; }
+  .pool-title-left{ display:flex; align-items:baseline; gap:9px; flex-wrap:wrap; }
+  .pool-title h2{ font-size: clamp(19px,4.5vw,22px); font-weight:800; margin:0; letter-spacing:-.01em; }
+  .ready-inline{ font-size: clamp(11.5px,2.8vw,13px); font-weight:600; color: var(--ac,var(--n-accent)); white-space:nowrap; }
+  .pool-title .hint{ font-size:11px; color:var(--tertiary); text-align:right; }
 
-  /* ---------- CARD SECTION ---------- */
-  .card-section{
-    border-radius: var(--radius);
-    padding: clamp(16px,4.5vw,30px) clamp(10px,3.5vw,28px) clamp(18px,4.5vw,32px);
-  }
-  .card-section-head{
-    margin-bottom: clamp(14px,3.5vw,20px);
-  }
-  .card-section-head h2{ font-size: clamp(18px,4.4vw,22px); }
-  .card-section-head .sub{ font-size: clamp(11.5px,2.8vw,13.5px); color:var(--ink-soft); margin-top:4px; letter-spacing:.03em; }
-
-  /* ---------- SHARED POOL (single pool, shared by both teams) ---------- */
   .shared-pool{
-    width: 100%;
-    min-height: clamp(220px, 34vw, 320px);
-    border-radius: 8px;
-    border: 1px solid var(--line);
-    background:
-      radial-gradient(circle at 12px 12px, #6E7075 0%, #2A2C30 58%, transparent 60%),
-      radial-gradient(circle at calc(100% - 12px) 12px, #6E7075 0%, #2A2C30 58%, transparent 60%),
-      radial-gradient(circle at 12px calc(100% - 12px), #6E7075 0%, #2A2C30 58%, transparent 60%),
-      radial-gradient(circle at calc(100% - 12px) calc(100% - 12px), #6E7075 0%, #2A2C30 58%, transparent 60%),
-      linear-gradient(165deg, #202124 0%, #131416 100%);
-    background-repeat:no-repeat;
-    background-size: 6px 6px, 6px 6px, 6px 6px, 6px 6px, 100% 100%;
-    box-shadow: 0 10px 26px rgba(0,0,0,0.5), inset 0 1px 0 var(--line-soft);
-    position:relative;
-    overflow:hidden;
-    padding: clamp(20px,4.5vw,32px);
-    display:flex;
-    align-items:stretch;
+    min-height: clamp(230px, 46vw, 300px);
+    padding: clamp(20px,5vw,30px);
+    display:flex; flex-direction:column;
+    position:relative; overflow:hidden;
     cursor:pointer;
-    transition: border-color .3s ease, box-shadow .3s ease;
   }
-  .shared-pool::after{
-    content: attr(data-team);
-    position:absolute; top:-10px; right:8px;
-    font-family:'Bebas Neue', sans-serif;
-    font-size: clamp(84px,18vw,170px);
-    line-height:1;
-    color: rgba(255,255,255,0.035);
-    pointer-events:none;
-    user-select:none;
-  }
-  .shared-pool.ace{
-    border-color: rgba(255,255,255,0.55);
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.35) inset, 0 0 24px rgba(255,255,255,0.22), 0 10px 26px rgba(0,0,0,0.5);
-  }
-  .shared-pool.ready{ animation: poolPulse 2s ease-in-out infinite; }
+  .shared-pool.ace{ box-shadow: 0 0 0 1.5px rgba(255,255,255,0.5), 0 0 30px rgba(255,255,255,0.15); }
+  .shared-pool.ready{ animation: poolPulse 2.2s ease-in-out infinite; }
   @keyframes poolPulse{
-    0%,100%{ box-shadow: 0 10px 26px rgba(0,0,0,0.5), inset 0 1px 0 var(--line-soft), 0 0 0 0 rgba(255,255,255,0.0); }
-    50%{ box-shadow: 0 10px 26px rgba(0,0,0,0.5), inset 0 1px 0 var(--line-soft), 0 0 26px 3px rgba(255,255,255,0.22); }
+    0%,100%{ box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+    50%{ box-shadow: 0 0 0 1.5px rgba(255,255,255,0.35), 0 0 28px rgba(255,255,255,0.16); }
   }
-  .shared-pool.flip-in{ animation: flipIn .45s ease; }
+  .shared-pool.flip-in{ animation: flipIn .4s cubic-bezier(.2,.9,.3,1); }
   @keyframes flipIn{
-    0%{ transform: rotateY(90deg); opacity:0; }
-    100%{ transform: rotateY(0deg); opacity:1; }
+    0%{ transform: scale(.94) rotateX(8deg); opacity:.5; }
+    100%{ transform: scale(1) rotateX(0); opacity:1; }
   }
 
-  .logo-emblem{
-    width: clamp(72px,18vw,110px); height: clamp(72px,18vw,110px); border-radius:50%;
-    border: 1px solid var(--line); display:flex; flex-direction:column; align-items:center; justify-content:center;
-    font-family:'Bebas Neue', sans-serif; color:var(--ink);
-    background: radial-gradient(circle at 35% 30%, #33353A, #16171A 72%);
-    box-shadow: inset 0 1px 0 var(--line-soft), 0 0 14px rgba(255,255,255,0.08);
-    gap:1px;
-    overflow:hidden;
-  }
-  .logo-emblem .lg-line{ font-size: clamp(12px,3.2vw,17px); letter-spacing:.08em; line-height:1; }
-
-  .sp-idle{ position:absolute; inset:0; z-index:1; }
-  .sp-idle .logo-emblem{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
-  .sp-hint{
-    position:absolute; left:50%; bottom:0; transform:translateX(-50%);
-    font-size: clamp(12px,2.8vw,14.5px); color:var(--ink-soft); letter-spacing:.05em;
-    text-align:center; white-space:nowrap;
-  }
-
-  .sp-covered{ position:absolute; inset:0; z-index:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; }
-  .sp-covered .logo-emblem{ opacity:.35; }
-  .sp-covered .sp-cover-text{ font-size: clamp(12.5px,3vw,15px); color:var(--ink-soft); letter-spacing:.05em; text-align:center; }
-
-  .sp-tags-col{
-    display:flex; flex-direction:column; align-items:flex-start; gap: clamp(7px,1.8vw,11px);
-    flex:0 0 auto; width: clamp(74px,16vw,120px);
-    position:relative; z-index:1;
-  }
-  .sp-mono{ font-family:'Bebas Neue', sans-serif; color:var(--ink); font-size: clamp(36px,8vw,56px); line-height:1; }
-  .sp-tag{
-    font-size: clamp(9.5px,2.2vw,12px); color:#0A0A0B;
-    background: linear-gradient(160deg,#F2F2F0,#B7B8BB);
-    padding: 3px clamp(7px,1.8vw,10px); border-radius:999px; letter-spacing:.05em; font-weight:700;
+  .pool-logo{
+    font-family: 'Archivo Black', var(--sf); font-weight:400; letter-spacing:.14em; color:var(--label);
+    font-size: clamp(14px,3.6vw,17px);
+    text-transform:uppercase;
     white-space:nowrap;
   }
 
-  .sp-content-col{
-    flex:1; min-width:0;
-    display:flex; flex-direction:column; justify-content:center; gap: clamp(10px,2.2vw,16px);
-    border-left: 1px solid var(--line); padding-left: clamp(16px,3.2vw,26px);
-    position:relative; z-index:1;
-  }
-  .sp-name{
-    font-family:'Noto Sans TC', sans-serif; font-weight:900;
-    font-size: clamp(22px,5vw,36px); color:var(--ink); line-height:1.25;
-  }
-  .sp-desc{ font-size: clamp(15px,3.2vw,20px); color:var(--ink-soft); line-height:1.7; }
-
-  .sp-cover-hint{
-    position:absolute; bottom: clamp(10px,2.5vw,16px); right: clamp(14px,3vw,22px);
-    font-size: clamp(10px,2.2vw,12px); color:var(--ink-faint); letter-spacing:.05em; z-index:1;
+  .sp-idle{ position:absolute; inset:0; z-index:1; }
+  .sp-idle .pool-logo{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
+  .sp-idle .cta{
+    position:absolute; left:50%; bottom: clamp(18px,5vw,26px); transform:translateX(-50%);
+    font-size: clamp(12px,3vw,13.5px); color:var(--tertiary); text-align:center; line-height:1.55; max-width:260px;
   }
 
-  /* ---------- MODAL ---------- */
-  .modal-overlay{
-    position:fixed; inset:0; background: rgba(3,3,4,0.72);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    display:none; align-items:center; justify-content:center; padding: clamp(12px,4vw,20px); z-index:100;
+  .sp-covered{ position:absolute; inset:0; z-index:1; }
+  .sp-covered .pool-logo{ position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); opacity:.4; }
+  .sp-covered .sp-cover-text{
+    position:absolute; left:50%; bottom: clamp(18px,5vw,26px); transform:translateX(-50%);
+    font-size: clamp(12px,3vw,13.5px); color:var(--tertiary); text-align:center;
   }
-  .modal-overlay.open{ display:flex; }
-  .modal-box{
-    border-radius: var(--radius);
-    max-width: 500px; width:100%; max-height:82vh; overflow-y:auto;
-    padding: clamp(18px,5vw,26px) clamp(16px,5vw,26px) clamp(16px,4vw,22px);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.65);
-  }
-  .modal-box h3{ font-size: clamp(17px,4vw,20px); margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; gap:10px; color: var(--ink); }
-  .modal-box h3 .close{ font-size: clamp(12.5px,3vw,14.5px); color:var(--ink-soft); font-family:'Noto Sans TC',sans-serif; font-weight:400; flex-shrink:0; }
-  .modal-box .rules-text{ font-size: clamp(13.5px,3vw,15px); line-height:1.9; color:var(--ink); white-space:pre-line; }
-  .history-item{
-    padding: 10px 0; border-bottom:1px solid var(--line);
-    display:flex; gap:10px; align-items:flex-start;
-  }
-  .history-item:last-child{ border-bottom:none; }
-  .history-item .h-mono{
-    width:24px; height:24px; border-radius:50%; margin-top:1px; flex-shrink:0;
+
+  .sp-revealed{ flex:1; display:flex; flex-direction:column; gap: clamp(14px,3.5vw,18px); z-index:1; }
+  .sp-top-row{ display:flex; align-items:center; justify-content:space-between; }
+  .sp-ring{
+    width: clamp(38px,9vw,46px); height: clamp(38px,9vw,46px); border-radius:50%;
     display:flex; align-items:center; justify-content:center;
-    font-family:'Bebas Neue', sans-serif; font-size:13px; color: var(--team-accent, var(--ink));
-    background: linear-gradient(160deg,#232427,#141517);
-    border: 1px solid var(--team-accent, var(--line));
+    border: 1.5px solid var(--ac); color:var(--ac);
+    box-shadow: 0 0 14px var(--gl);
+    font-family: var(--sf-mono); font-weight:700; font-size: clamp(17px,4vw,20px);
   }
-  .history-item .h-name{ font-size: clamp(13.5px,3vw,15px); font-weight:500; color: var(--ink); }
-  .history-item .h-name .ace-mini{ font-size:10.5px; color:var(--ink); border:1px solid var(--line); border-radius:999px; padding:1px 6px; margin-left:6px; }
-  .history-item .h-desc{ font-size: clamp(12px,2.8vw,13.5px); color:var(--ink-soft); margin-top:3px; line-height:1.6; }
-  .history-item .h-meta{ font-size: clamp(10.5px,2.4vw,12px); color:var(--ink-soft); margin-top:3px; }
-  .empty-hist{ font-size:14px; color:var(--ink-soft); text-align:center; padding: 30px 0; }
+  .sp-badges{ display:flex; gap:8px; }
+  .sp-badge{
+    font-size: clamp(10.5px,2.6vw,12px); font-weight:700; color:#000; background:#fff;
+    padding:5px 12px; border-radius:999px; letter-spacing:.03em; white-space:nowrap;
+  }
+  .sp-name{ font-size: clamp(21px,5.2vw,28px); font-weight:800; letter-spacing:-.01em; }
+  .sp-desc{ font-size: clamp(14.5px,3.6vw,17px); color:var(--secondary); line-height:1.65; }
+  .sp-flip-hint{
+    margin-top:auto; align-self:flex-end;
+    font-size: clamp(10.5px,2.6vw,12px); color:var(--tertiary);
+  }
+
+  /* ---------- BOTTOM SHEET ---------- */
+  .sheet-scrim{
+    position:fixed; inset:0; background: rgba(0,0,0,0.5); z-index:90;
+    opacity:0; pointer-events:none; transition: opacity .25s ease;
+  }
+  .sheet-scrim.open{ opacity:1; pointer-events:auto; }
+
+  .sheet{
+    position:fixed; left:0; right:0; bottom:0; z-index:91;
+    max-width: 560px; margin: 0 auto;
+    background: rgba(20,20,22,0.92);
+    backdrop-filter: blur(26px) saturate(180%);
+    -webkit-backdrop-filter: blur(26px) saturate(180%);
+    border-radius: 24px 24px 0 0;
+    border: 1px solid var(--line); border-bottom:none;
+    padding: 10px 20px max(22px, env(safe-area-inset-bottom));
+    max-height: 78vh; overflow-y:auto;
+    transform: translateY(100%);
+    transition: transform .32s cubic-bezier(.2,.9,.25,1);
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.4);
+  }
+  .sheet.open{ transform: translateY(0); }
+  .sheet .grabber-area{ display:flex; justify-content:center; padding: 6px 0 10px; touch-action:none; cursor:grab; }
+  .sheet .grabber{ width:36px; height:5px; border-radius:3px; background: rgba(255,255,255,0.28); }
+  .sheet h3{ font-size:19px; font-weight:800; margin:0 0 14px; }
+
+  .setup-hint{ font-size:12.5px; color:var(--secondary); margin-bottom:16px; line-height:1.6; }
+  .chip-row{ display:flex; gap:14px; flex-wrap:wrap; }
+  .chip{
+    width:52px; height:52px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background: var(--card); border:1px solid var(--line);
+    font-family: var(--sf-mono); font-weight:700; font-size:19px; color:var(--tertiary);
+    transition: all .15s ease;
+  }
+  .chip.active{
+    color: var(--ac); border-color: var(--ac);
+    box-shadow: 0 0 14px var(--gl);
+    background: rgba(255,255,255,0.1);
+  }
+
+  .rules-text{ font-size:14.5px; line-height:1.9; color:var(--label); white-space:pre-line; }
+
+  .hist-item{ display:flex; gap:12px; align-items:flex-start; padding:12px 0; border-bottom:1px solid var(--line); }
+  .hist-item:last-child{ border-bottom:none; }
+  .hist-ring{
+    width:30px; height:30px; border-radius:50%; flex-shrink:0; margin-top:1px;
+    display:flex; align-items:center; justify-content:center;
+    font-family: var(--sf-mono); font-weight:700; font-size:13.5px;
+    border: 1.5px solid var(--ac); color:var(--ac);
+  }
+  .hist-title{ font-size:15px; font-weight:700; }
+  .hist-title .mini-badge{ font-size:10px; font-weight:700; color:var(--secondary); border:1px solid var(--line); border-radius:999px; padding:2px 7px; margin-left:6px; }
+  .hist-desc{ font-size:13px; color:var(--secondary); margin-top:3px; line-height:1.55; }
+  .hist-meta{ font-size:11.5px; color:var(--tertiary); margin-top:4px; }
+  .empty-hist{ font-size:14px; color:var(--secondary); text-align:center; padding:34px 0; }
 
   .toast{
-    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    position:fixed; bottom: max(24px, env(safe-area-inset-bottom)); left:50%; transform:translateX(-50%) translateY(20px);
     max-width: calc(100vw - 32px);
-    background: var(--panel-1); color: var(--ink); font-size:14px; padding:10px 20px;
+    background: rgba(30,30,32,0.92);
+    backdrop-filter: blur(16px);
+    color: var(--label); font-size:13.5px; padding:11px 20px;
     border: 1px solid var(--line);
     border-radius: 999px; opacity:0; transition: all .3s ease; pointer-events:none; z-index:200;
-    letter-spacing:.03em; text-align:center;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.55);
+    text-align:center;
   }
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
-  @media (max-width: 560px){
-    .shared-pool{ flex-direction:column; align-items:flex-start; gap:12px; }
-    .sp-tags-col{ flex-direction:row; align-items:center; width:100%; gap:10px; }
-    .sp-content-col{ border-left:none; border-top:1px solid var(--line); padding-left:0; padding-top:12px; width:100%; }
-    .sp-cover-hint{ position:static; margin-top:8px; text-align:right; width:100%; }
-  }
-
-  @media (max-width: 480px){
-    .top-control{ justify-content:flex-start; gap:3px; }
-    .top-control .brand{ display:none; }
-    .tc-btn{ padding: 6px 9px; font-size:12px; }
-    .tc-btn .ic{ margin-right:3px; }
-
-    .wrap{ padding-top:8px; }
-
-    .score-row{ gap:6px; margin-bottom:10px; }
-    .score-card{ padding: 10px 4px 10px; }
-    .score-controls{ margin: 2px 0 6px; gap:4px; }
-    .score-num{ min-width:0; font-size: clamp(34px,10vw,52px); }
-    .score-btn{ width:28px; height:28px; font-size:14px; }
-    .milestone-tag{ margin-top:4px; height:14px; }
-    .score-history-btn{ font-size:9.5px; padding:4px 9px; }
-
-    .card-section{ padding: 12px 8px 14px; }
-    .card-section-head{ margin-bottom:8px; }
-    .shared-pool{ padding: 16px 14px; }
-  }
-
-  @media (max-width: 360px){
-    .score-row{ gap:4px; }
-    .score-card{ padding: 8px 2px 8px; }
-    .score-controls{ gap:2px; }
-    .score-btn{ width:24px; height:24px; font-size:12px; }
-    .score-num{ font-size: clamp(28px,10vw,42px); }
+  @media (max-width: 380px){
+    .score-num{ font-size: clamp(32px,10vw,44px); }
+    .score-card{ padding: 14px 8px 14px; }
   }
 </style>
 </head>
 <body>
 
-  <div class="top-control">
-    <span class="brand">WHONEXT 2026</span>
-    <button class="tc-btn" id="btnReset"><span class="ic">↺</span>全部重置</button>
-    <button class="tc-btn" id="btnRules"><span class="ic">?</span>規則說明</button>
-    <button class="tc-btn" id="btnSwap"><span class="ic">⇄</span>交換場地</button>
-    <button class="tc-btn" id="btnSetup"><span class="ic">⚙</span>隊伍設定</button>
+  <div class="navbar">
+    <div class="nav-inner">
+      <div class="nav-title">
+        <div class="eyebrow">WHONEXT 2026</div>
+        <h1>卡牌系統</h1>
+      </div>
+      <div class="nav-actions">
+        <button id="btnReset" aria-label="全部重置">↺</button>
+        <button id="btnSwap" aria-label="交換場地">⇄</button>
+        <button id="btnRules" aria-label="規則說明">ⓘ</button>
+        <button id="btnSetup" aria-label="隊伍設定">⚙︎</button>
+      </div>
+    </div>
   </div>
 
   <div class="wrap">
-
-    <div class="setup-panel metal" id="setupPanel">
-      <div class="setup-title">隊伍設定 — 選擇兩隊（需先取消一隊才能更換）</div>
-      <div class="chip-row" id="chipRow">
-        <button class="chip" data-team="N">N</button>
-        <button class="chip" data-team="E">E</button>
-        <button class="chip" data-team="X">X</button>
-        <button class="chip" data-team="T">T</button>
-      </div>
-      <div class="setup-hint">未選滿兩隊時，對應比分區塊將顯示為未選擇狀態。</div>
-    </div>
-
     <div class="score-row">
-      <div class="score-card metal" id="scoreCard0" data-team="N">
-        <div class="team-name"><span class="label">N 隊</span></div>
+      <div class="score-card glass" id="scoreCard0" data-team="N">
+        <div class="pill"><span class="dot"></span><span class="label-txt" id="teamLabel0">N 隊</span></div>
+        <div class="score-num" id="scoreNum0">00</div>
         <div class="score-controls">
-          <button class="score-btn" data-side="0" data-delta="-1">−</button>
-          <div class="score-num" id="scoreNum0">00</div>
-          <button class="score-btn" data-side="0" data-delta="1">+</button>
+          <button class="stepper" data-side="0" data-delta="-1">−</button>
+          <button class="stepper" data-side="0" data-delta="1">+</button>
         </div>
-        <div class="milestone-tag" id="milestoneTag0"></div>
-        <button class="score-history-btn" data-side="0" id="historyBtn0">抽牌歷史</button>
+        <button class="history-link" data-side="0" id="historyBtn0">抽牌歷史 ›</button>
       </div>
-      <div class="score-card metal" id="scoreCard1" data-team="E">
-        <div class="team-name"><span class="label">E 隊</span></div>
+      <div class="score-card glass" id="scoreCard1" data-team="E">
+        <div class="pill"><span class="dot"></span><span class="label-txt" id="teamLabel1">E 隊</span></div>
+        <div class="score-num" id="scoreNum1">00</div>
         <div class="score-controls">
-          <button class="score-btn" data-side="1" data-delta="-1">−</button>
-          <div class="score-num" id="scoreNum1">00</div>
-          <button class="score-btn" data-side="1" data-delta="1">+</button>
+          <button class="stepper" data-side="1" data-delta="-1">−</button>
+          <button class="stepper" data-side="1" data-delta="1">+</button>
         </div>
-        <div class="milestone-tag" id="milestoneTag1"></div>
-        <button class="score-history-btn" data-side="1" id="historyBtn1">抽牌歷史</button>
+        <button class="history-link" data-side="1" id="historyBtn1">抽牌歷史 ›</button>
       </div>
     </div>
 
-    <div class="card-section metal">
-      <div class="card-section-head">
+    <div class="pool-title">
+      <div class="pool-title-left">
         <h2>請抽卡</h2>
-        <div class="sub">點擊符合條件的隊伍分數卡即可抽卡・牌池共用一副牌・再次點擊牌池可翻面</div>
+        <span class="ready-inline" id="poolReadyBadge"></span>
       </div>
-
-      <div class="shared-pool" id="sharedPool"></div>
+      <div class="hint">牌池共用一副牌<br>再次點擊可翻面</div>
     </div>
 
+    <div class="shared-pool glass" id="sharedPool"></div>
   </div>
 
-  <div class="modal-overlay" id="rulesModal">
-    <div class="modal-box metal">
-      <h3>規則說明 <span class="close" id="closeRules">關閉 ✕</span></h3>
-      <div class="rules-text">
-        ・分數每達到 5 的倍數（5、10、15、20）時，達到該隊可抽取一張卡牌。
-        ・混雙組合對上男雙組合以5:0開始。
-        ・落後對手 10 分以上時，觸發「逆境反擊抽卡」，全場限用一次。
-        ・比賽分數25不延長。
-        ・卡牌功能包含「即刻生效達到分數後失效」、「持續生效至達到條件後失效」、「隱藏陷阱」
-        ・王牌卡需雙方分數皆超過5分才會出現，一般卡機率固定為王牌卡的3倍，落後方抽中王牌卡的機率提升50%。
-      </div>
+  <!-- Setup Sheet -->
+  <div class="sheet-scrim" id="setupScrim" data-sheet="setup"></div>
+  <div class="sheet" id="setupSheet">
+    <div class="grabber-area" data-sheet="setup"><div class="grabber"></div></div>
+    <h3>隊伍設定</h3>
+    <div class="setup-hint">選擇兩隊（需先取消一隊才能更換）。未選滿兩隊時，對應比分區塊將顯示為未選擇狀態。</div>
+    <div class="chip-row" id="chipRow">
+      <button class="chip" data-team="N">N</button>
+      <button class="chip" data-team="E">E</button>
+      <button class="chip" data-team="X">X</button>
+      <button class="chip" data-team="T">T</button>
     </div>
   </div>
 
-  <div class="modal-overlay" id="historyModal">
-    <div class="modal-box metal">
-      <h3><span id="historyModalTitle">抽牌歷史</span> <span class="close" id="closeHistory">關閉 ✕</span></h3>
-      <div id="historyList"></div>
+  <!-- Rules Sheet -->
+  <div class="sheet-scrim" id="rulesScrim" data-sheet="rules"></div>
+  <div class="sheet" id="rulesSheet">
+    <div class="grabber-area" data-sheet="rules"><div class="grabber"></div></div>
+    <h3>規則說明</h3>
+    <div class="rules-text">
+      ・分數每達到 5 的倍數（5、10、15、20）時，達到該隊可抽取一張卡牌。
+      ・混雙組合對上男雙組合以5:0開始。
+      ・落後對手 10 分以上時，觸發「逆境反擊抽卡」，全場限用一次。
+      ・比賽分數25不延長。
+      ・卡牌功能包含「即刻生效達到分數後失效」、「持續生效至達到條件後失效」、「隱藏陷阱」
+      ・王牌卡需雙方分數皆超過5分才會出現，一般卡機率固定為王牌卡的3倍，落後方抽中王牌卡的機率提升50%。
     </div>
+  </div>
+
+  <!-- History Sheet -->
+  <div class="sheet-scrim" id="historyScrim" data-sheet="history"></div>
+  <div class="sheet" id="historySheet">
+    <div class="grabber-area" data-sheet="history"><div class="grabber"></div></div>
+    <h3 id="historySheetTitle">抽牌歷史</h3>
+    <div id="historyList"></div>
   </div>
 
   <div class="toast" id="toast"></div>
 
 <script>
-  const TEAMS = {
-    N: { name: 'N' },
-    E: { name: 'E' },
-    X: { name: 'X' },
-    T: { name: 'T' }
-  };
+  const TEAMS = { N:{name:'N'}, E:{name:'E'}, X:{name:'X'}, T:{name:'T'} };
 
   const cardPool = [
     { name: "免死金牌", desc: "持有期間可觸發一次，我方主動失誤(出界、掛網)該球不算分，並由我方重新發球。" },
@@ -525,7 +365,6 @@
     { name: "球桶突襲", desc: "指定對方一名球員，接下來3球必須用羽球桶擊球。"},
     { name: "匹克突襲", desc: "指定對方一名球員，接下來3球必須用匹克球拍擊球。"},
     { name: "廚房禁區", desc: "接下來3球對方球員不可踩入網前廚房區域擊球，違反視同掉分。"},
-    { name: "繩之以法", desc: "對方球員每得1分就要跳繩10下，得3分後解除。"},
     { name: "劫富濟貧", desc: "持有期間可觸發一次，一旦對手領先，我方分數加2分，且對手扣2分。", isAce: true },
     { name: "歷史重演", desc: "即刻生效，可以指定使用我方歷史牌池的任一卡牌。", isAce: true }
   ];
@@ -548,6 +387,48 @@
     showToast._tm = setTimeout(()=> t.classList.remove('show'), 2200);
   }
 
+  /* ---------- SHEETS ---------- */
+  function openSheet(name){
+    $(name+'Scrim').classList.add('open');
+    $(name+'Sheet').classList.add('open');
+  }
+  function closeSheet(name){
+    $(name+'Scrim').classList.remove('open');
+    $(name+'Sheet').classList.remove('open');
+  }
+  document.querySelectorAll('.sheet-scrim').forEach(el=>{
+    el.addEventListener('click', ()=> closeSheet(el.dataset.sheet));
+  });
+  // simple drag-to-dismiss on the grabber area
+  document.querySelectorAll('.grabber-area').forEach(el=>{
+    const name = el.dataset.sheet;
+    const sheet = $(name+'Sheet');
+    let startY = null, dragging = false;
+    function begin(y){ startY = y; dragging = true; sheet.style.transition = 'none'; }
+    function move(y){
+      if(!dragging) return;
+      const dy = Math.max(0, y - startY);
+      sheet.style.transform = 'translateY(' + dy + 'px)';
+    }
+    function end(y){
+      if(!dragging) return;
+      dragging = false;
+      sheet.style.transition = '';
+      const dy = Math.max(0, y - startY);
+      sheet.style.transform = '';
+      if(dy > 90) closeSheet(name);
+    }
+    el.addEventListener('touchstart', e=> begin(e.touches[0].clientY), {passive:true});
+    el.addEventListener('touchmove', e=>{ move(e.touches[0].clientY); }, {passive:true});
+    el.addEventListener('touchend', e=> end(e.changedTouches[0].clientY));
+    el.addEventListener('mousedown', e=>{ begin(e.clientY); e.preventDefault(); });
+    window.addEventListener('mousemove', e=> move(e.clientY));
+    window.addEventListener('mouseup', e=> end(e.clientY));
+  });
+
+  $('btnSetup').addEventListener('click', ()=> openSheet('setup'));
+  $('btnRules').addEventListener('click', ()=> openSheet('rules'));
+
   /* ---------- TEAM SETUP ---------- */
   function toggleTeam(team){
     const idx = state.teamSlots.indexOf(team);
@@ -564,13 +445,12 @@
     }
     render();
   }
-
   document.querySelectorAll('.chip').forEach(chip=>{
     chip.addEventListener('click', ()=> toggleTeam(chip.dataset.team));
   });
 
   /* ---------- SCORE ---------- */
-  document.querySelectorAll('.score-btn').forEach(btn=>{
+  document.querySelectorAll('.stepper').forEach(btn=>{
     btn.addEventListener('click', (e)=>{
       e.stopPropagation();
       const side = Number(btn.dataset.side);
@@ -581,7 +461,6 @@
       render();
     });
   });
-
   [0,1].forEach(side=>{
     $('scoreCard'+side).addEventListener('click', ()=> attemptDrawForSide(side));
   });
@@ -598,39 +477,23 @@
     }
     return a;
   }
-
-  function freshDeckState(){
-    return { normal: shuffled(NORMAL_CARDS), ace: shuffled(ACE_CARDS) };
-  }
-
+  function freshDeckState(){ return { normal: shuffled(NORMAL_CARDS), ace: shuffled(ACE_CARDS) }; }
   let deckState = freshDeckState();
-
   function drawFromCategory(pileKey, fullList){
-    if(deckState[pileKey].length === 0){
-      deckState[pileKey] = shuffled(fullList);
-    }
+    if(deckState[pileKey].length === 0){ deckState[pileKey] = shuffled(fullList); }
     return deckState[pileKey].pop();
   }
 
-  // 一般卡機率固定為王牌卡的 3 倍：王牌基礎機率 1/4，一般卡 3/4。
-  const BASE_ACE_PROB = 1 / 4;
-  // 落後方抽中王牌的機率，在基礎值上再提升 50%（相對值，非固定加成）。
-  const TRAILING_ACE_MULTIPLIER = 1.5;
+  const BASE_ACE_PROB = 1 / 4; // 一般卡:王牌卡 = 3:1
+  const TRAILING_ACE_MULTIPLIER = 1.5; // 落後方王牌機率提升 50%
 
   function pickCardForSide(side){
     const other = side === 0 ? 1 : 0;
     const aceUnlocked = state.scores[0] > 5 && state.scores[1] > 5;
-
-    if(!aceUnlocked){
-      return drawFromCategory('normal', NORMAL_CARDS);
-    }
-
+    if(!aceUnlocked){ return drawFromCategory('normal', NORMAL_CARDS); }
     const isTrailing = state.scores[side] < state.scores[other];
     const aceProb = isTrailing ? Math.min(1, BASE_ACE_PROB * TRAILING_ACE_MULTIPLIER) : BASE_ACE_PROB;
-
-    if(Math.random() < aceProb){
-      return drawFromCategory('ace', ACE_CARDS);
-    }
+    if(Math.random() < aceProb){ return drawFromCategory('ace', ACE_CARDS); }
     return drawFromCategory('normal', NORMAL_CARDS);
   }
 
@@ -652,28 +515,24 @@
     revealCard(card, losingSide, true);
   }
 
-  // The single shared pool's current drawn card (for the click-to-flip cover toggle).
-  let lastCard = null;   // { html, ace, team }
+  let lastCard = null; // { html, ace, team }
   let isCovered = false;
 
   function revealCard(card, side, isComeback){
     const team = state.teamSlots[side] || null;
-    state.history.unshift({
-      ...card, side, isComeback, team,
-      score0: state.scores[0], score1: state.scores[1]
-    });
+    state.history.unshift({ ...card, side, isComeback, team, score0: state.scores[0], score1: state.scores[1] });
 
     const html =
-      '<div class="sp-tags-col">' +
-        '<div class="sp-mono">' + (team || '–') + '</div>' +
-        (card.isAce ? '<div class="sp-tag">王牌</div>' : '') +
-        (isComeback ? '<div class="sp-tag">逆境反擊</div>' : '') +
+      '<div class="sp-top-row">' +
+        '<div class="sp-ring">' + (team || '–') + '</div>' +
+        '<div class="sp-badges">' +
+          (card.isAce ? '<div class="sp-badge">王牌</div>' : '') +
+          (isComeback ? '<div class="sp-badge">逆境反擊</div>' : '') +
+        '</div>' +
       '</div>' +
-      '<div class="sp-content-col">' +
-        '<div class="sp-name">' + card.name + '</div>' +
-        '<div class="sp-desc">' + card.desc + '</div>' +
-      '</div>' +
-      '<div class="sp-cover-hint">點擊牌池可翻面</div>';
+      '<div class="sp-name">' + card.name + '</div>' +
+      '<div class="sp-desc">' + card.desc + '</div>' +
+      '<div class="sp-flip-hint">點擊牌池可翻面 ›</div>';
 
     lastCard = { html, ace: !!card.isAce, team };
     isCovered = false;
@@ -687,24 +546,24 @@
 
     if(!lastCard){
       el.classList.remove('ace');
-      el.dataset.team = '';
+      el.removeAttribute('data-team');
       el.innerHTML =
         '<div class="sp-idle">' +
-          '<div class="logo-emblem"><span class="lg-line">WHO</span><span class="lg-line">NEXT</span></div>' +
-          '<div class="sp-hint">點擊符合條件的隊伍分數卡即可抽卡</div>' +
+          '<div class="pool-logo">WHONEXT</div>' +
+          '<div class="cta">點擊符合條件的隊伍分數卡<br>即可抽卡</div>' +
         '</div>';
     } else if(isCovered){
       el.classList.remove('ace');
       el.dataset.team = lastCard.team || '';
       el.innerHTML =
         '<div class="sp-covered">' +
-          '<div class="logo-emblem"><span class="lg-line">WHO</span><span class="lg-line">NEXT</span></div>' +
+          '<div class="pool-logo">WHONEXT</div>' +
           '<div class="sp-cover-text">卡牌已蓋牌・再次點擊查看</div>' +
         '</div>';
     } else {
       el.classList.toggle('ace', lastCard.ace);
       el.dataset.team = lastCard.team || '';
-      el.innerHTML = lastCard.html;
+      el.innerHTML = '<div class="sp-revealed">' + lastCard.html + '</div>';
     }
 
     void el.offsetWidth;
@@ -712,11 +571,7 @@
   }
 
   $('sharedPool').addEventListener('click', ()=>{
-    if(lastCard){
-      isCovered = !isCovered;
-      renderSharedPool();
-      return;
-    }
+    if(lastCard){ isCovered = !isCovered; renderSharedPool(); return; }
     const eligible = [0,1].filter(s => isSideEligible(s) || isComebackEligibleForSide(s));
     if(eligible.length === 1){ attemptDrawForSide(eligible[0]); }
     else if(eligible.length > 1){ showToast('兩隊都符合條件，請點擊該隊的分數卡抽卡'); }
@@ -727,16 +582,13 @@
     const score = state.scores[side];
     return !!state.teamSlots[side] && score > 0 && score % 5 === 0 && state.drawnAtScore[side] !== score;
   }
-
   function getComebackSide(){
     const diff = state.scores[0] - state.scores[1];
     return diff <= -10 ? 0 : (diff >= 10 ? 1 : -1);
   }
-
   function isComebackEligibleForSide(side){
     return getComebackSide() === side && !!state.teamSlots[side] && !state.comebackUsed;
   }
-
   function attemptDrawForSide(side){
     if(isSideEligible(side)){ drawForSide(side); return; }
     if(isComebackEligibleForSide(side)){ drawComeback(); return; }
@@ -747,8 +599,7 @@
   $('btnReset').addEventListener('click', ()=>{
     state = { teamSlots:['N','E'], scores:[0,0], drawnAtScore:[null,null], comebackUsed:false, history:[] };
     deckState = freshDeckState();
-    lastCard = null;
-    isCovered = false;
+    lastCard = null; isCovered = false;
     renderSharedPool();
     render();
     showToast('已全部重置');
@@ -763,22 +614,12 @@
     showToast('已交換場地');
   });
 
-  $('btnSetup').addEventListener('click', ()=>{
-    $('setupPanel').classList.toggle('open');
-  });
-
-  $('btnRules').addEventListener('click', ()=> $('rulesModal').classList.add('open'));
-  $('closeRules').addEventListener('click', ()=> $('rulesModal').classList.remove('open'));
   [0,1].forEach(side=>{
     $('historyBtn'+side).addEventListener('click', (e)=>{
       e.stopPropagation();
       renderHistory(side);
-      $('historyModal').classList.add('open');
+      openSheet('history');
     });
-  });
-  $('closeHistory').addEventListener('click', ()=> $('historyModal').classList.remove('open'));
-  [$('rulesModal'), $('historyModal')].forEach(m=>{
-    m.addEventListener('click', e=>{ if(e.target === m) m.classList.remove('open'); });
   });
 
   /* ---------- RENDER ---------- */
@@ -789,23 +630,31 @@
     });
 
     let anyReady = false;
+    const readyTeams = [];
 
     for(let side=0; side<2; side++){
       const team = state.teamSlots[side] || null;
       const card = $('scoreCard'+side);
-      const nameEl = card.querySelector('.team-name');
       const label = team ? (team + ' 隊') : ('TEAM ' + (side===0?'A':'B') + ' · 未選擇');
 
       card.dataset.team = team || '–';
-      nameEl.querySelector('.label').textContent = label;
+      $('teamLabel'+side).textContent = label;
       $('scoreNum'+side).textContent = String(state.scores[side]).padStart(2,'0');
 
       const milestoneEligible = isSideEligible(side);
       const comebackEligible = isComebackEligibleForSide(side);
       const canDraw = milestoneEligible || comebackEligible;
-      if(canDraw) anyReady = true;
-      card.classList.toggle('glow', canDraw);
-      $('milestoneTag'+side).textContent = canDraw ? '✦ 符合條件，可抽卡' : '';
+      if(canDraw){ anyReady = true; if(team) readyTeams.push(team); }
+      card.classList.toggle('ready', canDraw);
+    }
+
+    const badge = $('poolReadyBadge');
+    if(readyTeams.length){
+      badge.dataset.team = readyTeams[0];
+      badge.textContent = '✦ ' + readyTeams.join('・') + ' 隊符合條件，可抽卡';
+    } else {
+      badge.removeAttribute('data-team');
+      badge.textContent = '';
     }
 
     $('sharedPool').classList.toggle('ready', !lastCard && anyReady);
@@ -814,9 +663,7 @@
   function renderHistory(side){
     const list = $('historyList');
     const team = state.teamSlots[side];
-    $('historyModalTitle').textContent = team
-      ? (team + ' 隊抽牌歷史')
-      : ('TEAM ' + (side===0?'A':'B') + ' 抽牌歷史');
+    $('historySheetTitle').textContent = team ? (team + ' 隊抽牌歷史') : ('TEAM ' + (side===0?'A':'B') + ' 抽牌歷史');
 
     const items = state.history.filter(h => h.side === side);
     if(items.length === 0){
@@ -824,12 +671,12 @@
       return;
     }
     list.innerHTML = items.map(h=>{
-      return '<div class="history-item">' +
-        '<span class="h-mono" data-team="' + (h.team || '') + '">' + (h.team || '–') + '</span>' +
+      return '<div class="history-item hist-item" data-team="' + (h.team||'') + '">' +
+        '<span class="hist-ring">' + (h.team || '–') + '</span>' +
         '<div>' +
-          '<div class="h-name">' + h.name + (h.isAce ? '<span class="ace-mini">王牌</span>' : '') + (h.isComeback ? '<span class="ace-mini">逆境反擊</span>' : '') + '</div>' +
-          '<div class="h-desc">' + h.desc + '</div>' +
-          '<div class="h-meta">當時比分 ' + h.score0 + ' : ' + h.score1 + '</div>' +
+          '<div class="hist-title">' + h.name + (h.isAce ? '<span class="mini-badge">王牌</span>' : '') + (h.isComeback ? '<span class="mini-badge">逆境反擊</span>' : '') + '</div>' +
+          '<div class="hist-desc">' + h.desc + '</div>' +
+          '<div class="hist-meta">當時比分　' + h.score0 + ' : ' + h.score1 + '</div>' +
         '</div>' +
       '</div>';
     }).join('');
