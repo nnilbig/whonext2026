@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>WHONEXT x 卡牌系統</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0A0B;
+    --panel-1:#1C1D20;
+    --panel-2:#131416;
+    --line:#2B2C30;
+    --line-soft:rgba(255,255,255,0.06);
+    --ink:#ECEBE6;
+    --ink-soft:#8B8D92;
+    --ink-faint:#55565B;
+
+    --n-accent:#9FB3C8; --n-glow:rgba(159,179,200,0.45);
+    --e-accent:#C9B79B; --e-glow:rgba(201,183,155,0.45);
+    --x-accent:#B9B9BD; --x-glow:rgba(185,185,189,0.45);
+    --t-accent:#E9E9E4; --t-glow:rgba(233,233,228,0.45);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family:'Noto Sans TC', sans-serif;
+    color:var(--ink);
+    background:
+      repeating-linear-gradient(112deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 4px),
+      var(--bg);
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center;
+    padding: clamp(16px,4vw,40px) 0;
+  }
+
+  /* ---------- HEADER ---------- */
+  .page-head{ text-align:center; margin-bottom: clamp(16px,4vw,26px); padding:0 16px; }
+  .page-head .eyebrow{
+    font-family:'Oswald', sans-serif; font-weight:600; font-size:12px; letter-spacing:.4em;
+    color:var(--ink-soft); text-transform:uppercase;
+  }
+  .page-head h1{ font-size: clamp(20px,5vw,26px); font-weight:900; margin:8px 0 0; letter-spacing:.02em; }
+  .page-head .sub{ font-size:13px; color:var(--ink-soft); margin-top:6px; }
+
+  /* ---------- LIKE-BAR (mimics IG post chrome for context) ---------- */
+  .ig-frame{
+    width: min(420px, 92vw);
+    border-radius: 18px;
+    overflow:hidden;
+    border:1px solid var(--line);
+    background: var(--panel-2);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .ig-top{
+    display:flex; align-items:center; gap:10px;
+    padding: 12px 14px;
+    border-bottom:1px solid var(--line);
+  }
+  .ig-avatar{
+    width:32px; height:32px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #33353A, #16171A 72%);
+    border:1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue', sans-serif; font-size:13px; color:var(--ink);
+  }
+  .ig-top .uname{ font-size:13.5px; font-weight:700; }
+  .ig-top .uname .badge{ color:var(--n-accent); margin-left:4px; }
+  .ig-top .more{ margin-left:auto; color:var(--ink-soft); font-size:18px; }
+
+  /* ---------- CAROUSEL ---------- */
+  .carousel-wrap{ position:relative; }
+  .carousel{
+    display:flex; overflow-x:auto; scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .carousel::-webkit-scrollbar{ display:none; }
+  .slide{
+    flex:0 0 100%; scroll-snap-align:start;
+    aspect-ratio: 4 / 5;
+    position:relative; overflow:hidden;
+    display:flex; flex-direction:column; justify-content:center;
+    padding: 34px 30px;
+    background:
+      radial-gradient(circle at 16px 16px, #6E7075 0%, #2A2C30 58%, transparent 60%),
+      radial-gradient(circle at calc(100% - 16px) 16px, #6E7075 0%, #2A2C30 58%, transparent 60%),
+      radial-gradient(circle at 16px calc(100% - 16px), #6E7075 0%, #2A2C30 58%, transparent 60%),
+      radial-gradient(circle at calc(100% - 16px) calc(100% - 16px), #6E7075 0%, #2A2C30 58%, transparent 60%),
+      linear-gradient(165deg, #1c1d20 0%, #131416 100%);
+    background-repeat:no-repeat;
+    background-size: 8px 8px, 8px 8px, 8px 8px, 8px 8px, 100% 100%;
+  }
+  .slide .bg-watermark{
+    position:absolute; top:-10px; left:50%; transform:translateX(-50%);
+    font-family:'Bebas Neue', sans-serif; font-size:190px; line-height:1;
+    color: rgba(255,255,255,0.028); white-space:nowrap; pointer-events:none; z-index:0;
+  }
+  .slide > *{ position:relative; z-index:1; }
+
+  .slide-idx{
+    font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink-faint);
+    letter-spacing:.1em; margin-bottom:14px;
+  }
+  .slide-eyebrow{
+    font-size:13px; color:var(--ink-soft); letter-spacing:.04em; margin: -6px 0 16px;
+  }
+  .slide h2{
+    font-size: clamp(26px,7vw,34px); font-weight:900; line-height:1.2; margin:0 0 14px; letter-spacing:.01em;
+  }
+  .slide h2 .accent{ color:var(--n-accent); }
+  .slide p{ font-size: clamp(14px,3.6vw,16px); color:var(--ink-soft); line-height:1.7; margin:0; }
+
+  .badge-mini{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:8px 16px; border-radius:999px;
+    border:1.5px solid var(--line);
+    background: rgba(255,255,255,0.04);
+    font-size:13px; font-weight:700; margin-top:20px; width:fit-content;
+  }
+  .badge-mini .dot{ width:8px; height:8px; border-radius:50%; }
+
+  /* mini card mock inside slide */
+  .mini-card{
+    margin-top:22px;
+    border-radius:16px; border:1.5px solid var(--line);
+    background: linear-gradient(160deg,#202124,#131416);
+    padding: 20px 22px;
+    display:flex; align-items:center; gap:18px;
+    box-shadow: 0 0 0 1.5px rgba(255,255,255,0.25) inset, 0 0 30px rgba(255,255,255,0.08);
+  }
+  .mini-ring{
+    width:52px; height:52px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue', sans-serif; font-size:22px;
+    border:2px solid var(--n-accent); color:var(--n-accent); box-shadow:0 0 18px var(--n-glow);
+  }
+  .mini-card .mc-name{ font-weight:900; font-size:17px; margin-bottom:4px; }
+  .mini-card .mc-desc{ font-size:12.5px; color:var(--ink-soft); line-height:1.5; }
+  .mc-tag{
+    display:inline-block; font-size:10px; font-weight:700; color:#0A0A0B;
+    background: linear-gradient(160deg,#F2F2F0,#B7B8BB);
+    padding:3px 10px; border-radius:999px; margin-bottom:6px;
+  }
+
+  /* team grid slide */
+  .team-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:22px; }
+  .team-card{
+    border-radius:14px; border:1.5px solid var(--line); background: rgba(255,255,255,0.03);
+    padding:16px; display:flex; align-items:center; gap:12px;
+  }
+  .team-card .letter{
+    width:38px; height:38px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue', sans-serif; font-size:18px;
+  }
+  .team-card[data-t="N"] .letter{ color:var(--n-accent); border:2px solid var(--n-accent); box-shadow:0 0 14px var(--n-glow); }
+  .team-card[data-t="E"] .letter{ color:var(--e-accent); border:2px solid var(--e-accent); box-shadow:0 0 14px var(--e-glow); }
+  .team-card[data-t="X"] .letter{ color:var(--x-accent); border:2px solid var(--x-accent); box-shadow:0 0 14px var(--x-glow); }
+  .team-card[data-t="T"] .letter{ color:var(--t-accent); border:2px solid var(--t-accent); box-shadow:0 0 14px var(--t-glow); }
+  .team-card .tname{ font-size:12px; color:var(--ink-soft); letter-spacing:.05em; }
+
+  /* CTA slide */
+  .cta-slide{ align-items:center; text-align:center; }
+  .cta-btn{
+    margin-top:26px; display:inline-flex; align-items:center; gap:8px;
+    padding:16px 34px; border-radius:999px;
+    background: var(--ink); color:#0A0A0B;
+    font-weight:800; font-size:15px; letter-spacing:.03em;
+  }
+
+  /* ---------- IG action bar ---------- */
+  .ig-actions{ display:flex; align-items:center; gap:16px; padding: 12px 14px 6px; font-size:20px; }
+  .ig-actions .spacer{ margin-left:auto; }
+  .ig-likes{ padding: 2px 14px 4px; font-size:13px; font-weight:700; }
+  .ig-caption{ padding: 0 14px 14px; font-size:13px; line-height:1.6; color:var(--ink-soft); }
+  .ig-caption b{ color:var(--ink); font-weight:700; }
+  .ig-caption .tag{ color:var(--n-accent); }
+
+  /* ---------- DOTS ---------- */
+  .dots{ display:flex; justify-content:center; gap:7px; padding: 12px 0; }
+  .dot{ width:6px; height:6px; border-radius:50%; background: var(--line); transition: all .2s ease; }
+  .dot.active{ background: var(--ink); width:16px; border-radius:4px; }
+
+  .swipe-tip{ text-align:center; font-size:11.5px; color:var(--ink-faint); margin-top:14px; letter-spacing:.03em; }
+</style>
+</head>
+<body>
+
+  <div class="page-head">
+    <div class="eyebrow">WHONEXT 2026</div>
+    <h1>卡牌系統介紹</h1>
+  </div>
+
+  <div class="ig-frame">
+    <div class="ig-top">
+      <div class="ig-avatar">W</div>
+      <div class="uname">whonext2026<span class="badge">✓</span></div>
+      <div class="more">⋯</div>
+    </div>
+
+    <div class="carousel-wrap">
+      <div class="carousel" id="carousel">
+
+        <!-- Slide 1: Hero -->
+        <div class="slide">
+          <div class="bg-watermark">NEXT</div>
+          <div class="slide-idx">01 / 07</div>
+          <h2>翻牌<span class="accent">，</span>就是<br>翻盤<span class="accent">。</span></h2>
+          <p>——每一局，都是一次未知的翻牌。</p>
+        </div>
+
+        <!-- Slide 2: Props -->
+        <div class="slide">
+          <div class="slide-idx">02 / 07</div>
+          <h2>道具<span class="accent">，</span>意想不到的武器</h2>
+          <p>球筒、寶特瓶、拖鞋——你的下一支球拍，可能長得完全不像球拍。</p>
+          <div class="mini-card">
+            <div class="mini-ring">N</div>
+            <div>
+              <div class="mc-name">拖鞋突襲</div>
+              <div class="mc-desc">指定對方一名球員，接下來3球必須用拖鞋擊球。</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 3: Ace probability -->
+        <div class="slide">
+          <div class="slide-idx">03 / 07</div>
+          <h2>王牌<span class="accent">，</span>不是隨便出現</h2>
+          <p>——分數真的領先夠多嗎？</p>
+          <div class="mini-card">
+            <div class="mini-ring" style="border-color:#fff;color:#fff;box-shadow:0 0 18px rgba(255,255,255,0.4);">★</div>
+            <div>
+              <span class="mc-tag">王牌</span>
+              <div class="mc-name">強制平手</div>
+              <div class="mc-desc">分數落後時，立刻強制平手。</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Slide 4: Comeback -->
+        <div class="slide">
+          <div class="slide-idx">04 / 07</div>
+          <h2>落後<span class="accent">，</span>不代表出局</h2>
+          <p>——全場僅有的絕地反擊。</p>
+          <div class="badge-mini"><span class="dot" style="background:var(--e-accent);box-shadow:0 0 8px var(--e-glow);"></span>逆境反擊 · 全場限用一次</div>
+        </div>
+
+        <!-- Slide 5: Trap / prop decks -->
+        <div class="slide">
+          <div class="slide-idx">05 / 07</div>
+          <h2>不只一種<br>牌組玩法</h2>
+          <p>——選好牌組的那一刻，就是戰術的開始。</p>
+        </div>
+
+        <!-- Slide 6: Teams -->
+        <div class="slide">
+          <div class="slide-idx">06 / 07</div>
+          <h2>N・E・X・T<br>四隊登場</h2>
+          <p>鋼、鎳、銀、鉑——四種金屬、四種性格，你會是哪一隊？</p>
+          <div class="team-grid">
+            <div class="team-card" data-t="N"><div class="letter">N</div><div class="tname">鋼<br>STEEL</div></div>
+            <div class="team-card" data-t="E"><div class="letter">E</div><div class="tname">鎳<br>NICKEL</div></div>
+            <div class="team-card" data-t="X"><div class="letter">X</div><div class="tname">銀<br>SILVER</div></div>
+            <div class="team-card" data-t="T"><div class="letter">T</div><div class="tname">鉑<br>PLATINUM</div></div>
+          </div>
+        </div>
+
+        <!-- Slide 7: CTA -->
+        <div class="slide cta-slide">
+          <div class="bg-watermark">NEXT</div>
+          <div class="slide-idx">07 / 07</div>
+          <h2>準備好了嗎<span class="accent">？</span></h2>
+          <p>——牌池已經洗好了。剩下的，就看你敢不敢翻。</p>
+          <div class="cta-btn">開始比賽 →</div>
+        </div>
+
+      </div>
+
+      <div class="dots" id="dots"></div>
+    </div>
+
+    <div class="ig-actions">
+      <span>♡</span><span>◌</span><span>➤</span>
+      <span class="spacer">▭</span>
+    </div>
+    <div class="ig-likes">whonext 和 其他 88 人 都說讚</div>
+    <div class="ig-caption"><b>whonext2026</b> 這局，你抽到王牌了嗎 <span class="tag">#WHONEXT2026</span> <span class="tag">#卡牌系統</span> <span class="tag">#羽球</span></div>
+  </div>
+
+  <div class="swipe-tip">← 滑動查看下一張 →</div>
+
+<script>
+  const carousel = document.getElementById('carousel');
+  const slides = carousel.querySelectorAll('.slide');
+  const dotsWrap = document.getElementById('dots');
+
+  slides.forEach((_, i)=>{
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    dotsWrap.appendChild(d);
+  });
+  const dots = dotsWrap.querySelectorAll('.dot');
+
+  carousel.addEventListener('scroll', ()=>{
+    const idx = Math.round(carousel.scrollLeft / carousel.clientWidth);
+    dots.forEach((d,i)=> d.classList.toggle('active', i === idx));
+  });
+</script>
+</body>
+</html>

@@ -72,15 +72,16 @@
   }
   .nav-title h1{ margin:1px 0 0; font-size:20px; font-weight:800; letter-spacing:-.01em; }
   .nav-actions{ display:flex; gap:6px; }
-  .nav-actions button{
+  .nav-actions button, .nav-actions a{
     width:36px; height:36px; border-radius:50%;
     background: var(--card);
     border: 1px solid var(--line);
     display:flex; align-items:center; justify-content:center;
     font-size:16px; color: var(--label);
+    text-decoration:none;
     transition: background .15s ease;
   }
-  .nav-actions button:active{ background: var(--card-strong); }
+  .nav-actions button:active, .nav-actions a:active{ background: var(--card-strong); }
 
   /* ---------- WRAP ---------- */
   .wrap{ max-width: 560px; margin:0 auto; padding: 16px 16px 8px; }
@@ -288,6 +289,7 @@
         <h1>卡牌系統</h1>
       </div>
       <div class="nav-actions">
+        <a href="whonext_ig_intro_site.html" target="_blank" rel="noopener" id="btnPromo" aria-label="卡牌系統介紹">▤</a>
         <button id="btnReset" aria-label="全部重置">↺</button>
         <button id="btnSwap" aria-label="交換場地">⇄</button>
         <button id="btnRules" aria-label="規則說明">ⓘ</button>
@@ -395,34 +397,21 @@
     { name: "歷史重演", desc: "即刻生效，可以指定使用我方歷史牌池的任一卡牌。", isAce: true }
   ];
 
-  const DECK_B_CARDS = [
-    { name: "效果1", desc: "開發中" },
-    { name: "效果2", desc: "開發中" },
-    { name: "效果3", desc: "開發中" },
-    { name: "效果4", desc: "開發中" },
-    { name: "效果5", desc: "開發中" },
-    { name: "效果6", desc: "開發中" },
-    { name: "效果7", desc: "開發中" },
-    { name: "效果8", desc: "開發中" },
-    { name: "效果9", desc: "開發中" },
-    { name: "效果10", desc: "開發中" },
-    { name: "效果11", desc: "開發中" },
-    { name: "效果12", desc: "開發中" },
-  ];
-  const DECK_C_CARDS = [
-    { name: "道具1", desc: "開發中" },
-    { name: "道具2", desc: "開發中" },
-    { name: "道具3", desc: "開發中" },
-    { name: "道具4", desc: "開發中" },
-    { name: "道具5", desc: "開發中" },
-    { name: "道具6", desc: "開發中" },
-    { name: "道具7", desc: "開發中" },
-    { name: "道具8", desc: "開發中" },
-    { name: "道具9", desc: "開發中" },
-    { name: "道具10", desc: "開發中" },
-    { name: "道具11", desc: "開發中" },
-    { name: "道具12", desc: "開發中" },
-  ];
+  function placeholderDeck(prefix, count){
+    const normalCount = Math.round(count * 10 / 15); // 同樣維持約 3:1 的一般:王牌比例
+    const aceCount = count - normalCount;
+    const cards = [];
+    for(let i = 1; i <= normalCount; i++){
+      cards.push({ name: prefix + '卡 ' + String(i).padStart(2,'0'), desc: '開發中，內容尚未定案。' });
+    }
+    for(let i = 1; i <= aceCount; i++){
+      cards.push({ name: prefix + '王牌 ' + String(i).padStart(2,'0'), desc: '開發中，內容尚未定案。', isAce: true });
+    }
+    return cards;
+  }
+
+  const DECK_B_CARDS = placeholderDeck('陷阱', 15);
+  const DECK_C_CARDS = placeholderDeck('道具', 15);
 
   // 每副牌組的抽卡機率規則各自獨立設定，目前三副數值先設成一樣，
   // 之後要讓某副牌組機率不同，只需要改這裡對應的 rules，不用動抽卡邏輯本身。
@@ -432,11 +421,11 @@
       rules: { aceUnlockScore: 5, baseAceProb: 1/4, trailingAceMultiplier: 1.5 }
     },
     B: {
-      id: 'B', name: '陷阱卡牌組', desc: '開發中', cards: DECK_B_CARDS,
+      id: 'B', name: '陷阱卡牌組', desc: '15 張佔位卡，內容開發中', cards: DECK_B_CARDS,
       rules: { aceUnlockScore: 5, baseAceProb: 1/4, trailingAceMultiplier: 1.5 }
     },
     C: {
-      id: 'C', name: '道具牌組', desc: '開發中', cards: DECK_C_CARDS,
+      id: 'C', name: '道具牌組', desc: '15 張佔位卡，內容開發中', cards: DECK_C_CARDS,
       rules: { aceUnlockScore: 5, baseAceProb: 1/4, trailingAceMultiplier: 1.5 }
     }
   };
